@@ -30,33 +30,34 @@ def analyze_Events(content):
     global last_sequence_number, cursor
     print("start analyze")
     for event in content:
-        last_sequence_number = int(event["sequence_number"])
-        token_data = event["data"]["token_id"]["token_data_id"]
-        collection = escape_string(token_data["collection"])
-        creator = token_data["creator"]
-        name = escape_string(token_data["name"])
-        seller = event["data"]["seller"]
-        price = int(event["data"]["price"])
-        timestamp = float(event["data"]["timestamp"])/1000000
-        createTime = datetime.datetime.fromtimestamp(timestamp)
-        try:
-            #print(f"SELECT * FROM Collection WHERE `name`='{collection}' AND `creator`='{creator}'")
-            cursor.execute(f"SELECT * FROM Collection WHERE `name`='{collection}' AND `creator`='{creator}'")
-            collectionId = cursor.fetchone()[0]
-            #print(f"SELECT * FROM AptosToken WHERE `owner`='{seller}' AND `collection`='{collection} AND `name`='{name}'")
-            cursor.execute(f"SELECT * FROM AptosToken WHERE `owner`='{seller}' AND `collection`='{collection}' AND `name`='{name}'")
-            tokenId = cursor.fetchone()[0]
-        except Exception as e:
-            print(e)
-            continue
-        sql = f"insert into `Order` (collectionId, tokenId, seller, price, status, createTime) values ('{collectionId}', '{tokenId}', '{seller}', '{price}', 'LISTING', '{createTime}')"
-        print(sql)
-        try:
-            cursor.execute(sql)
-            db.commit()
-        except Exception as e:
-            print(e)
-            db.rollback()
+        if event["type"] == "0xb9c07a14c82c73e8afe21138914883d4185dfe3ac58371e219bb46de00a19319::FixedMarket::ListTokenEvent":
+            last_sequence_number = int(event["sequence_number"])
+            token_data = event["data"]["token_id"]["token_data_id"]
+            collection = escape_string(token_data["collection"])
+            creator = token_data["creator"]
+            name = escape_string(token_data["name"])
+            seller = event["data"]["seller"]
+            price = int(event["data"]["price"])
+            timestamp = float(event["data"]["timestamp"])/1000000
+            createTime = datetime.datetime.fromtimestamp(timestamp)
+            try:
+                #print(f"SELECT * FROM Collection WHERE `name`='{collection}' AND `creator`='{creator}'")
+                cursor.execute(f"SELECT * FROM Collection WHERE `name`='{collection}' AND `creator`='{creator}'")
+                collectionId = cursor.fetchone()[0]
+                #print(f"SELECT * FROM AptosToken WHERE `owner`='{seller}' AND `collection`='{collection} AND `name`='{name}'")
+                cursor.execute(f"SELECT * FROM AptosToken WHERE `owner`='{seller}' AND `collection`='{collection}' AND `name`='{name}'")
+                tokenId = cursor.fetchone()[0]
+            except Exception as e:
+                print(e)
+                continue
+            sql = f"insert into `Order` (collectionId, tokenId, seller, price, status, createTime) values ('{collectionId}', '{tokenId}', '{seller}', '{price}', 'LISTING', '{createTime}')"
+            print(sql)
+            try:
+                cursor.execute(sql)
+                db.commit()
+            except Exception as e:
+                print(e)
+                db.rollback()
         
     
 def main():
