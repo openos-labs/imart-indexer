@@ -2,43 +2,37 @@ import requests
 from config import *
 import time
 
+last_sequence_number = 2
 
-def getBlock(height: int):
-    url = APTOS_NODE_URL + f"blocks/by_height/{height}?with_transactions=true"
+def getEvents(start: int):
+    address, event_handle, field_name = APTOS_EVENTS["listToken"]["addr"], APTOS_EVENTS["listToken"]["event_handle"], APTOS_EVENTS["listToken"]["field_name"]
+    url = APTOS_NODE_URL + f"accounts/{address}/events/{event_handle}/{field_name}?start={start}"
     #print(url)
     headers = {
         'Content-Type': 'application/json'
     } 
-    start = time.time()
-    resp = requests.get(url=url, headers=headers)
-    end = time.time()
-    print(f"Time cost:{end-start}")
+    if DEBUG:
+        start_time = time.time()
+        resp = requests.get(url=url, headers=headers)
+        end_time = time.time()
+        print(f"Time cost:{end_time-start_time}")
     content = resp.json()
-    if 'error_code' in content and content['error_code'] == 'block_not_found':
-        return False, None
-    elif 'block_height' in content:
-        return True, content
-    else:
-        raise(Exception())
+    return content
 
-def analyze_block(content):
-    for tx in content["transactions"]:
-        if "events" in tx.keys():
-            for event in tx["events"]:
-                if event["type"] == APTOS_EVENTS["testEvent"]:
-                    print(event["data"])
+def analyze_Events(content):
+    global last_sequence_number
+    for event in content:
+        last_sequence_number = int(event["sequence_number"])
+
     
 def main():
-    block_number = 2912000
     while True:
-        succ, content = getBlock(block_number)
-        if not succ:
-            time.sleep(0.1)
-            continue
-        else:
-            print(f"Block{block_number} mined.")
-            analyze_block(content)
-            block_number += 1
+        content = getEvents(last_sequence_number)
+        if len(content) == 0:
+            time.sleep(TIME_GAP)
+
+
+        
 
 if __name__ == "__main__":
     main()
