@@ -132,25 +132,25 @@ model AptosOrder {
     status       OrderStatus
     createTime   DateTime
     orderIndex   BigInt      @default(0) @db.UnsignedBigInt
-    // token        AptosToken? @relation(fields: [tokenId], references: [id])
+    token        AptosToken? @relation(fields: [tokenId], references: [id])
     tokenId      Bytes?      @db.Binary(16)
 
-    @@unique([collectionId, tokenId])
+    @@unique([tokenId, orderIndex])
     @@index([collectionId, tokenId, status, seller, orderIndex])
 }
 
 model AptosToken {
-    id              Bytes  @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
-    collectionId    Bytes  @db.Binary(16)
+    id              Bytes        @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    collectionId    Bytes        @db.Binary(16)
     rawCollectionId String
     rawTokenId      String
     owner           String
-    creator         String @default("")
-    collection      String @default("")
-    name            String @default("")
-    description     String @default("")
-    uri             String @default("")
-    // AptosOrder      AptosOrder[]
+    creator         String       @default("")
+    collection      String       @default("")
+    name            String       @default("")
+    description     String       @default("")
+    uri             String       @default("")
+    AptosOrder      AptosOrder[]
 
     @@unique([rawCollectionId, rawTokenId])
     @@index([collectionId, owner])

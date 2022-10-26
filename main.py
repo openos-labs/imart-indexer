@@ -41,16 +41,20 @@ import asyncio
 import logging
 from config import config
 from common.db import connect_db
+from observer.buy_event_observer import BuyEventObserver
 from observer.observer import Observer
 from observer.list_event_observer import ListEventObserver
 from model.state import State, empty_offset
 from subject.list_events_subject import ListEventSubject
+from subject.buy_event_subject import BuyEventSubject
 
 subject_to_observer = {
+    "BuyEventSubject": BuyEventObserver(),
     "ListEventSubject": ListEventObserver(),
 }
 
 event_to_subject = {
+    "buy_token_events": BuyEventSubject(config.node_url, config.address),
     "list_token_events": ListEventSubject(config.node_url, config.address)
 }
 

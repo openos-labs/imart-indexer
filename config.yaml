@@ -3,3 +3,4 @@ address: "0xb9c07a14c82c73e8afe21138914883d4185dfe3ac58371e219bb46de00a19319"
 event_handle: 0xb9c07a14c82c73e8afe21138914883d4185dfe3ac58371e219bb46de00a19319::FixedMarket::FixedMarketEvents
 event_fields:
   - list_token_events
+  - buy_token_events
