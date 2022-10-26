@@ -1,0 +1,259 @@
+datasource db {
+    // could be postgresql or mysql
+    provider = "mysql"
+    url      = env("DB_URL")
+}
+
+generator client {
+    provider             = "prisma-client-py"
+    recursive_type_depth = 5
+    previewFeatures      = ["interactiveTransactions"]
+}
+
+enum Chain {
+    IC
+    FLOW
+    APTOS
+}
+
+enum MetadataType {
+    VIDEO
+    AUDIO
+    IMAGE
+    OTHER
+}
+
+enum OrderStatus {
+    LISTING
+    SOLD
+    CANCELED
+}
+
+enum Operation {
+    LIST
+    UPDATE
+    CANCEL
+    SALE
+}
+
+enum SaleStatus {
+    UNAUDITED
+    UPCOMING
+    LIVE
+    ENDED
+}
+
+model Community {
+    id           Bytes       @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    name         String
+    icon         String
+    link         String
+    Collection   Collection? @relation(fields: [collectionId], references: [id])
+    collectionId Bytes?      @db.Binary(16)
+}
+
+model Sale {
+    id               Bytes       @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    collection       Collection? @relation(fields: [collectionId], references: [id])
+    status           SaleStatus
+    publicMintTime   DateTime
+    expirationTime   DateTime?
+    title            String
+    description      String
+    mintingEnabled   Boolean     @default(false)
+    tokenSupply      BigInt
+    mintedTokenCount BigInt      @default(0)
+    mintPrice        Float
+    mintPayload      String
+    collectionId     Bytes?      @db.Binary(16)
+
+    @@index([status])
+}
+
+model Comment {
+    id           Bytes    @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    collectionId Bytes    @db.Binary(16)
+    tokenId      Bytes    @db.Binary(16)
+    userId       Bytes    @db.Binary(16)
+    content      String
+    createTime   DateTime
+    status       String
+
+    @@index([userId, collectionId, tokenId])
+}
+
+model User {
+    id          Bytes        @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    chain       Chain
+    address     String
+    publicKey   String?      @default("")
+    name        String?      @default("")
+    logo        String?      @default("")
+    cover       String?      @default("")
+    description String?      @default("")
+    character   String?      @default("")
+    AptosOffer  AptosOffer[]
+
+    @@index([chain, address, publicKey])
+}
+
+model Collection {
+    id              Bytes        @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    rawCollectionId String
+    chain           Chain
+    metadataType    MetadataType
+    category        String
+    contractName    String
+    contract        String       @default("")
+    name            String
+    creator         String
+    description     String
+    cover           String?
+    logo            String?
+    ordersCount     Int          @default(0)
+    volume          Float        @default(0)
+    floorPrice      Float?
+    Sale            Sale[]
+    communities     Community[]
+
+    @@index([chain, category, metadataType])
+}
+
+//**************************************************************************************************
+// Aptos
+//**************************************************************************************************
+model AptosOrder {
+    id           Bytes       @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    collectionId Bytes       @db.Binary(16)
+    seller       String
+    buyer        String?
+    price        Float
+    currency     String      @default("")
+    status       OrderStatus
+    createTime   DateTime
+    orderIndex   BigInt      @default(0) @db.UnsignedBigInt
+    // token        AptosToken? @relation(fields: [tokenId], references: [id])
+    tokenId      Bytes?      @db.Binary(16)
+
+    @@unique([collectionId, tokenId])
+    @@index([collectionId, tokenId, status, seller, orderIndex])
+}
+
+model AptosToken {
+    id              Bytes  @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    collectionId    Bytes  @db.Binary(16)
+    rawCollectionId String
+    rawTokenId      String
+    owner           String
+    creator         String @default("")
+    collection      String @default("")
+    name            String @default("")
+    description     String @default("")
+    uri             String @default("")
+    // AptosOrder      AptosOrder[]
+
+    @@unique([rawCollectionId, rawTokenId])
+    @@index([collectionId, owner])
+}
+
+model AptosTokenFavorited {
+    id           Bytes  @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    tokenId      Bytes  @db.Binary(16)
+    collectionId Bytes  @db.Binary(16)
+    favoritedBy  String
+
+    @@index([tokenId, collectionId, favoritedBy])
+}
+
+model AptosOffer {
+    id           Bytes   @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    tokenId      Bytes   @db.Binary(16)
+    collectionId Bytes   @db.Binary(16)
+    price        Float
+    currency     String
+    quantity     BigInt? @default(1)
+    openedAt     BigInt
+    endedAt      BigInt
+    user         User    @relation(fields: [userId], references: [id])
+    userId       Bytes   @db.Binary(16)
+
+    @@index([tokenId, userId])
+}
+
+model AptosActivity {
+    id           Bytes     @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    orderId      Bytes?    @db.Binary(16)
+    tokenId      Bytes     @db.Binary(16)
+    collectionId Bytes     @db.Binary(16)
+    source       String?   @default("") @map("from")
+    destination  String?   @default("") @map("to")
+    txHash       String?   @default("")
+    operation    Operation
+    price        Float?
+    createTime   DateTime
+
+    @@index([collectionId, operation])
+}
+
+//**************************************************************************************************
+// IC
+//**************************************************************************************************
+model IcToken {
+    id              Bytes  @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    collectionId    Bytes  @db.Binary(16)
+    rawCollectionId String
+    rawTokenId      String
+    owner           String
+    creator         String @default("")
+    collection      String @default("")
+    name            String @default("")
+    description     String @default("")
+    uri             String @default("")
+
+    @@unique([rawCollectionId, rawTokenId])
+    @@index([collectionId, owner])
+}
+
+model IcTokenFavorited {
+    id           Bytes  @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    tokenId      Bytes  @db.Binary(16)
+    collectionId Bytes  @db.Binary(16)
+    favoritedBy  String
+
+    @@index([tokenId, collectionId, favoritedBy])
+}
+
+//**************************************************************************************************
+// FLOW
+//**************************************************************************************************
+model FlowToken {
+    id              Bytes  @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    collectionId    Bytes  @db.Binary(16)
+    rawCollectionId String
+    rawTokenId      String
+    owner           String
+    creator         String @default("")
+    collection      String @default("")
+    name            String @default("")
+    description     String @default("")
+    uri             String @default("")
+
+    @@unique([rawCollectionId, rawTokenId])
+    @@index([collectionId, owner])
+}
+
+model FlowTokenFavorited {
+    id           Bytes  @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    tokenId      Bytes  @db.Binary(16)
+    collectionId Bytes  @db.Binary(16)
+    favoritedBy  String
+
+    @@index([tokenId, collectionId, favoritedBy])
+}
+
+model EventOffset {
+    id                          Int    @id @default(0)
+    buy_event_excuted_offset    BigInt
+    list_event_excuted_offset   BigInt
+    delist_event_excuted_offset BigInt
+}
