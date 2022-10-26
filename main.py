@@ -44,18 +44,22 @@ from common.db import connect_db
 from observer.buy_event_observer import BuyEventObserver
 from observer.observer import Observer
 from observer.list_event_observer import ListEventObserver
+from observer.delist_event_observer import DelistEventObserver
 from model.state import State, empty_offset
-from subject.list_events_subject import ListEventSubject
 from subject.buy_event_subject import BuyEventSubject
+from subject.list_events_subject import ListEventSubject
+from subject.delist_event_subject import DelistEventSubject
 
 subject_to_observer = {
     "BuyEventSubject": BuyEventObserver(),
     "ListEventSubject": ListEventObserver(),
+    "DelistEventSubject": DelistEventObserver()
 }
 
 event_to_subject = {
     "buy_token_events": BuyEventSubject(config.node_url, config.address),
-    "list_token_events": ListEventSubject(config.node_url, config.address)
+    "list_token_events": ListEventSubject(config.node_url, config.address),
+    "delist_token_events": DelistEventSubject(config.node_url, config.address)
 }
 
 
