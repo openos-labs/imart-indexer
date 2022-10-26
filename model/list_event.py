@@ -13,6 +13,7 @@ class ListEventData:
     timestamp: str
     token_amount: str
     token_id: TokenId
+    locked_until_secs: str
 
 
 @dataclass

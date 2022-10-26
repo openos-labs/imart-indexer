@@ -40,6 +40,7 @@
 import asyncio
 import logging
 from config import config
+from common.db import connect_db
 from observer.observer import Observer
 from observer.list_event_observer import ListEventObserver
 from model.state import State, empty_offset
@@ -96,6 +97,7 @@ async def worker(state: State, event_field: str):
 
 
 async def main():
+    await connect_db()
     # init state with excuted seq no
     state = await initial_state()
     workers = []
