@@ -107,15 +107,17 @@ model Collection {
     contract        String       @default("")
     name            String
     creator         String
-    description     String
-    cover           String?
-    logo            String?
-    ordersCount     Int          @default(0)
+    description     String       @db.VarChar(300)
+    cover           String?      @default("")
+    logo            String?      @default("")
+    maximum         BigInt       @default(0)
     volume          Float        @default(0)
     floorPrice      Float?
+    uri             String?      @default("")
     Sale            Sale[]
     communities     Community[]
 
+    @@unique([chain, creator, name])
     @@index([chain, category, metadataType])
 }
 
@@ -144,15 +146,18 @@ model AptosToken {
     collectionId    Bytes        @db.Binary(16)
     rawCollectionId String
     rawTokenId      String
-    owner           String
+    owner           String       @default("")
     creator         String       @default("")
     collection      String       @default("")
     name            String       @default("")
     description     String       @default("")
     uri             String       @default("")
+    propertyVersion String       @default("0")
+    seqno           BigInt       @default(0) @db.UnsignedBigInt
     AptosOrder      AptosOrder[]
 
     @@unique([rawCollectionId, rawTokenId])
+    @@unique([creator, name, collection, propertyVersion])
     @@index([collectionId, owner])
 }
 

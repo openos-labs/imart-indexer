@@ -10,3 +10,7 @@ def new_uuid_hex_bytes() -> bytes:
 
 def unhex_decode(data: str) -> str:
     return binascii.unhexlify(re.sub(r'^0x', '', data)).decode()
+
+
+def flatten(lists):
+    return [item for sublist in lists for item in sublist]

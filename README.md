@@ -40,3 +40,19 @@
                                         +--------------------------+
                                                  DB / Cache
 ```
+
+## Collection 数据导入
+
+脚本依赖于 prisma，先编辑 .env, 再执行
+
+```
+// .env
+DB_URL="mysql://root:root@localhost:3306/imart"
+```
+
+```python
+$ prisma db push
+$ prisma generate
+
+$ python3 -m bin.collection_data_gathering --account 0xf932dcb9835e681b21d2f411ef99f4f5e577e6ac299eebee2272a39fb348f702 --node https://fullnode.mainnet.aptoslabs.com/v1
+```
