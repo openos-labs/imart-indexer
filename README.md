@@ -54,5 +54,21 @@ DB_URL="mysql://root:root@localhost:3306/imart"
 $ prisma db push
 $ prisma generate
 
-$ python3 -m bin.collection_data_gathering --account 0xf932dcb9835e681b21d2f411ef99f4f5e577e6ac299eebee2272a39fb348f702 --node https://fullnode.mainnet.aptoslabs.com/v1
+$ python3 -m bin.collection_data_gathering --account 0x1af632aeaa009748aa14c2271f8f9687d8cee0d91e4957e5cc575c856717bfde --node https://fullnode.testnet.aptoslabs.com/v1
+```
+
+## 部署
+
+```
+// build
+docker build -t imart-event-worker:v1 -f ./Dockerfile .
+
+// run
+docker run -d -v $PWD:/app/event-worker imart-event-worker:v1
+```
+
+## 日志
+
+```
+tail -n 10 error.log
 ```
