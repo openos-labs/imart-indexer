@@ -1,6 +1,6 @@
-node_url: https://fullnode.devnet.aptoslabs.com/v1
-address: "0xb9c07a14c82c73e8afe21138914883d4185dfe3ac58371e219bb46de00a19319"
-event_handle: 0xb9c07a14c82c73e8afe21138914883d4185dfe3ac58371e219bb46de00a19319::FixedMarket::FixedMarketEvents
+node_url: https://fullnode.testnet.aptoslabs.com/v1
+address: "0xfe7ed8936bc052dfc47b6c7a49afd458ea0824927344bc6b75382c4a1fe9725a"
+event_handle: 0xfe7ed8936bc052dfc47b6c7a49afd458ea0824927344bc6b75382c4a1fe9725a::FixedMarket::FixedMarketEvents
 event_fields:
   - buy_token_events
   - list_token_events
