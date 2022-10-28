@@ -27,8 +27,8 @@ class BuyEventObserver(Observer[BuyEvent]):
         })
 
         if not token == None:
-            async with prisma_client.tx() as transaction:
-                await transaction.aptosorder.update(
+            async with prisma_client.tx(timeout=60000) as transaction:
+                result = await transaction.aptosorder.update(
                     where={
                         'tokenId_orderIndex': {
                             'orderIndex': data.offer_id,
@@ -40,12 +40,13 @@ class BuyEventObserver(Observer[BuyEvent]):
                         'status': enums.OrderStatus.SOLD,
                     }
                 )
-                await transaction.eventoffset.update(
-                    where={'id': 0},
-                    data={
-                        "buy_event_excuted_offset": int(seqno)
-                    }
-                )
+                if result is not None and result.status == enums.OrderStatus.SOLD:
+                    await transaction.eventoffset.update(
+                        where={'id': 0},
+                        data={
+                            "buy_event_excuted_offset": int(seqno)
+                        }
+                    )
             new_state.new_offset.buy_events_excuted_offset = int(seqno)
             return new_state, True
         logging.error(

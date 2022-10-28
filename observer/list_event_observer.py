@@ -31,11 +31,11 @@ class ListEventObserver(Observer[ListEvent]):
             'collection': token_data_id.collection,
         })
         if not token == None:
-            async with prisma_client.tx() as transaction:
+            async with prisma_client.tx(timeout=60000) as transaction:
                 create_time = datetime.fromtimestamp(
                     int(data.timestamp) // 1000000)
                 id = new_uuid_hex_bytes()
-                await transaction.aptosorder.create(
+                result = await transaction.aptosorder.create(
                     data={
                         'id': Base64.encode(id),
                         'collectionId': token.collectionId,
@@ -49,12 +49,13 @@ class ListEventObserver(Observer[ListEvent]):
                         'createTime': create_time
                     }
                 )
-                await transaction.eventoffset.update(
-                    where={'id': 0},
-                    data={
-                        "list_event_excuted_offset": int(seqno)
-                    }
-                )
+                if result is not None and result.status == enums.OrderStatus.LISTING:
+                    await transaction.eventoffset.update(
+                        where={'id': 0},
+                        data={
+                            "list_event_excuted_offset": int(seqno)
+                        }
+                    )
             new_state.new_offset.list_events_excuted_offset = int(seqno)
             return new_state, True
         logging.error(
