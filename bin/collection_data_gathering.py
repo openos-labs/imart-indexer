@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import json
+import sys
 import logging
 import aiohttp
 from typing import List
@@ -29,7 +30,10 @@ class Fetcher:
                 return []
 
     async def fetch_token_data_created_events_of(self, coll: dict) -> List[dict]:
-        count = int(coll.maximum) // 100 + 1
+        maximum = 100
+        if not int(coll.maximum) >= sys.maxsize / 2:
+            maximum = int(coll.maximum)
+        count = maximum // 100 + 1
         lists = await asyncio.gather(*[self.fetch_page_data_created_events_of(i, coll) for i in range(count)])
         return flatten(lists)
 
@@ -51,6 +55,7 @@ class Dumper:
         name = data['collection_name']
         creator = data['creator']
         maximum = data['maximum']
+        maximum = min(sys.maxsize, int(maximum))
         description = data['description']
         rawCollectionId = {
             "creator": creator,
@@ -95,9 +100,10 @@ class Dumper:
             return None
 
     async def dump_token(self, coll: any, event: dict) -> bool:
+        seqno = int(event['sequence_number'])
         async with self.sema:
             data = event['data']
-            seqno = event['sequence_number']
+            seqno = int(event['sequence_number'])
             uri = data['uri']
             token_id = data['id']
             description = data['description']

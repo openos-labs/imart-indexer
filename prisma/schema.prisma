@@ -110,7 +110,7 @@ model Collection {
     description     String       @db.VarChar(300)
     cover           String?      @default("")
     logo            String?      @default("")
-    maximum         BigInt       @default(0)
+    maximum         BigInt       @default(0) @db.UnsignedBigInt
     volume          Float        @default(0)
     floorPrice      Float?
     uri             String?      @default("")
