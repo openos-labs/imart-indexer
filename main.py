@@ -40,12 +40,12 @@
 import asyncio
 import logging
 from config import config
-from common.db import connect_db
+from common.db import connect_db, prisma_client
 from observer.buy_event_observer import BuyEventObserver
 from observer.observer import Observer
 from observer.list_event_observer import ListEventObserver
 from observer.delist_event_observer import DelistEventObserver
-from model.state import State, empty_offset
+from model.state import State, empty_offset, Offset
 from subject.buy_event_subject import BuyEventSubject
 from subject.list_events_subject import ListEventSubject
 from subject.delist_event_subject import DelistEventSubject
@@ -64,7 +64,13 @@ event_to_subject = {
 
 
 async def initial_state() -> State:
-    return State(new_offset=empty_offset(), old_offset=empty_offset())
+    offset = await prisma_client.eventoffset.find_first(where={'id': 0})
+    new_offset = Offset(
+        buy_events_excuted_offset=offset.buy_event_excuted_offset,
+        list_events_excuted_offset=offset.list_event_excuted_offset,
+        delist_events_excuted_offset=offset.delist_event_excuted_offset,
+    )
+    return State(new_offset=new_offset, old_offset=empty_offset())
 
 
 async def subscribe(observer: Observer):
