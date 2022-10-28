@@ -16,7 +16,7 @@ class BuyEventObserver(Observer[BuyEvent]):
 
     async def process(self, state: State, event: Event[BuyEvent]) -> Tuple[State, bool]:
         new_state = state
-        seqno = event.sequence_number
+        seqno = int(event.sequence_number)
         data = BuyEventData(**event.data)
         token_data_id = TokenDataId(**TokenId(**data.token_id).token_data_id)
 
@@ -28,26 +28,24 @@ class BuyEventObserver(Observer[BuyEvent]):
 
         if not token == None:
             async with prisma_client.tx(timeout=60000) as transaction:
-                result = await transaction.aptosorder.update(
+                updated = await transaction.aptosorder.update_many(
                     where={
-                        'tokenId_orderIndex': {
-                            'orderIndex': data.offer_id,
-                            'tokenId': token.id
-                        }
+                        'status': enums.OrderStatus.LISTING,
+                        'tokenId': token.id
                     },
                     data={
                         'buyer': data.buyer,
                         'status': enums.OrderStatus.SOLD,
                     }
                 )
-                if result is not None and result.status == enums.OrderStatus.SOLD:
+                if updated is not None and updated > 0:
                     await transaction.eventoffset.update(
                         where={'id': 0},
                         data={
-                            "buy_event_excuted_offset": int(seqno)
+                            "buy_event_excuted_offset": seqno
                         }
                     )
-            new_state.new_offset.buy_events_excuted_offset = int(seqno)
+            new_state.new_offset.buy_events_excuted_offset = seqno
             return new_state, True
         logging.error(
             f'Token ({token_data_id}) not found but the order ({data.offer_id}) was existed.')

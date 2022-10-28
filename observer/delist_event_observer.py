@@ -16,7 +16,7 @@ class DelistEventObserver(Observer[DelistEvent]):
 
     async def process(self, state: State, event: Event[DelistEvent]) -> Tuple[State, bool]:
         new_state = state
-        seqno = event.sequence_number
+        seqno = int(event.sequence_number)
         data = DelistEventData(**event.data)
         token_data_id = TokenDataId(**TokenId(**data.token_id).token_data_id)
 
@@ -28,25 +28,23 @@ class DelistEventObserver(Observer[DelistEvent]):
 
         if not token == None:
             async with prisma_client.tx(timeout=60000) as transaction:
-                result = await transaction.aptosorder.update(
+                updated = await transaction.aptosorder.update_many(
                     where={
-                        'tokenId_orderIndex': {
-                            'orderIndex': data.offer_id,
-                            'tokenId': token.id
-                        }
+                        'status': enums.OrderStatus.LISTING,
+                        'tokenId': token.id
                     },
                     data={
                         'status': enums.OrderStatus.CANCELED,
                     }
                 )
-                if result is not None and result.status == enums.OrderStatus.CANCELED:
+                if updated is not None and updated > 0:
                     await transaction.eventoffset.update(
                         where={'id': 0},
                         data={
-                            "delist_event_excuted_offset": int(seqno)
+                            "delist_event_excuted_offset": seqno
                         }
                     )
-            new_state.new_offset.delist_events_excuted_offset = int(seqno)
+            new_state.new_offset.delist_events_excuted_offset = seqno
             return new_state, True
         logging.error(
             f'Token ({token_data_id}) not found but the order ({data.offer_id}) was existed.')
