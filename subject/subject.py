@@ -11,7 +11,7 @@ class Subject(Generic[T]):
         self.node_url = node_url
         self.address = address
 
-    def url(self, event_handle: str, event_field: str, start: int, limit: int = 1) -> str:
+    def url(self, event_handle: str, event_field: str, start: int, limit: int = 100) -> str:
         return f"{self.node_url}/accounts/{self.address}/events/{event_handle}/{event_field}?start={start}&limit={limit}"
 
     async def get_events(self, url: str) -> List[Event]:
