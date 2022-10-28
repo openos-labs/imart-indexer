@@ -124,4 +124,5 @@ async def main():
 
 if __name__ == "__main__":
     logging.basicConfig(filename='error.log', level=logging.INFO)
+    logging.info('started')
     asyncio.run(main())
