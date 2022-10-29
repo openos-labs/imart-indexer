@@ -20,7 +20,7 @@ class ListEventObserver(Observer[ListEvent]):
 
     async def process(self, state: State, event: Event[ListEvent]) -> Tuple[State, bool]:
         new_state = state
-        seqno = event.sequence_number
+        seqno = int(event.sequence_number)
         data = ListEventData(**event.data)
         token_data_id = TokenDataId(**TokenId(**data.token_id).token_data_id)
         coin_type_info = CoinTypeInfo(**data.coin_type_info)
@@ -50,13 +50,14 @@ class ListEventObserver(Observer[ListEvent]):
                     }
                 )
                 if result is not None and result.status == enums.OrderStatus.LISTING:
-                    await transaction.eventoffset.update(
+                    updated_offset = await transaction.eventoffset.update(
                         where={'id': 0},
                         data={
-                            "list_event_excuted_offset": int(seqno)
+                            "list_event_excuted_offset": seqno
                         }
                     )
-            new_state.new_offset.list_events_excuted_offset = int(seqno)
+                    if updated_offset is not None:
+                        new_state.new_offset.list_events_excuted_offset = updated_offset.list_event_excuted_offset
             return new_state, True
         logging.error(
             f'Token ({token_data_id}) not found but the order ({data.offer_id}) was existed.')

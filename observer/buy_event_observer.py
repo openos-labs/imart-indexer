@@ -39,13 +39,14 @@ class BuyEventObserver(Observer[BuyEvent]):
                     }
                 )
                 if updated is not None and updated > 0:
-                    await transaction.eventoffset.update(
+                    updated_offset = await transaction.eventoffset.update(
                         where={'id': 0},
                         data={
                             "buy_event_excuted_offset": seqno
                         }
                     )
-            new_state.new_offset.buy_events_excuted_offset = seqno
+                    if updated_offset is not None:
+                        new_state.new_offset.buy_events_excuted_offset = updated_offset.buy_event_excuted_offset
             return new_state, True
         logging.error(
             f'Token ({token_data_id}) not found but the order ({data.offer_id}) was existed.')
