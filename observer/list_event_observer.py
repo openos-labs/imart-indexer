@@ -1,4 +1,3 @@
-import logging
 from typing import List, Tuple
 from model.coin_type_info import CoinTypeInfo
 from model.token_id import TokenId, TokenDataId
@@ -30,35 +29,40 @@ class ListEventObserver(Observer[ListEvent]):
             'creator': token_data_id.creator,
             'collection': token_data_id.collection,
         })
-        if not token == None:
-            async with prisma_client.tx(timeout=60000) as transaction:
-                create_time = datetime.fromtimestamp(
-                    int(data.timestamp) // 1000000)
-                id = new_uuid_hex_bytes()
-                result = await transaction.aptosorder.create(
-                    data={
-                        'id': Base64.encode(id),
-                        'collectionId': token.collectionId,
-                        'tokenId': token.id,
-                        'price': float(data.price),
-                        'orderIndex': data.offer_id,
-                        'seller': data.seller,
-                        'buyer': "",
-                        'currency': coin_type_info.currency(),
-                        'status': enums.OrderStatus.LISTING,
-                        'createTime': create_time
-                    }
-                )
-                if result is not None and result.status == enums.OrderStatus.LISTING:
-                    updated_offset = await transaction.eventoffset.update(
-                        where={'id': 0},
-                        data={
-                            "list_event_excuted_offset": seqno
-                        }
-                    )
-                    if updated_offset is not None:
-                        new_state.new_offset.list_events_excuted_offset = updated_offset.list_event_excuted_offset
-            return new_state, True
-        logging.error(
-            f'Token ({token_data_id}) not found but the order ({data.offer_id}) was existed.')
-        return new_state, False
+        if token == None:
+            raise Exception(
+                f'[List Order]: Token ({token_data_id}) not found but the list event({data}) was existed.')
+
+        async with prisma_client.tx(timeout=60000) as transaction:
+            create_time = datetime.fromtimestamp(
+                float(data.timestamp) / 1000000)
+            id = new_uuid_hex_bytes()
+            result = await transaction.aptosorder.create(
+                data={
+                    'id': Base64.encode(id),
+                    'collectionId': token.collectionId,
+                    'tokenId': token.id,
+                    'price': float(data.price),
+                    'orderIndex': data.offer_id,
+                    'seller': data.seller,
+                    'buyer': "",
+                    'currency': coin_type_info.currency(),
+                    'status': enums.OrderStatus.LISTING,
+                    'createTime': create_time
+                }
+            )
+            if result == None or result.status != enums.OrderStatus.LISTING:
+                raise Exception(
+                    f"[List Order]: Failed to create new order with list event({data})")
+
+            updated_offset = await transaction.eventoffset.update(
+                where={'id': 0},
+                data={
+                    "list_event_excuted_offset": seqno
+                }
+            )
+            if updated_offset == None or updated_offset.list_event_excuted_offset != seqno:
+                raise Exception(f"[List Order]: Failed to update offset")
+
+            new_state.new_offset.list_events_excuted_offset = updated_offset.list_event_excuted_offset
+        return new_state, True

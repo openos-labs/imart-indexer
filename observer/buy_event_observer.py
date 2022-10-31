@@ -1,4 +1,3 @@
-import logging
 from typing import List, Tuple
 from model.token_id import TokenId, TokenDataId
 from observer.observer import Observer
@@ -26,28 +25,33 @@ class BuyEventObserver(Observer[BuyEvent]):
             'collection': token_data_id.collection,
         })
 
-        if not token == None:
-            async with prisma_client.tx(timeout=60000) as transaction:
-                updated = await transaction.aptosorder.update_many(
-                    where={
-                        'status': enums.OrderStatus.LISTING,
-                        'tokenId': token.id
-                    },
-                    data={
-                        'buyer': data.buyer,
-                        'status': enums.OrderStatus.SOLD,
-                    }
-                )
-                if updated is not None and updated > 0:
-                    updated_offset = await transaction.eventoffset.update(
-                        where={'id': 0},
-                        data={
-                            "buy_event_excuted_offset": seqno
-                        }
-                    )
-                    if updated_offset is not None:
-                        new_state.new_offset.buy_events_excuted_offset = updated_offset.buy_event_excuted_offset
+        if token == None:
+            raise Exception(
+                f'[Buy order]: Token ({token_data_id}) not found but the order ({data}) was existed.')
+
+        async with prisma_client.tx(timeout=60000) as transaction:
+            updated = await transaction.aptosorder.update_many(
+                where={
+                    'status': enums.OrderStatus.LISTING,
+                    'tokenId': token.id
+                },
+                data={
+                    'buyer': data.buyer,
+                    'status': enums.OrderStatus.SOLD,
+                }
+            )
+            if updated == None or updated <= 0:
+                raise Exception(
+                    f"[Buy order]: Failed to update order status to SOLD")
+
+            updated_offset = await transaction.eventoffset.update(
+                where={'id': 0},
+                data={
+                    "buy_event_excuted_offset": seqno
+                }
+            )
+            if updated_offset == None or updated_offset.buy_event_excuted_offset != seqno:
+                raise Exception(f"[Buy order]: Failed to update offset")
+
+            new_state.new_offset.buy_events_excuted_offset = updated_offset.buy_event_excuted_offset
             return new_state, True
-        logging.error(
-            f'Token ({token_data_id}) not found but the order ({data.offer_id}) was existed.')
-        return new_state, False
