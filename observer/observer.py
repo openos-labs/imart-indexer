@@ -16,10 +16,14 @@ class Observer(Event[T]):
         logging.info(
             f"[Observer]: received events from seq no {events[0].sequence_number} to {events[-1].sequence_number}: {events}")
         for event in events:
-            (new_state, success) = await self.process(current_state, event)
-            if not success:
+            try:
+                (new_state, success) = await self.process(current_state, event)
+                if not success:
+                    return current_state
+                current_state = new_state
+            except Exception as err:
+                logging.error(err)
                 return current_state
-            current_state = new_state
         return current_state
 
     async def process(self, state: State, event: Event[T]) -> Tuple[State, bool]:

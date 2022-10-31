@@ -1,7 +1,14 @@
 node_url: https://fullnode.testnet.aptoslabs.com/v1
 address: "0xfe7ed8936bc052dfc47b6c7a49afd458ea0824927344bc6b75382c4a1fe9725a"
-event_handle: 0xfe7ed8936bc052dfc47b6c7a49afd458ea0824927344bc6b75382c4a1fe9725a::FixedMarket::FixedMarketEvents
-event_fields:
-  - buy_token_events
-  - list_token_events
-  - delist_token_events
+fixed_market:
+  event_handle: 0xfe7ed8936bc052dfc47b6c7a49afd458ea0824927344bc6b75382c4a1fe9725a::FixedMarket::FixedMarketEvents
+  event_fields:
+    - buy_token_events
+    - list_token_events
+    - delist_token_events
+offer:
+  event_handle: 0xfe7ed8936bc052dfc47b6c7a49afd458ea0824927344bc6b75382c4a1fe9725a::offer::OfferEvents
+  event_fields:
+    - offer_token_events
+    - accept_offer_events
+    - cancel_offer_events

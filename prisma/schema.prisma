@@ -29,6 +29,12 @@ enum OrderStatus {
     CANCELED
 }
 
+enum OfferStatus {
+    CREATED
+    ACCEPTED
+    CANCELED
+}
+
 enum Operation {
     LIST
     UPDATE
@@ -83,16 +89,15 @@ model Comment {
 }
 
 model User {
-    id          Bytes        @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    id          Bytes   @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
     chain       Chain
     address     String
-    publicKey   String?      @default("")
-    name        String?      @default("")
-    logo        String?      @default("")
-    cover       String?      @default("")
-    description String?      @default("")
-    character   String?      @default("")
-    AptosOffer  AptosOffer[]
+    publicKey   String? @default("")
+    name        String? @default("")
+    logo        String? @default("")
+    cover       String? @default("")
+    description String? @default("")
+    character   String? @default("")
 
     @@index([chain, address, publicKey])
 }
@@ -171,18 +176,19 @@ model AptosTokenFavorited {
 }
 
 model AptosOffer {
-    id           Bytes   @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
-    tokenId      Bytes   @db.Binary(16)
-    collectionId Bytes   @db.Binary(16)
+    id           Bytes       @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    tokenId      Bytes       @db.Binary(16)
+    collectionId Bytes       @db.Binary(16)
     price        Float
     currency     String
-    quantity     BigInt? @default(1)
-    openedAt     BigInt
-    endedAt      BigInt
-    user         User    @relation(fields: [userId], references: [id])
-    userId       Bytes   @db.Binary(16)
+    quantity     BigInt?     @default(1)
+    openedAt     DateTime 
+    endedAt      DateTime
+    offerer      String
+    status       OfferStatus
 
-    @@index([tokenId, userId])
+    @@unique([tokenId, openedAt, offerer, status])
+    @@index([tokenId, offerer])
 }
 
 model AptosActivity {
@@ -261,4 +267,7 @@ model EventOffset {
     buy_event_excuted_offset    BigInt
     list_event_excuted_offset   BigInt
     delist_event_excuted_offset BigInt
+    create_offer_excuted_offset BigInt @default(-1)
+    accept_offer_excuted_offset BigInt @default(-1)
+    cancel_offer_excuted_offset BigInt @default(-1)
 }

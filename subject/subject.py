@@ -21,7 +21,7 @@ class Subject(Generic[T]):
                     data = await resp.json()
                     events = list(map(lambda x: Event(**x), data))
                     return events
-                err_resp = await resp.json()
+                err_resp = await resp.text()
                 logging.error(f"[subject]: {err_resp}")
                 return []
 
