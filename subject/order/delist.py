@@ -1,5 +1,5 @@
 from subject.subject import Subject
-from model.delist_event import DelistEvent
+from model.order.delist_event import DelistEvent
 
 
 class DelistEventSubject(Subject[DelistEvent]):

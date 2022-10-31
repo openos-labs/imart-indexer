@@ -1,5 +1,5 @@
 from subject.subject import Subject
-from model.create_offer_event import CreateOfferEvent
+from model.offer.create_offer_event import CreateOfferEvent
 
 
 class CreateOfferSubject(Subject[CreateOfferEvent]):

@@ -1,5 +1,5 @@
 from subject.subject import Subject
-from model.cancel_offer_event import CancelOfferEvent
+from model.offer.cancel_offer_event import CancelOfferEvent
 
 
 class CancelOfferSubject(Subject[CancelOfferEvent]):

@@ -2,7 +2,7 @@ from typing import List, Tuple
 from model.coin_type_info import CoinTypeInfo
 from model.token_id import TokenId, TokenDataId
 from observer.observer import Observer
-from model.create_offer_event import CreateOfferEvent, CreateOfferEventData
+from model.offer.create_offer_event import CreateOfferEvent, CreateOfferEventData
 from model.state import State
 from model.event import Event
 from common.db import prisma_client

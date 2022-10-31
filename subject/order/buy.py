@@ -1,5 +1,5 @@
 from subject.subject import Subject
-from model.buy_event import BuyEvent
+from model.order.buy_event import BuyEvent
 
 
 class BuyEventSubject(Subject[BuyEvent]):

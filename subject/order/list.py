@@ -1,5 +1,5 @@
 from subject.subject import Subject
-from model.list_event import ListEvent
+from model.order.list_event import ListEvent
 
 
 class ListEventSubject(Subject[ListEvent]):

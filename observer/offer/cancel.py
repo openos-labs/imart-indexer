@@ -1,7 +1,7 @@
 from typing import List, Tuple
 from model.token_id import TokenId, TokenDataId
 from observer.observer import Observer
-from model.cancel_offer_event import CancelOfferEvent, CancelOfferEventData
+from model.offer.cancel_offer_event import CancelOfferEvent, CancelOfferEventData
 from model.state import State
 from model.event import Event
 from common.db import prisma_client
