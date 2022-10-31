@@ -67,12 +67,12 @@ subject_to_observer = {
 }
 
 event_to_subject = {
-    "buy_token_events": BuyEventSubject(config.node_url, config.address),
-    "list_token_events": ListEventSubject(config.node_url, config.address),
-    "delist_token_events": DelistEventSubject(config.node_url, config.address),
-    "offer_token_events": CreateOfferSubject(config.node_url, config.address),
-    "accept_offer_events": AcceptOfferSubject(config.node_url, config.address),
-    "cancel_offer_events": CancelOfferSubject(config.node_url, config.address)
+    "buy_token_events": BuyEventSubject(),
+    "list_token_events": ListEventSubject(),
+    "delist_token_events": DelistEventSubject(),
+    "offer_token_events": CreateOfferSubject(),
+    "accept_offer_events": AcceptOfferSubject(),
+    "cancel_offer_events": CancelOfferSubject()
 }
 
 

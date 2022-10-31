@@ -1,18 +1,14 @@
 import logging
 from typing import Generic, List
+from config import config
 from model.event import T, Event
 import aiohttp
 
 
 class Subject(Generic[T]):
 
-    def __init__(self, node_url: str, address: str) -> None:
-        super().__init__()
-        self.node_url = node_url
-        self.address = address
-
     def url(self, event_handle: str, event_field: str, start: int, limit: int = 100) -> str:
-        return f"{self.node_url}/accounts/{self.address}/events/{event_handle}/{event_field}?start={start}&limit={limit}"
+        return f"{config.node_url}/accounts/{config.address}/events/{event_handle}/{event_field}?start={start}&limit={limit}"
 
     async def get_events(self, url: str) -> List[Event]:
         async with aiohttp.ClientSession() as session:
