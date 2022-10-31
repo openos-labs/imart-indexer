@@ -42,20 +42,20 @@ import logging
 from typing import Tuple
 from config import config
 from common.db import connect_db, prisma_client
-from observer.accept_offer_observer import AcceptOfferEventObserver
-from observer.buy_event_observer import BuyEventObserver
-from observer.cancel_offer_observer import CancelOfferEventObserver
-from observer.create_offer_observer import CreateOfferEventObserver
 from observer.observer import Observer
-from observer.list_event_observer import ListEventObserver
-from observer.delist_event_observer import DelistEventObserver
+from observer.offer.accept import AcceptOfferEventObserver
+from observer.offer.cancel import CancelOfferEventObserver
+from observer.offer.create import CreateOfferEventObserver
+from observer.order.buy import BuyEventObserver
+from observer.order.list import ListEventObserver
+from observer.order.delist import DelistEventObserver
 from model.state import State, empty_offset, Offset
-from subject.accept_offer_subject import AcceptOfferSubject
-from subject.buy_event_subject import BuyEventSubject
-from subject.cancel_offer_subject import CancelOfferSubject
-from subject.create_offer_subject import CreateOfferSubject
-from subject.list_events_subject import ListEventSubject
-from subject.delist_event_subject import DelistEventSubject
+from subject.offer.accept import AcceptOfferSubject
+from subject.offer.cancel import CancelOfferSubject
+from subject.offer.create import CreateOfferSubject
+from subject.order.buy import BuyEventSubject
+from subject.order.list import ListEventSubject
+from subject.order.delist import DelistEventSubject
 
 subject_to_observer = {
     "BuyEventSubject": BuyEventObserver(),
