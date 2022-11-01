@@ -4,4 +4,4 @@ services:
     working_dir: /app/event-worker
     restart: always
     image: imart-event-worker:v1
-    command: /bin/bash -c prisma generate & python3 ./main.py
+    command: /bin/bash -c "prisma generate  && python3 ./main.py"
