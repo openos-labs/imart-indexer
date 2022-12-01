@@ -1,13 +1,13 @@
 datasource db {
     // could be postgresql or mysql
     provider = "mysql"
-    url      = env("DB_URL")
+    url      = "mysql://root:root@127.0.0.1:3306/imart"
 }
 
 generator client {
     provider             = "prisma-client-py"
     recursive_type_depth = 5
-    previewFeatures      = ["interactiveTransactions"]
+    // previewFeatures      = ["interactiveTransactions"]
 }
 
 enum Chain {
@@ -50,16 +50,16 @@ enum SaleStatus {
 }
 
 model Community {
-    id           Bytes       @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    id           String      @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
     name         String
     icon         String
     link         String
     Collection   Collection? @relation(fields: [collectionId], references: [id])
-    collectionId Bytes?      @db.Binary(16)
+    collectionId String?     @db.VarChar(64)
 }
 
 model Sale {
-    id               Bytes       @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    id               String      @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
     collection       Collection? @relation(fields: [collectionId], references: [id])
     status           SaleStatus
     publicMintTime   DateTime
@@ -71,16 +71,16 @@ model Sale {
     mintedTokenCount BigInt      @default(0)
     mintPrice        Float
     mintPayload      String
-    collectionId     Bytes?      @db.Binary(16)
+    collectionId     String?     @db.VarChar(64)
 
     @@index([status])
 }
 
 model Comment {
-    id           Bytes    @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
-    collectionId Bytes    @db.Binary(16)
-    tokenId      Bytes    @db.Binary(16)
-    userId       Bytes    @db.Binary(16)
+    id           String   @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    collectionId String   @db.VarChar(64)
+    tokenId      String   @db.VarChar(64)
+    userId       String   @db.VarChar(64)
     content      String
     createTime   DateTime
     status       String
@@ -89,7 +89,7 @@ model Comment {
 }
 
 model User {
-    id          Bytes   @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    id          String  @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
     chain       Chain
     address     String
     publicKey   String? @default("")
@@ -103,7 +103,7 @@ model User {
 }
 
 model Collection {
-    id              Bytes        @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
+    id              String       @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
     rawCollectionId String
     chain           Chain
     metadataType    MetadataType
@@ -112,13 +112,14 @@ model Collection {
     contract        String       @default("")
     name            String
     creator         String
-    description     String       @db.VarChar(300)
+    description     String       @db.VarChar(400)
     cover           String?      @default("")
     logo            String?      @default("")
     maximum         BigInt       @default(0) @db.UnsignedBigInt
     volume          Float        @default(0)
     floorPrice      Float?
     uri             String?      @default("")
+    supply          BigInt       @default(0) @db.UnsignedBigInt
     Sale            Sale[]
     communities     Community[]
 
@@ -130,8 +131,8 @@ model Collection {
 // Aptos
 //**************************************************************************************************
 model AptosOrder {
-    id           Bytes       @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
-    collectionId Bytes       @db.Binary(16)
+    id           String      @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    collectionId String      @db.VarChar(64)
     seller       String
     buyer        String?
     price        Float
@@ -140,15 +141,31 @@ model AptosOrder {
     createTime   DateTime
     orderIndex   BigInt      @default(0) @db.UnsignedBigInt
     token        AptosToken? @relation(fields: [tokenId], references: [id])
-    tokenId      Bytes?      @db.Binary(16)
+    tokenId      String?     @db.VarChar(64)
 
     @@unique([tokenId, orderIndex])
     @@index([collectionId, tokenId, status, seller, orderIndex])
 }
 
+model AptosOrders {
+    id           String      @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    tokenId      String      @db.VarChar(64)
+    collectionId String      @db.VarChar(64)
+    seller       String      @db.VarChar(66)
+    buyer        String?     @db.VarChar(66)
+    price        Float
+    amount       Float       @default(1)
+    currency     String      @default("")
+    status       OrderStatus
+    createTime   DateTime
+
+    @@unique([tokenId, seller, status, createTime])
+    @@index([collectionId, tokenId, status, seller])
+}
+
 model AptosToken {
-    id              Bytes        @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
-    collectionId    Bytes        @db.Binary(16)
+    id              String       @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    collectionId    String       @db.VarChar(64)
     rawCollectionId String
     rawTokenId      String
     owner           String       @default("")
@@ -167,22 +184,22 @@ model AptosToken {
 }
 
 model AptosTokenFavorited {
-    id           Bytes  @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
-    tokenId      Bytes  @db.Binary(16)
-    collectionId Bytes  @db.Binary(16)
+    id           String @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    tokenId      String @db.VarChar(64)
+    collectionId String @db.VarChar(64)
     favoritedBy  String
 
     @@index([tokenId, collectionId, favoritedBy])
 }
 
 model AptosOffer {
-    id           Bytes       @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
-    tokenId      Bytes       @db.Binary(16)
-    collectionId Bytes       @db.Binary(16)
+    id           String      @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    tokenId      String      @db.VarChar(64)
+    collectionId String      @db.VarChar(64)
     price        Float
     currency     String
     quantity     BigInt?     @default(1)
-    openedAt     DateTime 
+    openedAt     DateTime
     endedAt      DateTime
     offerer      String
     status       OfferStatus
@@ -192,10 +209,10 @@ model AptosOffer {
 }
 
 model AptosActivity {
-    id           Bytes     @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
-    orderId      Bytes?    @db.Binary(16)
-    tokenId      Bytes     @db.Binary(16)
-    collectionId Bytes     @db.Binary(16)
+    id           String    @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    orderId      String?   @db.VarChar(64)
+    tokenId      String    @db.VarChar(64)
+    collectionId String    @db.VarChar(64)
     source       String?   @default("") @map("from")
     destination  String?   @default("") @map("to")
     txHash       String?   @default("")
@@ -210,8 +227,8 @@ model AptosActivity {
 // IC
 //**************************************************************************************************
 model IcToken {
-    id              Bytes  @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
-    collectionId    Bytes  @db.Binary(16)
+    id              String @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    collectionId    String @db.VarChar(64)
     rawCollectionId String
     rawTokenId      String
     owner           String
@@ -226,9 +243,9 @@ model IcToken {
 }
 
 model IcTokenFavorited {
-    id           Bytes  @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
-    tokenId      Bytes  @db.Binary(16)
-    collectionId Bytes  @db.Binary(16)
+    id           String @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    tokenId      String @db.VarChar(64)
+    collectionId String @db.VarChar(64)
     favoritedBy  String
 
     @@index([tokenId, collectionId, favoritedBy])
@@ -238,8 +255,8 @@ model IcTokenFavorited {
 // FLOW
 //**************************************************************************************************
 model FlowToken {
-    id              Bytes  @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
-    collectionId    Bytes  @db.Binary(16)
+    id              String @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    collectionId    String @db.VarChar(64)
     rawCollectionId String
     rawTokenId      String
     owner           String
@@ -254,9 +271,9 @@ model FlowToken {
 }
 
 model FlowTokenFavorited {
-    id           Bytes  @id @default(dbgenerated("(uuid_to_bin(uuid(),true))")) @db.Binary(16)
-    tokenId      Bytes  @db.Binary(16)
-    collectionId Bytes  @db.Binary(16)
+    id           String @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    tokenId      String @db.VarChar(64)
+    collectionId String @db.VarChar(64)
     favoritedBy  String
 
     @@index([tokenId, collectionId, favoritedBy])

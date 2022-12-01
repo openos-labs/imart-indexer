@@ -7,8 +7,7 @@ import aiohttp
 from typing import List
 from common.db import connect_db, prisma_client
 from prisma import enums
-from prisma.fields import Base64
-from common.util import new_uuid_hex_bytes, flatten
+from common.util import new_uuid, flatten
 
 
 class Fetcher:
@@ -72,7 +71,7 @@ class Dumper:
                 },
                 data={
                     'create': {
-                        'id': Base64.encode(new_uuid_hex_bytes()),
+                        'id': new_uuid(),
                         'rawCollectionId': json.dumps(rawCollectionId),
                         'chain': enums.Chain.APTOS,
                         'metadataType': enums.MetadataType.IMAGE,
@@ -125,7 +124,7 @@ class Dumper:
                         'creator_name_collection_propertyVersion': rawTokenId
                     }, data={
                         'create': {
-                            'id': Base64.encode(new_uuid_hex_bytes()),
+                            'id': new_uuid(),
                             'collectionId': coll.id,
                             'rawCollectionId': coll.rawCollectionId,
                             'rawTokenId': json.dumps(rawTokenId),

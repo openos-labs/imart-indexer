@@ -2,6 +2,8 @@ import re
 import uuid
 import binascii
 
+def new_uuid() -> str:
+    return uuid.uuid1().hex
 
 def new_uuid_hex_bytes() -> bytes:
     id = uuid.uuid1()

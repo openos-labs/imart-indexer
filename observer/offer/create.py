@@ -8,8 +8,7 @@ from model.event import Event
 from common.db import prisma_client
 from prisma import enums
 from datetime import datetime
-from prisma.fields import Base64
-from common.util import new_uuid_hex_bytes
+from common.util import new_uuid
 
 
 class CreateOfferEventObserver(Observer[CreateOfferEvent]):
@@ -41,10 +40,9 @@ class CreateOfferEventObserver(Observer[CreateOfferEvent]):
             endedAt = datetime.fromtimestamp(
                 float(data.expiration_time) / 1000000
             )
-            id = Base64.encode(new_uuid_hex_bytes())
             result = await transaction.aptosoffer.create(
                 data={
-                    'id': id,
+                    'id': new_uuid(),
                     'collectionId': token.collectionId,
                     'tokenId': token.id,
                     'price': float(data.coin_amount_per_token),

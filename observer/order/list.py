@@ -8,8 +8,7 @@ from model.event import Event
 from common.db import prisma_client
 from prisma import enums
 from datetime import datetime
-from prisma.fields import Base64
-from common.util import new_uuid_hex_bytes
+from common.util import new_uuid
 
 
 class ListEventObserver(Observer[ListEvent]):
@@ -36,10 +35,9 @@ class ListEventObserver(Observer[ListEvent]):
         async with prisma_client.tx(timeout=60000) as transaction:
             create_time = datetime.fromtimestamp(
                 float(data.timestamp) / 1000000)
-            id = new_uuid_hex_bytes()
             result = await transaction.aptosorder.create(
                 data={
-                    'id': Base64.encode(id),
+                    'id': new_uuid(),
                     'collectionId': token.collectionId,
                     'tokenId': token.id,
                     'price': float(data.price),
