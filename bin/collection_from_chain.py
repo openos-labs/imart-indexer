@@ -7,7 +7,7 @@ import aiohttp
 from typing import List
 from common.db import connect_db, prisma_client
 from prisma import enums
-from common.util import new_uuid, flatten
+from common.util import flatten, primary_key_of_collection, primary_key_of_token
 
 
 class Fetcher:
@@ -69,7 +69,7 @@ class Dumper:
                 },
                 data={
                     'create': {
-                        'id': new_uuid(),
+                        'id': primary_key_of_collection(creator, name),
                         'rawCollectionId': json.dumps(rawCollectionId),
                         'chain': enums.Chain.APTOS,
                         'metadataType': enums.MetadataType.IMAGE,
@@ -79,6 +79,7 @@ class Dumper:
                         'creator': creator,
                         'description': description,
                         'uri': uri,
+                        'logo': uri,
                         'floorPrice': None,
                         'maximum': maximum,
                     },
@@ -86,6 +87,7 @@ class Dumper:
                         'contractName': name,
                         'name': name,
                         'creator': creator,
+                        'logo': uri,
                         'description': description,
                         'uri': uri,
                         'maximum': maximum,
@@ -129,7 +131,7 @@ class Dumper:
                     'creator_name_collection_propertyVersion': rawTokenId
                 }, data={
                     'create': {
-                        'id': new_uuid(),
+                        'id': primary_key_of_token(creator, collection, name),
                         'collectionId': result.id,
                         'rawCollectionId': '',
                         'rawTokenId': '',
