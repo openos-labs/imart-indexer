@@ -1,13 +1,13 @@
 datasource db {
     // could be postgresql or mysql
     provider = "mysql"
-    url      = "mysql://root:root@127.0.0.1:3306/imart"
+    url      = env("DB_URL")
 }
 
 generator client {
     provider             = "prisma-client-py"
     recursive_type_depth = 5
-    // previewFeatures      = ["interactiveTransactions"]
+    previewFeatures      = ["interactiveTransactions"]
 }
 
 enum Chain {
@@ -112,7 +112,7 @@ model Collection {
     contract        String       @default("")
     name            String
     creator         String
-    description     String       @db.VarChar(400)
+    description     String       @db.VarChar(500)
     cover           String?      @default("")
     logo            String?      @default("")
     maximum         BigInt       @default(0) @db.UnsignedBigInt
@@ -178,7 +178,6 @@ model AptosToken {
     seqno           BigInt       @default(0) @db.UnsignedBigInt
     AptosOrder      AptosOrder[]
 
-    @@unique([rawCollectionId, rawTokenId])
     @@unique([creator, name, collection, propertyVersion])
     @@index([collectionId, owner])
 }

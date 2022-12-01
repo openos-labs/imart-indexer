@@ -16,29 +16,27 @@ class Fetcher:
         self.collection_events_url = f'{node}/accounts/{account}/events/0x3::token::Collections/create_collection_events'
         self.token_data_events_url = f'{node}/accounts/{account}/events/0x3::token::Collections/create_token_data_events'
 
-    async def fetch_page_data_created_events_of(self, i: int, coll: dict) -> List[dict]:
+    async def fetch_page_data_created_events_of(self, i: int) -> List[dict]:
         async with aiohttp.ClientSession() as session:
-            limit = 100
+            limit = 25
             start = limit * i
             async with self.sema, session.get(self.token_data_events_url + f"?limit={limit}&start={start}") as resp:
                 if resp.status == 200:
                     data = await resp.json()
-                    filtered_tokens = filter(
-                        lambda x: x['data']['id']['collection'] == coll.name, data)
-                    return filtered_tokens
+                    return data
                 return []
 
     async def fetch_token_data_created_events_of(self, coll: dict) -> List[dict]:
         maximum = 100
-        if not int(coll.maximum) >= sys.maxsize / 2:
-            maximum = int(coll.maximum)
+        # if not int(coll.maximum) >= sys.maxsize / 2:
+        #     maximum = int(coll.maximum)
         count = maximum // 100 + 1
         lists = await asyncio.gather(*[self.fetch_page_data_created_events_of(i, coll) for i in range(count)])
         return flatten(lists)
 
     async def fetch_collection_created_events_of(self) -> List[dict]:
         async with aiohttp.ClientSession() as session:
-            async with self.sema, session.get(self.collection_events_url) as resp:
+            async with self.sema, session.get(self.collection_events_url + "?limit=25") as resp:
                 if resp.status == 200:
                     return await resp.json()
                 return []
@@ -98,9 +96,9 @@ class Dumper:
             logging.error(f'failed to save {event}: {err} ')
             return None
 
-    async def dump_token(self, coll: any, event: dict) -> bool:
-        seqno = int(event['sequence_number'])
-        async with self.sema:
+    async def dump_token(self, event: dict) -> bool:
+        try:
+            seqno = int(event['sequence_number'])
             data = event['data']
             seqno = int(event['sequence_number'])
             uri = data['uri']
@@ -117,39 +115,46 @@ class Dumper:
                 'collection': collection,
                 'propertyVersion': '0'
             }
+            result = await prisma_client.collection.find_unique(
+                where={
+                    'chain_creator_name': {
+                        'chain': enums.Chain.APTOS,
+                        'creator': creator,
+                        'name': collection
+                    }
+                }
+            )
+            await prisma_client.aptostoken.upsert(
+                where={
+                    'creator_name_collection_propertyVersion': rawTokenId
+                }, data={
+                    'create': {
+                        'id': new_uuid(),
+                        'collectionId': result.id,
+                        'rawCollectionId': '',
+                        'rawTokenId': '',
+                        'collection': collection,
+                        'name': name,
+                        'creator': creator,
+                        'description': "",
+                        'uri': uri,
+                        'seqno': seqno
+                    },
+                    'update': {
+                        'rawCollectionId': '',
+                        'rawTokenId': '',
+                        'description': "",
+                        'uri': uri,
+                        'seqno': seqno
+                    }
+                })
+            return True
+        except Exception as err:
+            logging.error(f'failed to save {event}: {err}')
+            return False
 
-            try:
-                await prisma_client.aptostoken.upsert(
-                    where={
-                        'creator_name_collection_propertyVersion': rawTokenId
-                    }, data={
-                        'create': {
-                            'id': new_uuid(),
-                            'collectionId': coll.id,
-                            'rawCollectionId': coll.rawCollectionId,
-                            'rawTokenId': json.dumps(rawTokenId),
-                            'collection': collection,
-                            'name': name,
-                            'creator': creator,
-                            'description': description,
-                            'uri': uri,
-                            'seqno': seqno
-                        },
-                        'update': {
-                            'rawCollectionId': coll.rawCollectionId,
-                            'rawTokenId': json.dumps(rawTokenId),
-                            'description': description,
-                            'uri': uri,
-                            'seqno': seqno
-                        }
-                    })
-                return True
-            except Exception as err:
-                logging.error(f'failed to save {event}: {err}')
-                return False
-
-    async def dump_tokens(self, coll: any, tokens: List[dict]) -> bool:
-        await asyncio.gather(*[self.dump_token(coll, token) for token in tokens])
+    async def dump_tokens(self, tokens: List[dict]) -> bool:
+        await asyncio.gather(*[self.dump_token(token) for token in tokens])
 
 
 def load_args() -> argparse.Namespace:
@@ -159,7 +164,7 @@ def load_args() -> argparse.Namespace:
     parser.add_argument('-a', "--account")
     parser.add_argument('-c', "--collection")
     parser.add_argument(
-        '--node', default="https://fullnode.devnet.aptoslabs.com/v1")
+        '--node', default="https://fullnode.testnet.aptoslabs.com/v1")
     return parser.parse_args()
 
 
@@ -183,14 +188,20 @@ async def main():
         coll_events.extend(events)
 
     for coll_event in coll_events:
-        coll = await dumper.dump_collection(coll_event)
-        if not coll == None:
-            token_events = await fetcher.fetch_token_data_created_events_of(coll)
-            await dumper.dump_tokens(coll, token_events)
+        await dumper.dump_collection(coll_event)
+
+    i = 0
+    while True:
+        token_events = await fetcher.fetch_page_data_created_events_of(i)
+        if len(token_events) > 0:
+            await dumper.dump_tokens(token_events)
+            i += 1
+        else:
+            break
 
 global args
 if __name__ == "__main__":
     args = load_args()
     logging.basicConfig(
-        filename='collection_data_gathering.log', level=logging.ERROR)
+        filename='collection_from_chain.log', level=logging.ERROR)
     asyncio.run(main())
