@@ -14,7 +14,6 @@ async def main():
         data = json.loads(text)
         for item in data['data']:
             try:
-                print(primary_key_of_collection(item['creator'], item['name']), len(primary_key_of_collection(item['creator'], item['name'])))
                 await prisma_client.collection.upsert(
                     where={
                         "chain_creator_name": {

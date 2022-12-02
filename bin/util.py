@@ -84,6 +84,10 @@ def load_args() -> argparse.Namespace:
     parser.add_argument('--secret')
     parser.add_argument('--run')
     parser.add_argument('--network')
+    parser.add_argument('--collection_name')
+    parser.add_argument('--collection_description')
+    parser.add_argument('--collection_uri')
+    parser.add_argument('--token_index')
     parser.add_argument(
         '--node', default="https://fullnode.testnet.aptoslabs.com/v1")
     parser.add_argument(
@@ -110,11 +114,22 @@ def save_account(name, account):
 def load_account(path) -> Account:
     return Account.load(path)
 
+def create_single_collection():
+    create_collection(alice, args.collection_name, args.collection_description, args.collection_uri)
+
+
+def create_single_token():
+    create_token(alice, args.collection_name, f'{args.collection_name} #{args.token_index}', "", args.collection_uri)
 
 global args
 global faucet_client
 global alice
 global bob
+
+global collection_name
+global collection_description
+global collection_uri
+global token_index
 
 if __name__ == "__main__":
     args = load_args()
