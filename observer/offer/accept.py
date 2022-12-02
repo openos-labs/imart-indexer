@@ -1,4 +1,6 @@
+import datetime
 from typing import List, Tuple
+from common.util import new_uuid
 from model.token_id import TokenId, TokenDataId
 from observer.observer import Observer
 from model.offer.accept_offer_event import AcceptOfferEvent, AcceptOfferEventData
@@ -42,6 +44,9 @@ class AcceptOfferEventObserver(Observer[AcceptOfferEvent]):
                 f'[Accept Offer]: Offer ({token}) not found but the accepted event of offer ({data}) was existed.')
 
         async with prisma_client.tx(timeout=60000) as transaction:
+            # offer
+            timestamp = datetime.fromtimestamp(
+                float(data.timestamp) / 1000000)
             result = await transaction.aptosoffer.update(
                 where={
                     "id": offer.id
@@ -54,6 +59,26 @@ class AcceptOfferEventObserver(Observer[AcceptOfferEvent]):
                 raise Exception(
                     f'[Accept Offer]: Failed to update offer status to ACCEPTED')
 
+            # activity
+            result = await transaction.aptosactivity.create(
+                data={
+                    'id': new_uuid(),
+                    'orderId': "",
+                    'collectionId': token.collectionId,
+                    'tokenId': token.id,
+                    'source': data.token_owner,
+                    'destination': data.coin_owner,
+                    'txHash': f'{event.version}',
+                    'operation': enums.Operation.SALE,
+                    'price': float(data.coin_amount_per_token),
+                    'createTime': timestamp
+                }
+            )
+            if result == None or result.operation != enums.Operation.SALE:
+                raise Exception(
+                    f"[Token Activity]: Failed to create new activity with buy event")
+
+            # seqno
             updated_offset = await transaction.eventoffset.update(
                 where={'id': 0},
                 data={

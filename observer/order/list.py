@@ -33,11 +33,14 @@ class ListEventObserver(Observer[ListEvent]):
                 f'[List Order]: Token ({token_data_id}) not found but the list event({data}) was existed.')
 
         async with prisma_client.tx(timeout=60000) as transaction:
+
+            # order
             create_time = datetime.fromtimestamp(
                 float(data.timestamp) / 1000000)
+            orderId = new_uuid()
             result = await transaction.aptosorder.create(
                 data={
-                    'id': new_uuid(),
+                    'id': orderId,
                     'collectionId': token.collectionId,
                     'tokenId': token.id,
                     'price': float(data.price),
@@ -53,6 +56,26 @@ class ListEventObserver(Observer[ListEvent]):
                 raise Exception(
                     f"[List Order]: Failed to create new order with list event({data})")
 
+            # activity
+            result = await transaction.aptosactivity.create(
+                data={
+                    'id': new_uuid(),
+                    'orderId': orderId,
+                    'collectionId': token.collectionId,
+                    'tokenId': token.id,
+                    'source': data.seller,
+                    'destination': "",
+                    'txHash': f'{event.version}',
+                    'operation': enums.Operation.LIST,
+                    'price': float(data.price),
+                    'createTime': create_time
+                }
+            )
+            if result == None or result.operation != enums.Operation.LIST:
+                raise Exception(
+                    f"[Token Activity]: Failed to create new activity with list event({data})")
+
+            # seqno
             updated_offset = await transaction.eventoffset.update(
                 where={'id': 0},
                 data={
