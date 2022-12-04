@@ -133,18 +133,23 @@ model Collection {
 model AptosOrder {
     id           String      @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
     collectionId String      @db.VarChar(64)
-    seller       String
-    buyer        String?
+    seller       String      @db.VarChar(66)
+    buyer        String?     @db.VarChar(66)
     price        Float
+    quantity     BigInt      @default(1) @db.UnsignedBigInt
     currency     String      @default("")
     status       OrderStatus
     createTime   DateTime
-    orderIndex   BigInt      @default(0) @db.UnsignedBigInt
+    seqno        BigInt      @default(0) @db.UnsignedBigInt
     token        AptosToken? @relation(fields: [tokenId], references: [id])
     tokenId      String?     @db.VarChar(64)
 
-    @@unique([tokenId, orderIndex])
-    @@index([collectionId, tokenId, status, seller, orderIndex])
+    @@unique([tokenId, seller, status, createTime])
+    @@index([collectionId])
+    @@index([tokenId])
+    @@index([collectionId, tokenId])
+    @@index([status])
+    @@index([seller])
 }
 
 model AptosOrders {
