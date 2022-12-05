@@ -58,12 +58,13 @@ class DelistEventObserver(Observer[DelistEvent]):
                     'source': data.seller,
                     'destination': "",
                     'txHash': f'{event.version}',
-                    'operation': enums.Operation.CANCEL,
+                    'txType': enums.TxType.CANCEL,
+                    'quantity': data.token_amount,
                     'price': "0",
-                    'createTime': timestamp
+                    'txTimestamp': timestamp
                 }
             )
-            if result == None or result.operation != enums.Operation.CANCEL:
+            if result == None or result.txType != enums.TxType.CANCEL:
                 raise Exception(
                     f"[Token Activity]: Failed to create new activity with delist event")
 

@@ -67,12 +67,13 @@ class ListEventObserver(Observer[ListEvent]):
                     'source': data.seller,
                     'destination': "",
                     'txHash': f'{event.version}',
-                    'operation': enums.Operation.LIST,
+                    'txType': enums.TxType.LIST,
+                    'quantity': data.token_amount,
                     'price': data.price,
-                    'createTime': create_time
+                    'txTimestamp': create_time
                 }
             )
-            if result == None or result.operation != enums.Operation.LIST:
+            if result == None or result.txType != enums.TxType.LIST:
                 raise Exception(
                     f"[Token Activity]: Failed to create new activity with list event({data})")
 

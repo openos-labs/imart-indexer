@@ -35,7 +35,7 @@ enum OfferStatus {
     CANCELED
 }
 
-enum Operation {
+enum TxType {
     LIST
     UPDATE
     CANCEL
@@ -211,18 +211,23 @@ model AptosOffer {
 }
 
 model AptosActivity {
-    id           String    @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    orderId      String?   @db.VarChar(64)
-    tokenId      String    @db.VarChar(64)
-    collectionId String    @db.VarChar(64)
-    source       String?   @default("") @map("from")
-    destination  String?   @default("") @map("to")
-    txHash       String?   @default("")
-    operation    Operation
-    price        String?   @default("0") @db.VarChar(78)
-    createTime   DateTime
+    id           String   @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    orderId      String?  @db.VarChar(64)
+    tokenId      String   @db.VarChar(64)
+    collectionId String   @db.VarChar(64)
+    source       String?  @default("") @map("from")
+    destination  String?  @default("") @map("to")
+    txHash       String?  @default("")
+    txType       TxType
+    price        String?  @default("0") @db.VarChar(78)
+    quantity     String?  @default("1") @db.VarChar(78)
+    txTimetamp   DateTime
 
-    @@index([collectionId, operation])
+    @@index([collectionId])
+    @@index([txType])
+    @@index([tokenId])
+    @@index([tokenId, txType, txTimetamp])
+    @@index([collectionId, txType, txTimetamp])
 }
 
 //**************************************************************************************************

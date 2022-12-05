@@ -59,12 +59,13 @@ class BuyEventObserver(Observer[BuyEvent]):
                     'source': data.seller,
                     'destination': data.buyer,
                     'txHash': f'{event.version}',
-                    'operation': enums.Operation.SALE,
+                    'txType': enums.TxType.SALE,
+                    'quantity': data.token_amount,
                     'price': data.coin_amount,
-                    'createTime': timestamp
+                    'txTimestamp': timestamp
                 }
             )
-            if result == None or result.operation != enums.Operation.SALE:
+            if result == None or result.txType != enums.TxType.SALE:
                 raise Exception(
                     f"[Token Activity]: Failed to create new activity with buy event")
 
