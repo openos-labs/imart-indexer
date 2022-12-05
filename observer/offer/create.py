@@ -18,7 +18,7 @@ class CreateOfferEventObserver(Observer[CreateOfferEvent]):
 
     async def process(self, state: State, event: Event[CreateOfferEvent]) -> Tuple[State, bool]:
         new_state = state
-        seqno = int(event.sequence_number)
+        seqno = event.sequence_number
         data = CreateOfferEventData(**event.data)
         token_data_id = TokenDataId(**TokenId(**data.token_id).token_data_id)
         coin_type_info = CoinTypeInfo(**data.coin_type_info)
@@ -45,8 +45,8 @@ class CreateOfferEventObserver(Observer[CreateOfferEvent]):
                     'id': new_uuid(),
                     'collectionId': token.collectionId,
                     'tokenId': token.id,
-                    'price': float(data.coin_amount_per_token),
-                    'quantity': int(data.token_amount),
+                    'price': data.coin_amount_per_token,
+                    'quantity': data.token_amount,
                     'currency': coin_type_info.currency(),
                     'offerer': data.coin_owner,
                     'openedAt': openedAt,
@@ -61,7 +61,7 @@ class CreateOfferEventObserver(Observer[CreateOfferEvent]):
             updated_offset = await transaction.eventoffset.update(
                 where={'id': 0},
                 data={
-                    "create_offer_excuted_offset": seqno
+                    "create_offer_excuted_offset": int(seqno)
                 }
             )
             if updated_offset == None:

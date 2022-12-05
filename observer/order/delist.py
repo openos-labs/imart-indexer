@@ -17,7 +17,7 @@ class DelistEventObserver(Observer[DelistEvent]):
 
     async def process(self, state: State, event: Event[DelistEvent]) -> Tuple[State, bool]:
         new_state = state
-        seqno = int(event.sequence_number)
+        seqno = event.sequence_number
         data = DelistEventData(**event.data)
         token_data_id = TokenDataId(**TokenId(**data.token_id).token_data_id)
 
@@ -59,7 +59,7 @@ class DelistEventObserver(Observer[DelistEvent]):
                     'destination': "",
                     'txHash': f'{event.version}',
                     'operation': enums.Operation.CANCEL,
-                    'price': 0,
+                    'price': "0",
                     'createTime': timestamp
                 }
             )
@@ -71,7 +71,7 @@ class DelistEventObserver(Observer[DelistEvent]):
             updated_offset = await transaction.eventoffset.update(
                 where={'id': 0},
                 data={
-                    "delist_event_excuted_offset": seqno
+                    "delist_event_excuted_offset": int(seqno)
                 }
             )
             if updated_offset == None or updated_offset.delist_event_excuted_offset != seqno:

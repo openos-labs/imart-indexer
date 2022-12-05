@@ -59,19 +59,18 @@ model Community {
 }
 
 model Sale {
-    id               String      @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    collection       Collection? @relation(fields: [collectionId], references: [id])
+    id               String     @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
     status           SaleStatus
     publicMintTime   DateTime
     expirationTime   DateTime?
     title            String
     description      String
-    mintingEnabled   Boolean     @default(false)
-    tokenSupply      BigInt
-    mintedTokenCount BigInt      @default(0)
-    mintPrice        Float
+    mintingEnabled   Boolean    @default(false)
+    tokenSupply      String     @default("0") @db.VarChar(78)
+    mintedTokenCount String     @default("0") @db.VarChar(78)
+    mintPrice        String     @default("0") @db.VarChar(78)
     mintPayload      String
-    collectionId     String?     @db.VarChar(64)
+    collectionId     String?    @db.VarChar(64)
 
     @@index([status])
 }
@@ -112,15 +111,14 @@ model Collection {
     contract        String       @default("")
     name            String
     creator         String
-    description     String       @db.VarChar(500)
+    description     String       @db.VarChar(400)
     cover           String?      @default("")
     logo            String?      @default("")
-    maximum         BigInt       @default(0) @db.UnsignedBigInt
-    volume          Float        @default(0)
-    floorPrice      Float?
+    maximum         String       @default("0") @db.VarChar(78)
+    volume          String       @default("0") @db.VarChar(78)
+    floorPrice      String?      @default("0") @db.VarChar(78)
     uri             String?      @default("")
-    supply          BigInt       @default(0) @db.UnsignedBigInt
-    Sale            Sale[]
+    supply          String       @default("0") @db.VarChar(78)
     communities     Community[]
 
     @@unique([chain, creator, name])
@@ -135,12 +133,12 @@ model AptosOrder {
     collectionId String      @db.VarChar(64)
     seller       String      @db.VarChar(66)
     buyer        String?     @db.VarChar(66)
-    price        Float
-    quantity     BigInt      @default(1) @db.UnsignedBigInt
+    price        String      @default("0") @db.VarChar(78)
+    quantity     String      @default("1") @db.VarChar(78)
     currency     String      @default("")
     status       OrderStatus
     createTime   DateTime
-    seqno        BigInt      @default(0) @db.UnsignedBigInt
+    seqno        String      @default("0") @db.VarChar(78)
     token        AptosToken? @relation(fields: [tokenId], references: [id])
     tokenId      String?     @db.VarChar(64)
 
@@ -158,8 +156,8 @@ model AptosOrders {
     collectionId String      @db.VarChar(64)
     seller       String      @db.VarChar(66)
     buyer        String?     @db.VarChar(66)
-    price        Float
-    amount       Float       @default(1)
+    price        String?     @default("0") @db.VarChar(78)
+    quantity     String      @default("1") @db.VarChar(78)
     currency     String      @default("")
     status       OrderStatus
     createTime   DateTime
@@ -180,7 +178,7 @@ model AptosToken {
     description     String       @default("")
     uri             String       @default("")
     propertyVersion String       @default("0")
-    seqno           BigInt       @default(0) @db.UnsignedBigInt
+    seqno           String       @default("0") @db.VarChar(78)
     AptosOrder      AptosOrder[]
 
     @@unique([creator, name, collection, propertyVersion])
@@ -200,9 +198,9 @@ model AptosOffer {
     id           String      @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
     tokenId      String      @db.VarChar(64)
     collectionId String      @db.VarChar(64)
-    price        Float
+    price        String      @default("0") @db.VarChar(78)
     currency     String
-    quantity     BigInt?     @default(1)
+    quantity     String?     @default("1") @db.VarChar(78)
     openedAt     DateTime
     endedAt      DateTime
     offerer      String
@@ -221,7 +219,7 @@ model AptosActivity {
     destination  String?   @default("") @map("to")
     txHash       String?   @default("")
     operation    Operation
-    price        Float?
+    price        String?   @default("0") @db.VarChar(78)
     createTime   DateTime
 
     @@index([collectionId, operation])

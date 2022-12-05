@@ -18,7 +18,7 @@ class ListEventObserver(Observer[ListEvent]):
 
     async def process(self, state: State, event: Event[ListEvent]) -> Tuple[State, bool]:
         new_state = state
-        seqno = int(event.sequence_number)
+        seqno = event.sequence_number
         data = ListEventData(**event.data)
         token_data_id = TokenDataId(**TokenId(**data.token_id).token_data_id)
         coin_type_info = CoinTypeInfo(**data.coin_type_info)
@@ -43,8 +43,8 @@ class ListEventObserver(Observer[ListEvent]):
                     'id': orderId,
                     'collectionId': token.collectionId,
                     'tokenId': token.id,
-                    'price': float(data.price),
-                    'quantity': int(data.token_amount),
+                    'price': data.price,
+                    'quantity': data.token_amount,
                     'seqno': data.offer_id,
                     'seller': data.seller,
                     'buyer': "",
@@ -68,7 +68,7 @@ class ListEventObserver(Observer[ListEvent]):
                     'destination': "",
                     'txHash': f'{event.version}',
                     'operation': enums.Operation.LIST,
-                    'price': float(data.price),
+                    'price': data.price,
                     'createTime': create_time
                 }
             )
@@ -80,7 +80,7 @@ class ListEventObserver(Observer[ListEvent]):
             updated_offset = await transaction.eventoffset.update(
                 where={'id': 0},
                 data={
-                    "list_event_excuted_offset": seqno
+                    "list_event_excuted_offset": int(seqno)
                 }
             )
             if updated_offset == None or updated_offset.list_event_excuted_offset != seqno:

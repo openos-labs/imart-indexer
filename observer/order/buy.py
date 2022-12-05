@@ -17,7 +17,7 @@ class BuyEventObserver(Observer[BuyEvent]):
 
     async def process(self, state: State, event: Event[BuyEvent]) -> Tuple[State, bool]:
         new_state = state
-        seqno = int(event.sequence_number)
+        seqno = event.sequence_number
         data = BuyEventData(**event.data)
         token_data_id = TokenDataId(**TokenId(**data.token_id).token_data_id)
 
@@ -60,7 +60,7 @@ class BuyEventObserver(Observer[BuyEvent]):
                     'destination': data.buyer,
                     'txHash': f'{event.version}',
                     'operation': enums.Operation.SALE,
-                    'price': float(data.coin_amount),
+                    'price': data.coin_amount,
                     'createTime': timestamp
                 }
             )
@@ -72,7 +72,7 @@ class BuyEventObserver(Observer[BuyEvent]):
             updated_offset = await transaction.eventoffset.update(
                 where={'id': 0},
                 data={
-                    "buy_event_excuted_offset": seqno
+                    "buy_event_excuted_offset": int(seqno)
                 }
             )
             if updated_offset == None or updated_offset.buy_event_excuted_offset != seqno:

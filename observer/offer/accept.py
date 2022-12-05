@@ -17,7 +17,7 @@ class AcceptOfferEventObserver(Observer[AcceptOfferEvent]):
 
     async def process(self, state: State, event: Event[AcceptOfferEvent]) -> Tuple[State, bool]:
         new_state = state
-        seqno = int(event.sequence_number)
+        seqno = event.sequence_number
         data = AcceptOfferEventData(**event.data)
         token_data_id = TokenDataId(**TokenId(**data.token_id).token_data_id)
 
@@ -70,7 +70,7 @@ class AcceptOfferEventObserver(Observer[AcceptOfferEvent]):
                     'destination': data.coin_owner,
                     'txHash': f'{event.version}',
                     'operation': enums.Operation.SALE,
-                    'price': float(data.coin_amount_per_token),
+                    'price': data.coin_amount_per_token,
                     'createTime': timestamp
                 }
             )
@@ -82,7 +82,7 @@ class AcceptOfferEventObserver(Observer[AcceptOfferEvent]):
             updated_offset = await transaction.eventoffset.update(
                 where={'id': 0},
                 data={
-                    "accept_offer_excuted_offset": seqno
+                    "accept_offer_excuted_offset": int(seqno)
                 }
             )
             if updated_offset == None:

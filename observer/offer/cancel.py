@@ -15,7 +15,7 @@ class CancelOfferEventObserver(Observer[CancelOfferEvent]):
 
     async def process(self, state: State, event: Event[CancelOfferEvent]) -> Tuple[State, bool]:
         new_state = state
-        seqno = int(event.sequence_number)
+        seqno = event.sequence_number
         data = CancelOfferEventData(**event.data)
         token_data_id = TokenDataId(**TokenId(**data.token_id).token_data_id)
 
@@ -57,7 +57,7 @@ class CancelOfferEventObserver(Observer[CancelOfferEvent]):
             updated_offset = await transaction.eventoffset.update(
                 where={'id': 0},
                 data={
-                    "cancel_offer_excuted_offset": seqno
+                    "cancel_offer_excuted_offset": int(seqno)
                 }
             )
             if updated_offset == None:
