@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from typing import List, Tuple
 from common.util import new_uuid
 from model.token_id import TokenId, TokenDataId
