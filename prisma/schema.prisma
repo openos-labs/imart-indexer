@@ -20,6 +20,7 @@ enum MetadataType {
     VIDEO
     AUDIO
     IMAGE
+    SPACE
     OTHER
 }
 

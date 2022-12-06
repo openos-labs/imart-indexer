@@ -40,6 +40,8 @@ class CreateTokenEventObserver(Observer[CreateTokenEvent]):
                     'collectionId': collection.id,
                     'rawCollectionId': "",
                     'rawTokenId': "",
+                    'category': "IMAGE",
+                    'metadataType': "IMAGE",
                     'owner': data.user,
                     'creator': data.user,
                     'collection': DEFAULT_COLLECTION,
