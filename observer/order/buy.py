@@ -76,7 +76,7 @@ class BuyEventObserver(Observer[BuyEvent]):
                     "buy_event_excuted_offset": int(seqno)
                 }
             )
-            if updated_offset == None or updated_offset.buy_event_excuted_offset != seqno:
+            if updated_offset == None or updated_offset.buy_event_excuted_offset != int(seqno):
                 raise Exception(f"[Buy order]: Failed to update offset")
 
             new_state.new_offset.buy_events_excuted_offset = updated_offset.buy_event_excuted_offset

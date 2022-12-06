@@ -75,7 +75,7 @@ class DelistEventObserver(Observer[DelistEvent]):
                     "delist_event_excuted_offset": int(seqno)
                 }
             )
-            if updated_offset == None or updated_offset.delist_event_excuted_offset != seqno:
+            if updated_offset == None or updated_offset.delist_event_excuted_offset != int(seqno):
                 raise Exception(f"[Delist Order]: Failed to update offset")
 
             new_state.new_offset.delist_events_excuted_offset = updated_offset.delist_event_excuted_offset
