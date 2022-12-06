@@ -8,7 +8,8 @@ import aiohttp
 class Subject(Generic[T]):
 
     def url(self, event_handle: str, event_field: str, start: int, limit: int = 100) -> str:
-        return f"{config.node_url}/accounts/{config.address}/events/{event_handle}/{event_field}?start={start}&limit={limit}"
+        address = event_handle.split('::')[0]
+        return f"{config.node_url}/accounts/{address}/events/{event_handle}/{event_field}?start={start}&limit={limit}"
 
     async def get_events(self, url: str) -> List[Event]:
         async with aiohttp.ClientSession() as session:

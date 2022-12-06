@@ -12,3 +12,7 @@ offer:
     - offer_token_events
     - accept_offer_events
     - cancel_offer_events
+creation:
+  event_handle: 0x94961b26c3541d4be6638913335da22cf3c45aa3d44ff110d9df8890c0c1a34b::creation::CreationEvents
+  event_fields:
+    - create_events

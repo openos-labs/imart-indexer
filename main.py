@@ -42,6 +42,7 @@ import logging
 from typing import Tuple
 from config import config
 from common.db import connect_db, prisma_client
+from observer.creation.token import CreateTokenEventObserver
 from observer.observer import Observer
 from observer.offer.accept import AcceptOfferEventObserver
 from observer.offer.cancel import CancelOfferEventObserver
@@ -50,6 +51,7 @@ from observer.order.buy import BuyEventObserver
 from observer.order.list import ListEventObserver
 from observer.order.delist import DelistEventObserver
 from model.state import State, empty_offset, Offset
+from subject.creation.create_token import CreateTokenSubject
 from subject.offer.accept import AcceptOfferSubject
 from subject.offer.cancel import CancelOfferSubject
 from subject.offer.create import CreateOfferSubject
@@ -63,7 +65,8 @@ subject_to_observer = {
     "DelistEventSubject": DelistEventObserver(),
     "CreateOfferSubject": CreateOfferEventObserver(),
     "CancelOfferSubject": CancelOfferEventObserver(),
-    "AcceptOfferSubject": AcceptOfferEventObserver()
+    "AcceptOfferSubject": AcceptOfferEventObserver(),
+    "CreateTokenSubject": CreateTokenEventObserver()
 }
 
 event_to_subject = {
@@ -72,7 +75,8 @@ event_to_subject = {
     "delist_token_events": DelistEventSubject(),
     "offer_token_events": CreateOfferSubject(),
     "accept_offer_events": AcceptOfferSubject(),
-    "cancel_offer_events": CancelOfferSubject()
+    "cancel_offer_events": CancelOfferSubject(),
+    "create_events": CreateTokenSubject()
 }
 
 
@@ -84,7 +88,8 @@ async def initial_state() -> State:
         offset.delist_event_excuted_offset,
         offset.create_offer_excuted_offset,
         offset.accept_offer_excuted_offset,
-        offset.cancel_offer_excuted_offset
+        offset.cancel_offer_excuted_offset,
+        offset.create_token_excuted_offset
     )
     return State(new_offset=new_offset, old_offset=empty_offset())
 
@@ -135,6 +140,7 @@ async def main():
     event_types = []
     event_types.extend(config.fixed_market.types())
     event_types.extend(config.offer.types())
+    event_types.extend(config.creation.types())
 
     # allocate one worker per event field
     for event_type in event_types:

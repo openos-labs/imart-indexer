@@ -19,9 +19,11 @@ class Config:
     address: str
     fixed_market: EventType
     offer: EventType
+    creation: EventType
 
     def __post_init__(self):
         self.offer = EventType(**self.offer)
+        self.creation = EventType(**self.creation)
         self.fixed_market = EventType(**self.fixed_market)
 
 

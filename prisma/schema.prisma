@@ -294,4 +294,5 @@ model EventOffset {
     create_offer_excuted_offset BigInt @default(-1)
     accept_offer_excuted_offset BigInt @default(-1)
     cancel_offer_excuted_offset BigInt @default(-1)
+    create_token_excuted_offset BigInt @default(-1)
 }
