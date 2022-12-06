@@ -45,7 +45,7 @@ class BuyEventObserver(Observer[BuyEvent]):
                     'status': enums.OrderStatus.SOLD,
                 }
             )
-            if updated == None or updated <= 0:
+            if updated == None:
                 raise Exception(
                     f"[Buy order]: Failed to update order status to SOLD")
 
@@ -63,7 +63,7 @@ class BuyEventObserver(Observer[BuyEvent]):
                     'owner': data.buyer
                 }
             )
-            if updated == None or updated <= 0:
+            if updated == None:
                 raise Exception(
                     f"[Buy order]: Failed to update token owner to buyer")
 

@@ -73,7 +73,7 @@ class AcceptOfferEventObserver(Observer[AcceptOfferEvent]):
                     'owner': data.coin_owner
                 }
             )
-            if updated == None or updated <= 0:
+            if updated == None:
                 raise Exception(
                     f"[Accept Offer]: Failed to update token owner to buyer")
 

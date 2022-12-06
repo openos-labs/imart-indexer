@@ -44,7 +44,7 @@ class DelistEventObserver(Observer[DelistEvent]):
                     'status': enums.OrderStatus.CANCELED,
                 }
             )
-            if updated == None or updated <= 0:
+            if updated == None:
                 raise Exception(
                     f"[Delist Order]: Failed to update order status to CANCELED")
 
