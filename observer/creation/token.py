@@ -41,7 +41,7 @@ class CreateTokenEventObserver(Observer[CreateTokenEvent]):
                     'rawCollectionId': "",
                     'rawTokenId': "",
                     'category': "IMAGE",
-                    'metadataType': "IMAGE",
+                    'metadataType': enums.MetadataType.IMAGE,
                     'owner': data.user,
                     'creator': data.user,
                     'collection': DEFAULT_COLLECTION,
