@@ -49,6 +49,24 @@ class BuyEventObserver(Observer[BuyEvent]):
                 raise Exception(
                     f"[Buy order]: Failed to update order status to SOLD")
 
+            # token
+            updated = await transaction.aptostoken.update(
+                where={
+                    "creator_name_collection_propertyVersion": {
+                        'name': token_data_id.name,
+                        'creator': token_data_id.creator,
+                        'collection': token_data_id.collection,
+                        'propertyVersion': "0"
+                    }
+                },
+                data={
+                    'owner': data.buyer
+                }
+            )
+            if updated == None or updated <= 0:
+                raise Exception(
+                    f"[Buy order]: Failed to update token owner to buyer")
+
             # activity
             result = await transaction.aptosactivity.create(
                 data={

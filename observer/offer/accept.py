@@ -21,7 +21,7 @@ class AcceptOfferEventObserver(Observer[AcceptOfferEvent]):
         data = AcceptOfferEventData(**event.data)
         token_data_id = TokenDataId(**TokenId(**data.token_id).token_data_id)
 
-        token = await prisma_client.aptostoken.find_first(where={
+        token = await prisma_client.aptostoken.find_unique(where={
             'name': token_data_id.name,
             'creator': token_data_id.creator,
             'collection': token_data_id.collection,
@@ -58,6 +58,24 @@ class AcceptOfferEventObserver(Observer[AcceptOfferEvent]):
             if result == None or result.status != enums.OfferStatus.ACCEPTED:
                 raise Exception(
                     f'[Accept Offer]: Failed to update offer status to ACCEPTED')
+
+            # token
+            updated = await transaction.aptostoken.update(
+                where={
+                    "creator_name_collection_propertyVersion": {
+                        'name': token_data_id.name,
+                        'creator': token_data_id.creator,
+                        'collection': token_data_id.collection,
+                        'propertyVersion': "0"
+                    }
+                },
+                data={
+                    'owner': data.coin_owner
+                }
+            )
+            if updated == None or updated <= 0:
+                raise Exception(
+                    f"[Accept Offer]: Failed to update token owner to buyer")
 
             # activity
             result = await transaction.aptosactivity.create(
