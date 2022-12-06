@@ -221,13 +221,13 @@ model AptosActivity {
     txType       TxType
     price        String?  @default("0") @db.VarChar(78)
     quantity     String?  @default("1") @db.VarChar(78)
-    txTimetamp   DateTime
+    txTimestamp  DateTime
 
     @@index([collectionId])
     @@index([txType])
     @@index([tokenId])
-    @@index([tokenId, txType, txTimetamp])
-    @@index([collectionId, txType, txTimetamp])
+    @@index([tokenId, txType, txTimestamp])
+    @@index([collectionId, txType, txTimestamp])
 }
 
 //**************************************************************************************************
