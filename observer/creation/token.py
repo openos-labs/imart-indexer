@@ -9,7 +9,8 @@ from common.util import primary_key_of_token
 
 DEFAULT_COLLECTION = "Imart Default Collection"
 DEFAULT_CREATOR = "0x94961b26c3541d4be6638913335da22cf3c45aa3d44ff110d9df8890c0c1a34b"
-DEFAULT_RESOURCE_ACCOUNT="0xe59d3179e6d4598937a33beb71f811b9bad18af1c253014d6b4945e44f710590"
+DEFAULT_RESOURCE_ACCOUNT = "0xe59d3179e6d4598937a33beb71f811b9bad18af1c253014d6b4945e44f710590"
+
 
 class CreateTokenEventObserver(Observer[CreateTokenEvent]):
 
@@ -40,8 +41,8 @@ class CreateTokenEventObserver(Observer[CreateTokenEvent]):
                     'collectionId': collection.id,
                     'rawCollectionId': "",
                     'rawTokenId': "",
-                    'owner': DEFAULT_RESOURCE_ACCOUNT,
-                    'creator': data.user,
+                    'owner': data.user,
+                    'creator': DEFAULT_RESOURCE_ACCOUNT,
                     'collection': DEFAULT_COLLECTION,
                     'name': data.name,
                     'description': data.description,
