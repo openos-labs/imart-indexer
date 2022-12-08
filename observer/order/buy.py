@@ -52,12 +52,7 @@ class BuyEventObserver(Observer[BuyEvent]):
             # token
             updated = await transaction.aptostoken.update(
                 where={
-                    "creator_name_collection_propertyVersion": {
-                        'name': token_data_id.name,
-                        'creator': token_data_id.creator,
-                        'collection': token_data_id.collection,
-                        'propertyVersion': "0"
-                    }
+                    "id": token.id
                 },
                 data={
                     'owner': data.buyer
