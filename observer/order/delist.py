@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List, Tuple
 from common.util import new_uuid
+from common.redis import redis_cli
 from model.token_id import TokenId, TokenDataId
 from observer.observer import Observer
 from model.order.delist_event import DelistEvent, DelistEventData
@@ -79,4 +80,7 @@ class DelistEventObserver(Observer[DelistEvent]):
                 raise Exception(f"[Delist Order]: Failed to update offset")
 
             new_state.new_offset.delist_events_excuted_offset = updated_offset.delist_event_excuted_offset
+            
+            # delete cache
+            redis_cli.delete(f"cache:imart:aptosOrder:id:{token.id}")
             return new_state, True

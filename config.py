@@ -16,6 +16,7 @@ class EventType:
 @dataclass
 class Config:
     node_url: str
+    redis_url: str
     address: str
     fixed_market: EventType
     offer: EventType

@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List, Tuple
 from common.util import new_uuid
+from common.redis import redis_cli
 from model.token_id import TokenId, TokenDataId
 from observer.observer import Observer
 from model.order.buy_event import BuyEvent, BuyEventData
@@ -93,4 +94,7 @@ class BuyEventObserver(Observer[BuyEvent]):
                 raise Exception(f"[Buy order]: Failed to update offset")
 
             new_state.new_offset.buy_events_excuted_offset = updated_offset.buy_event_excuted_offset
+            
+            # delete cache
+            redis_cli.delete(f"cache:imart:aptosOrder:id:{token.id}")
             return new_state, True

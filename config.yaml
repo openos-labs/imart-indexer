@@ -1,4 +1,5 @@
 node_url: https://fullnode.testnet.aptoslabs.com/v1
+redis_url: redis://test-env.dpjsjb.clustercfg.memorydb.us-east-1.amazonaws.com:6379
 address: "0x544a612e8b2fedb6ce6799d7b8d529127a497c31850cfb2ef8c5bf0a883ec688"
 fixed_market:
   event_handle: 0x544a612e8b2fedb6ce6799d7b8d529127a497c31850cfb2ef8c5bf0a883ec688::FixedMarket::FixedMarketEvents
