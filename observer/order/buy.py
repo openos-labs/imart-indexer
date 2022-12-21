@@ -97,4 +97,5 @@ class BuyEventObserver(Observer[BuyEvent]):
             
             # delete cache
             redis_cli.delete(f"cache:imart:aptosOrder:id:{token.id}")
+            redis_cli.delete(f"cache:imart:aptosToken:id:{token.id}")
             return new_state, True
