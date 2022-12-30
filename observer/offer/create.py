@@ -38,7 +38,7 @@ class CreateOfferEventObserver(Observer[CreateOfferEvent]):
                 float(data.timestamp) / 1000000
             )
             endedAt = datetime.fromtimestamp(
-                (float(data.timestamp) + float(data.expiration_time)) / 1000000
+                float(data.timestamp) / 1000000 + float(data.expiration_time)
             )
             result = await transaction.aptosoffer.create(
                 data={
