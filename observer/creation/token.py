@@ -39,8 +39,6 @@ class CreateTokenEventObserver(Observer[CreateTokenEvent]):
                 data={
                     'id': primary_key_of_token(data.user, DEFAULT_COLLECTION, data.name),
                     'collectionId': collection.id,
-                    'rawCollectionId': "",
-                    'rawTokenId': "",
                     'owner': data.user,
                     'creator': DEFAULT_RESOURCE_ACCOUNT,
                     'collection': DEFAULT_COLLECTION,

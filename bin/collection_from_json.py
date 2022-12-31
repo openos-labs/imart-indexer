@@ -25,7 +25,6 @@ async def main():
                     data={
                         'create': {
                             'id': primary_key_of_collection(item['creator'], item['name']),
-                            'rawCollectionId': '',
                             'chain': enums.Chain.APTOS,
                             'metadataType': enums.MetadataType.IMAGE,
                             'category': '',
@@ -40,7 +39,6 @@ async def main():
                             'uri': item['cover_uri']
                         },
                         'update': {
-                            'rawCollectionId': '',
                             'chain': enums.Chain.APTOS,
                             'metadataType': enums.MetadataType.IMAGE,
                             'category': '',

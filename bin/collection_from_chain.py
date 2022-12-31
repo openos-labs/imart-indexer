@@ -70,7 +70,6 @@ class Dumper:
                 data={
                     'create': {
                         'id': primary_key_of_collection(creator, name),
-                        'rawCollectionId': json.dumps(rawCollectionId),
                         'chain': enums.Chain.APTOS,
                         'metadataType': enums.MetadataType.IMAGE,
                         'category': '',
@@ -133,8 +132,6 @@ class Dumper:
                     'create': {
                         'id': primary_key_of_token(creator, collection, name),
                         'collectionId': result.id,
-                        'rawCollectionId': '',
-                        'rawTokenId': '',
                         'collection': collection,
                         'name': name,
                         'creator': creator,
@@ -143,8 +140,6 @@ class Dumper:
                         'seqno': seqno
                     },
                     'update': {
-                        'rawCollectionId': '',
-                        'rawTokenId': '',
                         'description': "",
                         'uri': uri,
                         'seqno': seqno

@@ -18,7 +18,7 @@ enum Chain {
 
 enum MetadataType {
     VIDEO
-    MUSIC 
+    MUSIC
     IMAGE
     SPACE
     OTHER
@@ -71,7 +71,8 @@ model Sale {
     mintedTokenCount String     @default("0") @db.VarChar(78)
     mintPrice        String     @default("0") @db.VarChar(78)
     mintPayload      String
-    collectionId     String?    @db.VarChar(64)
+    collectionId     String     @db.VarChar(64)
+    collection       Collection @relation(fields: [collectionId], references: [id])
 
     @@index([status])
 }
@@ -80,17 +81,15 @@ model Comment {
     id           String   @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
     collectionId String   @db.VarChar(64)
     tokenId      String   @db.VarChar(64)
-    userId       String   @db.VarChar(64)
-    content      String
+    address      String   @db.VarChar(66)
+    content      String   @db.VarChar(400)
     createTime   DateTime
-    status       String
 
-    @@index([userId, collectionId, tokenId])
+    @@index([address, collectionId, tokenId])
 }
 
 model User {
     id          String  @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    chain       Chain
     address     String
     publicKey   String? @default("")
     name        String? @default("")
@@ -99,31 +98,36 @@ model User {
     description String? @default("")
     character   String? @default("")
 
-    @@index([chain, address, publicKey])
+    @@index([address])
+    @@index([publicKey])
 }
 
 model Collection {
-    id              String       @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    rawCollectionId String
-    chain           Chain
-    metadataType    MetadataType
-    category        String
-    contractName    String
-    contract        String       @default("")
-    name            String
-    creator         String
-    description     String       @db.VarChar(400)
-    cover           String?      @default("")
-    logo            String?      @default("")
-    maximum         String       @default("0") @db.VarChar(78)
-    volume          String       @default("0") @db.VarChar(78)
-    floorPrice      String?      @default("0") @db.VarChar(78)
-    uri             String?      @default("")
-    supply          String       @default("0") @db.VarChar(78)
-    communities     Community[]
+    id           String       @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    chain        Chain
+    metadataType MetadataType
+    category     String
+    contractName String
+    contract     String       @default("")
+    name         String
+    creator      String
+    description  String       @db.VarChar(400)
+    cover        String?      @default("")
+    logo         String?      @default("")
+    maximum      String       @default("0") @db.VarChar(78)
+    volume       String       @default("0") @db.VarChar(78)
+    floorPrice   String?      @default("0") @db.VarChar(78)
+    uri          String?      @default("")
+    supply       String       @default("0") @db.VarChar(78)
+    communities  Community[]
+    Sale         Sale[]
 
     @@unique([chain, creator, name])
-    @@index([chain, category, metadataType])
+    @@index([chain])
+    @@index([category])
+    @@index([metadataType])
+    @@index([chain, category])
+    @@index([chain, metadataType])
 }
 
 //**************************************************************************************************
@@ -151,27 +155,9 @@ model AptosOrder {
     @@index([seller])
 }
 
-model AptosOrders {
-    id           String      @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    tokenId      String      @db.VarChar(64)
-    collectionId String      @db.VarChar(64)
-    seller       String      @db.VarChar(66)
-    buyer        String?     @db.VarChar(66)
-    price        String?     @default("0") @db.VarChar(78)
-    quantity     String      @default("1") @db.VarChar(78)
-    currency     String      @default("")
-    status       OrderStatus
-    createTime   DateTime
-
-    @@unique([tokenId, seller, status, createTime])
-    @@index([collectionId, tokenId, status, seller])
-}
-
 model AptosToken {
     id              String       @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
     collectionId    String       @db.VarChar(64)
-    rawCollectionId String
-    rawTokenId      String
     owner           String       @default("")
     creator         String       @default("")
     collection      String       @default("")
@@ -183,16 +169,8 @@ model AptosToken {
     AptosOrder      AptosOrder[]
 
     @@unique([creator, name, collection, propertyVersion])
-    @@index([collectionId, owner])
-}
-
-model AptosTokenFavorited {
-    id           String @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    tokenId      String @db.VarChar(64)
-    collectionId String @db.VarChar(64)
-    favoritedBy  String
-
-    @@index([tokenId, collectionId, favoritedBy])
+    @@index([collectionId])
+    @@index([owner])
 }
 
 model AptosOffer {
@@ -208,7 +186,8 @@ model AptosOffer {
     status       OfferStatus
 
     @@unique([tokenId, openedAt, offerer, status])
-    @@index([tokenId, offerer])
+    @@index([tokenId])
+    @@index([offerer])
 }
 
 model AptosActivity {
@@ -220,8 +199,8 @@ model AptosActivity {
     destination  String?  @default("") @map("to")
     txHash       String?  @default("")
     txType       TxType
-    price        String?  @default("0") @db.VarChar(78)
     quantity     String?  @default("1") @db.VarChar(78)
+    price        String?  @default("0") @db.VarChar(78)
     txTimestamp  DateTime
 
     @@index([collectionId])
@@ -229,62 +208,6 @@ model AptosActivity {
     @@index([tokenId])
     @@index([tokenId, txType, txTimestamp])
     @@index([collectionId, txType, txTimestamp])
-}
-
-//**************************************************************************************************
-// IC
-//**************************************************************************************************
-model IcToken {
-    id              String @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    collectionId    String @db.VarChar(64)
-    rawCollectionId String
-    rawTokenId      String
-    owner           String
-    creator         String @default("")
-    collection      String @default("")
-    name            String @default("")
-    description     String @default("")
-    uri             String @default("")
-
-    @@unique([rawCollectionId, rawTokenId])
-    @@index([collectionId, owner])
-}
-
-model IcTokenFavorited {
-    id           String @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    tokenId      String @db.VarChar(64)
-    collectionId String @db.VarChar(64)
-    favoritedBy  String
-
-    @@index([tokenId, collectionId, favoritedBy])
-}
-
-//**************************************************************************************************
-// FLOW
-//**************************************************************************************************
-model FlowToken {
-    id              String @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    collectionId    String @db.VarChar(64)
-    rawCollectionId String
-    rawTokenId      String
-    owner           String
-    creator         String @default("")
-    collection      String @default("")
-    name            String @default("")
-    description     String @default("")
-    uri             String @default("")
-
-    @@unique([rawCollectionId, rawTokenId])
-    @@index([collectionId, owner])
-}
-
-model FlowTokenFavorited {
-    id           String @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    tokenId      String @db.VarChar(64)
-    collectionId String @db.VarChar(64)
-    favoritedBy  String
-
-    @@index([tokenId, collectionId, favoritedBy])
 }
 
 model EventOffset {
