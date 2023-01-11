@@ -211,12 +211,80 @@ model AptosActivity {
 }
 
 model EventOffset {
-    id                          Int    @id @default(0)
-    buy_event_excuted_offset    BigInt
-    list_event_excuted_offset   BigInt
-    delist_event_excuted_offset BigInt
-    create_offer_excuted_offset BigInt @default(-1)
-    accept_offer_excuted_offset BigInt @default(-1)
-    cancel_offer_excuted_offset BigInt @default(-1)
-    create_token_excuted_offset BigInt @default(-1)
+    id                                   Int    @id @default(0)
+    buy_event_excuted_offset             BigInt @default(-1)
+    list_event_excuted_offset            BigInt @default(-1)
+    delist_event_excuted_offset          BigInt @default(-1)
+    create_offer_excuted_offset          BigInt @default(-1)
+    accept_offer_excuted_offset          BigInt @default(-1)
+    cancel_offer_excuted_offset          BigInt @default(-1)
+    create_token_excuted_offset          BigInt @default(-1)
+    gallery_create_excuted_offset        BigInt @default(-1)
+    exhibit_list_excuted_offset          BigInt @default(-1)
+    exhibit_cancel_excuted_offset        BigInt @default(-1)
+    exhibit_freeze_excuted_offset        BigInt @default(-1)
+    exhibit_redeem_excuted_offset        BigInt @default(-1)
+    exhibit_buy_excuted_offset           BigInt @default(-1)
+    curation_offer_create_excuted_offset BigInt @default(-1)
+    curation_offer_accept_excuted_offset BigInt @default(-1)
+    curation_offer_reject_excuted_offset BigInt @default(-1)
+    curation_offer_cancel_excuted_offset BigInt @default(-1)
+}
+
+enum CurationOfferStatus {
+    pending
+    accepted
+    rejected
+    canceled
+}
+
+enum CurationExhibitStatus {
+    reserved
+    listing
+    frozen
+    redeemed
+    sold
+    expired
+}
+
+model CurationOffer {
+    id                String              @id
+    galleryId         String
+    collection        String
+    tokenCreator      String
+    tokenName         String
+    propertyVersion   Int
+    source            String              @map("from")
+    destination       String              @map("to")
+    price             String
+    commissionFeeRate String
+    offerStartAt      DateTime
+    offerExpiredAt    DateTime
+    exhibitDuration   Int
+    status            CurationOfferStatus
+}
+
+model CurationExhibit {
+    id                String                @id
+    galleryId         String
+    collection        String
+    tokenCreator      String
+    tokenName         String
+    provertyVersion   Int                   @default(0)
+    origin            String
+    price             String
+    commissionFeeRate String
+    expiredAt         DateTime
+    location          String
+    url               String
+    detail            String
+    status            CurationExhibitStatus
+}
+
+model CurationGallery {
+    id          String @id
+    owner       String
+    spaceType   String
+    name        String
+    metadataUri String
 }

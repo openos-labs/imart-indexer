@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from typing import List, Tuple
 from yaml import Loader
 import yaml
+from dotenv import dotenv_values
+env = dotenv_values(".env")
 
 
 @dataclass
@@ -17,15 +19,29 @@ class EventType:
 class Config:
     node_url: str
     redis_url: str
-    address: str
     fixed_market: EventType
     offer: EventType
     creation: EventType
+    curation: EventType
 
     def __post_init__(self):
         self.offer = EventType(**self.offer)
         self.creation = EventType(**self.creation)
         self.fixed_market = EventType(**self.fixed_market)
+        self.curation = EventType(**self.curation)
+
+    def event_types(self):
+        event_types = []
+        modules = env['MODUELS'].split(',')
+        if 'fixed_market' in modules:
+            event_types.extend(self.fixed_market.types())
+        if 'offer' in modules:
+            event_types.extend(self.offer.types())
+        if 'creation' in modules:
+            event_types.extend(self.creation.types())
+        if 'curation' in modules:
+            event_types.extend(self.curation.types())
+        return event_types
 
 
 global config
