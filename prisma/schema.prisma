@@ -248,8 +248,10 @@ enum CurationExhibitStatus {
 }
 
 model CurationOffer {
-    id                String              @id
-    galleryId         String
+    id                String              @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    index             BigInt
+    root              String
+    galleryIndex      String
     collection        String
     tokenCreator      String
     tokenName         String
@@ -262,11 +264,19 @@ model CurationOffer {
     offerExpiredAt    DateTime
     exhibitDuration   Int
     status            CurationOfferStatus
+
+    @@unique([index, root])
+    @@index([status])
+    @@index([source])
+    @@index([destination])
+    @@index([galleryIndex])
 }
 
 model CurationExhibit {
-    id                String                @id
-    galleryId         String
+    id                String                @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    index             BigInt
+    root              String
+    galleryIndex      String
     collection        String
     tokenCreator      String
     tokenName         String
@@ -279,12 +289,22 @@ model CurationExhibit {
     url               String
     detail            String
     status            CurationExhibitStatus
+
+    @@unique([index, root])
+    @@index([status])
+    @@index([galleryIndex])
 }
 
 model CurationGallery {
-    id          String @id
+    id          String @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    index       BigInt
+    root        String
     owner       String
     spaceType   String
     name        String
     metadataUri String
+
+    @@unique([index, root])
+    @@index([owner])
+    @@index([spaceType])
 }

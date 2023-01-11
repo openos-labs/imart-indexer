@@ -5,6 +5,7 @@ from model.state import State
 from model.event import Event
 from common.db import prisma_client
 from prisma import enums
+from config import config
 
 
 class ExhibitCancelEventObserver(Observer[ExhibitCancelEvent]):
@@ -19,7 +20,12 @@ class ExhibitCancelEventObserver(Observer[ExhibitCancelEvent]):
 
         async with prisma_client.tx(timeout=60000) as transaction:
             result = await transaction.curationexhibit.update(
-                where={'id': data.id},
+                where={
+                    'index_root': {
+                        'index': int(data.id),
+                        'root': config.curation.address()
+                    }
+                },
                 data={
                     'status': enums.CurationExhibitStatus.reserved
                 }

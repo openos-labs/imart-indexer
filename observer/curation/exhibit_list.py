@@ -1,10 +1,14 @@
+from datetime import datetime
 from typing import List, Tuple
 from observer.observer import Observer
 from model.curation.exhibit_list_event import ExhibitListEvent, ExhibitListEventData
 from model.state import State
 from model.event import Event
+from model.token_id import TokenDataId, TokenId
 from common.db import prisma_client
 from prisma import enums
+from config import config
+from common.util import new_uuid
 
 
 class ExhibitListEventObserver(Observer[ExhibitListEvent]):
@@ -16,37 +20,51 @@ class ExhibitListEventObserver(Observer[ExhibitListEvent]):
         new_state = state
         seqno = event.sequence_number
         data = ExhibitListEventData(**event.data)
+        index = int(data.id)
+        token_id = TokenId(**data.token_id)
+        token_data_id = TokenDataId(**token_id.token_data_id)
+        expired_at = datetime.timestamp(data.expiration)
+        commission_feerate = str(10**8 *
+                                 int(data.commission_feerate_numerator) //
+                                 int(data.commission_feerate_denominator))
 
         async with prisma_client.tx(timeout=60000) as transaction:
             result = await transaction.curationexhibit.upsert(
-                where={'id': data.id},
+                where={
+                    'index_root': {
+                        'index': index,
+                        'root': config.curation.address()
+                    }
+                },
                 data={
                     'create': {
-                        'id': data.id,
-                        'galleryId': data.gallery_id,
-                        'collection': data.token_id.token_data_id.collection,
-                        'tokenName': data.token_id.token_data_id.name,
-                        'tokenCreator': data.token_id.token_data_id.creator,
-                        'propertyVersion': 0,
+                        'id': new_uuid(),
+                        'index': index,
+                        'root': config.curation.address(),
+                        'galleryIndex': data.gallery_id,
+                        'collection': token_data_id.collection,
+                        'tokenName': token_data_id.name,
+                        'tokenCreator': token_data_id.creator,
+                        'propertyVersion': int(token_id.property_version),
                         'origin': data.origin,
                         'price': data.price,
-                        'commissionFeeRate': float(data.commission_feerate_numerator) / float(data.commission_feerate_denominator),
-                        'expiredAt': data.expiration,
+                        'commissionFeeRate': commission_feerate,
+                        'expiredAt': expired_at,
                         'location': data.location,
                         'url': data.url,
                         'detail': data.detail,
                         'status': enums.CurationExhibitStatus.listing
                     },
                     'update': {
-                        'galleryId': data.gallery_id,
-                        'collection': data.token_id.token_data_id.collection,
-                        'tokenName': data.token_id.token_data_id.name,
-                        'tokenCreator': data.token_id.token_data_id.creator,
-                        'propertyVersion': 0,
+                        'galleryIndex': data.gallery_id,
+                        'collection': token_data_id.collection,
+                        'tokenName': token_data_id.name,
+                        'tokenCreator': token_data_id.creator,
+                        'propertyVersion': int(token_id.property_version),
                         'origin': data.origin,
                         'price': data.price,
-                        'commissionFeeRate': float(data.commission_feerate_numerator) / float(data.commission_feerate_denominator),
-                        'expiredAt': data.expiration,
+                        'commissionFeeRate': commission_feerate,
+                        'expiredAt': expired_at,
                         'location': data.location,
                         'url': data.url,
                         'detail': data.detail,

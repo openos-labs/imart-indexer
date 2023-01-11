@@ -4,6 +4,8 @@ from model.curation.gallery_create_event import GalleryCreateEvent, GalleryCreat
 from model.state import State
 from model.event import Event
 from common.db import prisma_client
+from config import config
+from common.util import new_uuid
 
 
 class GalleryCreateEventObserver(Observer[GalleryCreateEvent]):
@@ -15,19 +17,28 @@ class GalleryCreateEventObserver(Observer[GalleryCreateEvent]):
         new_state = state
         seqno = event.sequence_number
         data = GalleryCreateEventData(**event.data)
-
+        index = int(data.id)
         async with prisma_client.tx(timeout=60000) as transaction:
             result = await transaction.curationgallery.upsert(
-                where={'id': data.id},
+                where={
+                    'index_root': {
+                        'index': index,
+                        'root': config.curation.address()
+                    }
+                },
                 data={
                     'create': {
-                        'id': data.id,
+                        'id': new_uuid(),
+                        'index': index,
+                        'root': config.curation.address(),
                         'name': data.name,
+                        'owner': data.owner,
                         'spaceType': data.space_type,
                         'metadataUri': data.metadata_uri
                     },
                     'update': {
                         'name': data.name,
+                        'owner': data.owner,
                         'spaceType': data.space_type,
                         'metadataUri': data.metadata_uri
                     }

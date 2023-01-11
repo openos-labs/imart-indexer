@@ -5,6 +5,7 @@ from model.state import State
 from model.event import Event
 from common.db import prisma_client
 from prisma import enums
+from config import config
 
 
 class OfferRejectEventObserver(Observer[OfferRejectEvent]):
@@ -16,10 +17,15 @@ class OfferRejectEventObserver(Observer[OfferRejectEvent]):
         new_state = state
         seqno = event.sequence_number
         data = OfferRejectEventData(**event.data)
-
+        index = int(data.id)
         async with prisma_client.tx(timeout=60000) as transaction:
             result = await transaction.curationoffer.update(
-                where={'id': data.id},
+                where={
+                    'index_root': {
+                        'index': index,
+                        'root': config.curation.address()
+                    }
+                },
                 data={
                     'status':  enums.CurationOfferStatus.rejected
                 }

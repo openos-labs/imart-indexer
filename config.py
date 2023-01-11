@@ -14,6 +14,8 @@ class EventType:
     def types(self) -> List[Tuple[str, str]]:
         return list(map(lambda event_field: (self.event_handle, event_field), self.event_fields))
 
+    def address(self) -> str:
+        return self.event_handle.split('::')[0]
 
 @dataclass
 class Config:

@@ -17,7 +17,7 @@ creation:
   event_fields:
     - create_events
 curation:
-  event_handle: 0x06e8817db82d333337175f9760da0cdc8b4b3ad51e2cff9bcc6113d6a12835f8::curation::CurationEvents
+  event_handle: 0x933f824b13767be836cdfe6ca6c5d08573d59d0d407f2410eaef2fb3cf22d58e::curation::CurationEvents
   event_fields:
     - gallery_created_events
     - offer_created_events
