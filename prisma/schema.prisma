@@ -10,6 +10,137 @@ generator client {
     previewFeatures      = ["interactiveTransactions"]
 }
 
+enum TxType {
+    LIST
+    UPDATE
+    CANCEL
+    SALE
+    TRANSFER
+}
+
+model Gallery {
+    id          String   @id
+    spaceType   String   @default("art")
+    user        String
+    cover       String
+    collection  String
+    creator     String
+    description String
+    frames      Json?
+    galleryName String
+    link        String   @default("")
+    skyBox      String   @default("")
+    skyUrl      String   @default("")
+    musicUrl    String   @default("")
+    galleryType String
+    date        DateTime @default(now())
+
+    @@index([galleryType])
+    @@index([user])
+}
+
+model Article {
+    id          String   @id
+    link        String   @default("")
+    title       String
+    description String   @default("") @db.VarChar(200)
+    user        String
+    cover       String   @default("")
+    date        DateTime @default(now())
+
+    @@index([user])
+}
+
+model User {
+    id          String    @id
+    publicKey   String?   @default("")
+    name        String?   @default("")
+    logo        String?   @default("")
+    cover       String?   @default("")
+    description String?   @default("")
+    character   String?   @default("")
+    Message     Message[]
+
+    @@index([publicKey])
+}
+
+model Transaction {
+    id           String   @id @default(dbgenerated("(uuid())")) @db.VarChar(66)
+    chain        String   @db.VarChar(20)
+    user         String?  @db.VarChar(66)
+    tokenId      String   @db.VarChar(66)
+    collectionId String   @db.VarChar(66)
+    source       String?  @default("") @map("from")
+    destination  String?  @default("") @map("to")
+    amount       Float?   @default(0)
+    quantity     BigInt?  @default(0)
+    txHash       String?  @default("")
+    txType       TxType   @default(TRANSFER)
+    txTimestamp  DateTime
+
+    @@index([collectionId])
+    @@index([txType])
+}
+
+model Followers {
+    id       BigInt @id @default(autoincrement())
+    user     String @db.VarChar(66)
+    followBy String @db.VarChar(66)
+
+    @@unique([user, followBy])
+}
+
+model GalleryLikes {
+    id        BigInt @id @default(autoincrement())
+    user      String
+    galleryId String
+    likedBy   String @db.VarChar(66)
+
+    @@unique([user, galleryId, likedBy])
+}
+
+model GalleryDecoration {
+    id           String @id @default(uuid())
+    user         String
+    galleryId    String
+    decorationId String
+    modelUrl     String @default("")
+    imageUrl     String @default("")
+    name         String @default("")
+    position     Json
+
+    @@index([user])
+    @@index([galleryId])
+}
+
+model Decoration {
+    id       String @id @default(uuid())
+    user     String
+    modelUrl String @default("")
+    imageUrl String @default("")
+    name     String @default("")
+
+    @@index([user])
+}
+
+model Token {
+    id              String  @id @db.VarChar(66)
+    curationId      String? @default("") @db.VarChar(66)
+    collectionId    String  @db.VarChar(66)
+    collection      String
+    name            String
+    creator         String
+    owner           String
+    description     String  @default("") @db.VarChar(400)
+    image           String  @default("")
+    uri             String  @default("")
+    propertyVersion String  @default("0")
+
+    @@index([owner])
+    @@index([curationId])
+    @@index([collectionId])
+}
+
 enum Chain {
     IC
     FLOW
@@ -34,13 +165,6 @@ enum OfferStatus {
     CREATED
     ACCEPTED
     CANCELED
-}
-
-enum TxType {
-    LIST
-    UPDATE
-    CANCEL
-    SALE
 }
 
 enum SaleStatus {
@@ -88,18 +212,16 @@ model Comment {
     @@index([address, collectionId, tokenId])
 }
 
-model User {
-    id          String  @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    address     String
-    publicKey   String? @default("")
-    name        String? @default("")
-    logo        String? @default("")
-    cover       String? @default("")
-    description String? @default("")
-    character   String? @default("")
+model Message {
+    id         String   @id @default(dbgenerated("(uuid())")) @db.VarChar(66)
+    galleryId  String
+    userId     String
+    user       User     @relation(fields: [userId], references: [id])
+    message    String   @default("") @db.VarChar(400)
+    createTime DateTime @default(now())
 
-    @@index([address])
-    @@index([publicKey])
+    @@index([userId])
+    @@index([galleryId])
 }
 
 model Collection {
@@ -276,7 +398,7 @@ model CurationExhibit {
     id                String                @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
     index             BigInt
     root              String
-    galleryIndex      BigInt 
+    galleryIndex      BigInt
     collection        String
     tokenCreator      String
     tokenName         String
