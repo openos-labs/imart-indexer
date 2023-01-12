@@ -251,7 +251,7 @@ model CurationOffer {
     id                String              @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
     index             BigInt
     root              String
-    galleryIndex      String
+    galleryIndex      BigInt
     collection        String
     tokenCreator      String
     tokenName         String
@@ -276,7 +276,7 @@ model CurationExhibit {
     id                String                @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
     index             BigInt
     root              String
-    galleryIndex      String
+    galleryIndex      BigInt 
     collection        String
     tokenCreator      String
     tokenName         String

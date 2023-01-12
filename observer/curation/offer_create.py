@@ -21,6 +21,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
         seqno = event.sequence_number
         data = OfferCreateEventData(**event.data)
         index = int(data.id)
+        gallery_index = int(data.gallery_id)
         token_id = TokenId(**data.token_id)
         token_data_id = TokenDataId(**token_id.token_data_id)
         offer_start_at = datetime.fromtimestamp(int(data.offer_start_at))
@@ -43,7 +44,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'id': new_uuid(),
                         'index': index,
                         'root': config.curation.address(),
-                        'galleryIndex': data.gallery_id,
+                        'galleryIndex': gallery_index,
                         'collection': token_data_id.collection,
                         'tokenName': token_data_id.name,
                         'tokenCreator': token_data_id.creator,
@@ -58,7 +59,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'status': enums.CurationOfferStatus.pending,
                     },
                     'update': {
-                        'galleryIndex': data.gallery_id,
+                        'galleryIndex': gallery_index,
                         'collection': token_data_id.collection,
                         'tokenName': token_data_id.name,
                         'tokenCreator': token_data_id.creator,

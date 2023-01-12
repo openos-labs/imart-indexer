@@ -21,6 +21,7 @@ class ExhibitListEventObserver(Observer[ExhibitListEvent]):
         seqno = event.sequence_number
         data = ExhibitListEventData(**event.data)
         index = int(data.id)
+        gallery_index = int(data.gallery_id)
         token_id = TokenId(**data.token_id)
         token_data_id = TokenDataId(**token_id.token_data_id)
         expired_at = datetime.timestamp(data.expiration)
@@ -41,7 +42,7 @@ class ExhibitListEventObserver(Observer[ExhibitListEvent]):
                         'id': new_uuid(),
                         'index': index,
                         'root': config.curation.address(),
-                        'galleryIndex': data.gallery_id,
+                        'galleryIndex': gallery_index,
                         'collection': token_data_id.collection,
                         'tokenName': token_data_id.name,
                         'tokenCreator': token_data_id.creator,
@@ -56,7 +57,7 @@ class ExhibitListEventObserver(Observer[ExhibitListEvent]):
                         'status': enums.CurationExhibitStatus.listing
                     },
                     'update': {
-                        'galleryIndex': data.gallery_id,
+                        'galleryIndex': gallery_index,
                         'collection': token_data_id.collection,
                         'tokenName': token_data_id.name,
                         'tokenCreator': token_data_id.creator,
