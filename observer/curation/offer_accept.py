@@ -24,7 +24,7 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
         gallery_index = int(data.gallery_id)
         token_id = TokenId(**data.token_id)
         token_data_id = TokenDataId(**token_id.token_data_id)
-        expired_at = datetime.timestamp(data.exhibit_duration)
+        expired_at = datetime.fromtimestamp(int(data.exhibit_duration))
         updated_at = datetime.fromtimestamp(int(data.timestamp))
         commission_feerate = str(10**8 *
                                  int(data.commission_feerate_numerator) //
