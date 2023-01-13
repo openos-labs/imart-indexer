@@ -405,7 +405,7 @@ model CurationExhibit {
     collection        String
     tokenCreator      String
     tokenName         String
-    provertyVersion   Int                   @default(0)
+    propertyVersion   Int                   @default(0)
     origin            String
     price             String
     commissionFeeRate String
