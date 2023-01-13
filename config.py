@@ -45,6 +45,9 @@ class Config:
             event_types.extend(self.curation.types())
         return event_types
 
+    def duration_of_http_polling(self):
+        return int(env['DURATION'])
+
 
 global config
 with open("config.yaml", 'r') as file:

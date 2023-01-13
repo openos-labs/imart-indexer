@@ -132,6 +132,7 @@ async def subscribe(observer: Observer):
 
 # A worker correspond to a thread or a pair of bidirectional channels
 async def worker(state: State, event_type: Tuple[str, str]):
+    delayed_secs = config.duration_of_http_polling()
     (event_handle, event_field) = event_type
     current_state = state
     subject = event_to_subject[event_field]
@@ -155,7 +156,7 @@ async def worker(state: State, event_type: Tuple[str, str]):
         await anext(process_events)
 
         # rest period for next fire
-        await asyncio.sleep(5)
+        await asyncio.sleep(delayed_secs)
 
 
 async def main():
