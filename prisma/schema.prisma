@@ -51,19 +51,6 @@ model Article {
     @@index([user])
 }
 
-model User {
-    id          String    @id
-    publicKey   String?   @default("")
-    name        String?   @default("")
-    logo        String?   @default("")
-    cover       String?   @default("")
-    description String?   @default("")
-    character   String?   @default("")
-    Message     Message[]
-
-    @@index([publicKey])
-}
-
 model Transaction {
     id           String   @id @default(dbgenerated("(uuid())")) @db.VarChar(66)
     chain        String   @db.VarChar(20)
@@ -210,6 +197,19 @@ model Comment {
     createTime   DateTime
 
     @@index([address, collectionId, tokenId])
+}
+
+model User {
+    id          String    @id
+    publicKey   String?   @default("")
+    name        String?   @default("")
+    logo        String?   @default("")
+    cover       String?   @default("")
+    description String?   @default("")
+    character   String?   @default("")
+    Message     Message[]
+
+    @@index([publicKey])
 }
 
 model Message {
@@ -385,7 +385,10 @@ model CurationOffer {
     offerStartAt      DateTime
     offerExpiredAt    DateTime
     exhibitDuration   Int
+    url               String
+    detail            String
     status            CurationOfferStatus
+    updatedAt         DateTime
 
     @@unique([index, root])
     @@index([status])
@@ -411,6 +414,7 @@ model CurationExhibit {
     url               String
     detail            String
     status            CurationExhibitStatus
+    updatedAt         DateTime
 
     @@unique([index, root])
     @@index([status])

@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Tuple
 from observer.observer import Observer
 from model.curation.offer_cancel_event import OfferCancelEvent, OfferCancelEventData
@@ -6,6 +7,7 @@ from model.event import Event
 from common.db import prisma_client
 from prisma import enums
 from config import config
+
 
 class OfferCancelEventObserver(Observer[OfferCancelEvent]):
 
@@ -16,6 +18,7 @@ class OfferCancelEventObserver(Observer[OfferCancelEvent]):
         new_state = state
         seqno = event.sequence_number
         data = OfferCancelEventData(**event.data)
+        updated_at = datetime.fromtimestamp(int(data.timestamp))
 
         async with prisma_client.tx(timeout=60000) as transaction:
             result = await transaction.curationoffer.update(
@@ -26,7 +29,8 @@ class OfferCancelEventObserver(Observer[OfferCancelEvent]):
                     }
                 },
                 data={
-                    'status':  enums.CurationOfferStatus.canceled
+                    'status':  enums.CurationOfferStatus.canceled,
+                    'updatedAt': updated_at
                 }
             )
             if result == None or result.status != enums.CurationOfferStatus.canceled:

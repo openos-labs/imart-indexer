@@ -12,6 +12,7 @@ class ExhibitBuyEventData:
     price: str
     commission_feerate_numerator: str
     commission_feerate_denominator: str
+    timestamp: str
 
 
 @dataclass

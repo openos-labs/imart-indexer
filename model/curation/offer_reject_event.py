@@ -9,6 +9,7 @@ class OfferRejectEventData:
     token_id: TokenId
     source: str
     destination: str
+    timestamp: str
 
 
 @dataclass

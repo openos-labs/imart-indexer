@@ -24,6 +24,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
         gallery_index = int(data.gallery_id)
         token_id = TokenId(**data.token_id)
         token_data_id = TokenDataId(**token_id.token_data_id)
+        updated_at = datetime.fromtimestamp(int(data.offer_start_at))
         offer_start_at = datetime.fromtimestamp(int(data.offer_start_at))
         offer_expired_at = datetime.fromtimestamp(int(data.offer_expired_at))
         exhibit_duration = int(data.exhibit_duration)
@@ -57,6 +58,9 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'offerExpiredAt': offer_expired_at,
                         'exhibitDuration': exhibit_duration,
                         'status': enums.CurationOfferStatus.pending,
+                        'updatedAt': updated_at,
+                        'url': data.url,
+                        'detail': data.detail
                     },
                     'update': {
                         'galleryIndex': gallery_index,
@@ -72,6 +76,9 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'offerExpiredAt': offer_expired_at,
                         'exhibitDuration': exhibit_duration,
                         'status': enums.CurationOfferStatus.pending,
+                        'updatedAt': updated_at,
+                        'url': data.url,
+                        'detail': data.detail
                     }
                 }
             )

@@ -11,6 +11,7 @@ class GalleryCreateEventData:
     space_type: str
     name: str
     metadata_uri: str
+    timestamp: str
 
 
 @dataclass

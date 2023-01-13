@@ -20,57 +20,19 @@ class ExhibitListEventObserver(Observer[ExhibitListEvent]):
         new_state = state
         seqno = event.sequence_number
         data = ExhibitListEventData(**event.data)
-        index = int(data.id)
-        gallery_index = int(data.gallery_id)
-        token_id = TokenId(**data.token_id)
-        token_data_id = TokenDataId(**token_id.token_data_id)
-        expired_at = datetime.timestamp(data.expiration)
-        commission_feerate = str(10**8 *
-                                 int(data.commission_feerate_numerator) //
-                                 int(data.commission_feerate_denominator))
+        updated_at = datetime.fromtimestamp(int(data.timestamp))
 
         async with prisma_client.tx(timeout=60000) as transaction:
-            result = await transaction.curationexhibit.upsert(
+            result = await transaction.curationexhibit.update(
                 where={
                     'index_root': {
-                        'index': index,
+                        'index': int(data.id),
                         'root': config.curation.address()
                     }
                 },
                 data={
-                    'create': {
-                        'id': new_uuid(),
-                        'index': index,
-                        'root': config.curation.address(),
-                        'galleryIndex': gallery_index,
-                        'collection': token_data_id.collection,
-                        'tokenName': token_data_id.name,
-                        'tokenCreator': token_data_id.creator,
-                        'propertyVersion': int(token_id.property_version),
-                        'origin': data.origin,
-                        'price': data.price,
-                        'commissionFeeRate': commission_feerate,
-                        'expiredAt': expired_at,
-                        'location': data.location,
-                        'url': data.url,
-                        'detail': data.detail,
-                        'status': enums.CurationExhibitStatus.listing
-                    },
-                    'update': {
-                        'galleryIndex': gallery_index,
-                        'collection': token_data_id.collection,
-                        'tokenName': token_data_id.name,
-                        'tokenCreator': token_data_id.creator,
-                        'propertyVersion': int(token_id.property_version),
-                        'origin': data.origin,
-                        'price': data.price,
-                        'commissionFeeRate': commission_feerate,
-                        'expiredAt': expired_at,
-                        'location': data.location,
-                        'url': data.url,
-                        'detail': data.detail,
-                        'status': enums.CurationExhibitStatus.listing
-                    }
+                    'status': enums.CurationExhibitStatus.listing,
+                    'updatedAt': updated_at
                 }
             )
             if result == None or result.status != enums.CurationExhibitStatus.listing:

@@ -18,6 +18,7 @@ class GalleryCreateEventObserver(Observer[GalleryCreateEvent]):
         seqno = event.sequence_number
         data = GalleryCreateEventData(**event.data)
         index = int(data.id)
+
         async with prisma_client.tx(timeout=60000) as transaction:
             result = await transaction.curationgallery.upsert(
                 where={

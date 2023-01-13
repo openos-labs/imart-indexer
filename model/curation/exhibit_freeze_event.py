@@ -9,6 +9,7 @@ class ExhibitFreezeEventData:
     gallery_id: str
     token_id: TokenId
     origin: str
+    timestamp: str
 
 
 @dataclass

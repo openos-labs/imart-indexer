@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Tuple
 from observer.observer import Observer
 from model.curation.exhibit_freeze_event import ExhibitFreezeEvent, ExhibitFreezeEventData
@@ -17,7 +18,7 @@ class ExhibitFreezeEventObserver(Observer[ExhibitFreezeEvent]):
         new_state = state
         seqno = event.sequence_number
         data = ExhibitFreezeEventData(**event.data)
-
+        updated_at = datetime.fromtimestamp(int(data.timestamp))
         async with prisma_client.tx(timeout=60000) as transaction:
             result = await transaction.curationexhibit.update(
                 where={
@@ -27,7 +28,8 @@ class ExhibitFreezeEventObserver(Observer[ExhibitFreezeEvent]):
                     }
                 },
                 data={
-                    'status': enums.CurationExhibitStatus.frozen
+                    'status': enums.CurationExhibitStatus.frozen,
+                    'updatedAt': updated_at
                 }
             )
             if result == None or result.status != enums.CurationExhibitStatus.frozen:

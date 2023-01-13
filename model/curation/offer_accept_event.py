@@ -14,6 +14,7 @@ class OfferAcceptEventData:
     commission_feerate_numerator: str
     commission_feerate_denominator: str
     exhibit_duration: str
+    timestamp: str
 
 
 @dataclass

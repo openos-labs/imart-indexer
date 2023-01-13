@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Tuple
 from observer.observer import Observer
 from model.curation.offer_reject_event import OfferRejectEvent, OfferRejectEventData
@@ -18,6 +19,7 @@ class OfferRejectEventObserver(Observer[OfferRejectEvent]):
         seqno = event.sequence_number
         data = OfferRejectEventData(**event.data)
         index = int(data.id)
+        updated_at = datetime.fromtimestamp(int(data.offer_start_at))
         async with prisma_client.tx(timeout=60000) as transaction:
             result = await transaction.curationoffer.update(
                 where={
@@ -27,7 +29,8 @@ class OfferRejectEventObserver(Observer[OfferRejectEvent]):
                     }
                 },
                 data={
-                    'status':  enums.CurationOfferStatus.rejected
+                    'status':  enums.CurationOfferStatus.rejected,
+                    'updatedAt': updated_at
                 }
             )
             if result == None or result.status != enums.CurationOfferStatus.rejected:
