@@ -14,6 +14,8 @@ class ExhibitListEventData:
     commission_feerate_numerator: str
     commission_feerate_denominator: str
     location: str
+    url: str
+    detail: str
     timestamp: str
 
 
