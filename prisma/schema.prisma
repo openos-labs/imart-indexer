@@ -395,6 +395,8 @@ model CurationOffer {
     @@index([source])
     @@index([destination])
     @@index([galleryIndex])
+    @@index([galleryIndex, status])
+    @@index([source, status])
 }
 
 model CurationExhibit {
@@ -419,6 +421,7 @@ model CurationExhibit {
     @@unique([index, root])
     @@index([status])
     @@index([galleryIndex])
+    @@index([galleryIndex, status])
 }
 
 model CurationGallery {
