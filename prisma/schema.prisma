@@ -200,14 +200,16 @@ model Comment {
 }
 
 model User {
-    id          String    @id
-    publicKey   String?   @default("")
-    name        String?   @default("")
-    logo        String?   @default("")
-    cover       String?   @default("")
-    description String?   @default("")
-    character   String?   @default("")
-    Message     Message[]
+    id             String       @id
+    publicKey      String?      @default("")
+    name           String?      @default("")
+    logo           String?      @default("")
+    cover          String?      @default("")
+    description    String?      @default("")
+    character      String?      @default("")
+    authentication Int          @default(0)
+    Message        Message[]
+    UserContact    UserContact?
 
     @@index([publicKey])
 }
@@ -436,4 +438,12 @@ model CurationGallery {
     @@unique([index, root])
     @@index([owner])
     @@index([spaceType])
+}
+
+model UserContact {
+    id        String @id @unique
+    user      User   @relation(fields: [id], references: [id])
+    email     String
+    twitter   String
+    instagram String
 }
