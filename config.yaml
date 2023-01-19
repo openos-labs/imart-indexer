@@ -13,7 +13,7 @@ offer:
     - accept_offer_events
     - cancel_offer_events
 creation:
-  event_handle: 0x94961b26c3541d4be6638913335da22cf3c45aa3d44ff110d9df8890c0c1a34b::creation::CreationEvents
+  event_handle: 0xc842c666c8e6b0bab13d8c71ef1fcb15f5d84700aba44691322854f360055883::creation::CreationEvents
   event_fields:
     - create_events
 curation:

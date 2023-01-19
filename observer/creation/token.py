@@ -1,4 +1,6 @@
 from typing import List, Tuple
+from config import config
+from model.token_id import TokenDataId, TokenId
 from observer.observer import Observer
 from model.creation.create_token_event import CreateTokenEvent, CreateTokenEventData
 from model.state import State
@@ -7,9 +9,7 @@ from common.db import prisma_client
 from prisma import enums
 from common.util import primary_key_of_token
 
-DEFAULT_COLLECTION = "Imart Default Collection"
 DEFAULT_CREATOR = "0x94961b26c3541d4be6638913335da22cf3c45aa3d44ff110d9df8890c0c1a34b"
-DEFAULT_RESOURCE_ACCOUNT = "0xe59d3179e6d4598937a33beb71f811b9bad18af1c253014d6b4945e44f710590"
 
 
 class CreateTokenEventObserver(Observer[CreateTokenEvent]):
@@ -21,12 +21,13 @@ class CreateTokenEventObserver(Observer[CreateTokenEvent]):
         new_state = state
         seqno = event.sequence_number
         data = CreateTokenEventData(**event.data)
-
+        token_id = TokenId(**data.token_id)
+        token_data_id = TokenDataId(**token_id.token_data_id)
         collection = await prisma_client.collection.find_unique(where={
             'chain_creator_name': {
                 'chain': enums.Chain.APTOS,
-                'creator': DEFAULT_CREATOR,
-                'name': DEFAULT_COLLECTION,
+                'creator': config.creation.address(),
+                'name': token_data_id.collection,
             }
         })
         if collection == None:
@@ -37,15 +38,15 @@ class CreateTokenEventObserver(Observer[CreateTokenEvent]):
 
             result = await transaction.aptostoken.create(
                 data={
-                    'id': primary_key_of_token(data.user, DEFAULT_COLLECTION, data.name),
+                    'id': primary_key_of_token(data.user, token_data_id.collection, data.name),
                     'collectionId': collection.id,
                     'owner': data.user,
-                    'creator': DEFAULT_RESOURCE_ACCOUNT,
-                    'collection': DEFAULT_COLLECTION,
+                    'creator': token_data_id.creator,
+                    'collection': token_data_id.collection,
                     'name': data.name,
                     'description': data.description,
                     'uri': data.uri,
-                    'propertyVersion': '0',
+                    'propertyVersion': token_id.property_version,
                     'seqno': seqno
                 }
             )

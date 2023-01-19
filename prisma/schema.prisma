@@ -440,10 +440,24 @@ model CurationGallery {
     @@index([spaceType])
 }
 
+enum Web2AccountType {
+    instagram
+    twitter
+}
+
+model Web2Account {
+    id            String
+    username      String
+    type          Web2AccountType
+    UserContact   UserContact?    @relation(fields: [userContactId], references: [id])
+    userContactId String?
+
+    @@unique([id, username, type])
+}
+
 model UserContact {
-    id        String @id @unique
-    user      User   @relation(fields: [id], references: [id])
-    email     String
-    twitter   String
-    instagram String
+    id       String        @id @unique
+    user     User          @relation(fields: [id], references: [id])
+    email    String?
+    accounts Web2Account[]
 }
