@@ -449,10 +449,10 @@ model Web2Account {
     id            String
     username      String
     type          Web2AccountType
-    UserContact   UserContact?    @relation(fields: [userContactId], references: [id])
-    userContactId String?
+    UserContact   UserContact     @relation(fields: [userContactId], references: [id])
+    userContactId String
 
-    @@unique([id, username, type])
+    @@unique([id, username, type, userContactId])
 }
 
 model UserContact {
