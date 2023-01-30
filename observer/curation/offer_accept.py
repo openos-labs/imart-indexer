@@ -7,7 +7,7 @@ from model.curation.offer_accept_event import OfferAcceptEvent, OfferAcceptEvent
 from model.state import State
 from model.event import Event
 from common.db import prisma_client
-from prisma import enums
+from prisma import enums, Json
 from config import config
 
 
@@ -125,7 +125,7 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                         'type': enums.NotificationType.CurationOfferAcceptedFromInvitee,
                         'unread': True,
                         'timestamp': updated_at,
-                        'detail': {"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version}
+                        'detail': Json({"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
                     },
                     'update': {
                         'receiver': data.source,
@@ -135,7 +135,7 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                         'type': enums.NotificationType.CurationOfferAcceptedFromInvitee,
                         'unread': True,
                         'timestamp': updated_at,
-                        'detail': {"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version}
+                        'detail': Json({"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
                     }
                 }
             )

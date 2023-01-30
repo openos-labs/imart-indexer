@@ -6,7 +6,7 @@ from model.curation.offer_reject_event import OfferRejectEvent, OfferRejectEvent
 from model.state import State
 from model.event import Event
 from common.db import prisma_client
-from prisma import enums
+from prisma import enums, Json
 from config import config
 
 
@@ -66,7 +66,7 @@ class OfferRejectEventObserver(Observer[OfferRejectEvent]):
                         'type': enums.NotificationType.CurationOfferRejectedFromInvitee,
                         'unread': True,
                         'timestamp': updated_at,
-                        'detail': {"name": result.tokenName, "collection": result.collection, "creator": result.tokenCreator, "propertyVersion": result.propertyVersion}
+                        'detail': Json({"name": result.tokenName, "collection": result.collection, "creator": result.tokenCreator, "propertyVersion": result.propertyVersion})
                     },
                     'update': {
                         'receiver': data.source,
@@ -76,7 +76,7 @@ class OfferRejectEventObserver(Observer[OfferRejectEvent]):
                         'type': enums.NotificationType.CurationOfferRejectedFromInvitee,
                         'unread': True,
                         'timestamp': updated_at,
-                        'detail': {"name": result.tokenName, "collection": result.collection, "creator": result.tokenCreator, "propertyVersion": result.propertyVersion}
+                        'detail': Json({"name": result.tokenName, "collection": result.collection, "creator": result.tokenCreator, "propertyVersion": result.propertyVersion})
                     }
                 }
             )

@@ -5,7 +5,7 @@ from model.state import State
 from model.event import Event
 from model.token_id import TokenDataId, TokenId
 from common.db import prisma_client
-from prisma import enums
+from prisma import enums, Json
 from datetime import datetime
 from common.util import new_uuid
 from config import config
@@ -116,7 +116,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'type': enums.NotificationType.CurationOfferReceivedFromInviter,
                         'unread': True,
                         'timestamp': offer_start_at,
-                        'detail': {"index": gallery_index, "root": root}
+                        'detail': Json({"index": gallery_index, "root": root})
                     },
                     'update': {
                         'receiver': data.destination,
@@ -126,7 +126,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'type': enums.NotificationType.CurationOfferReceivedFromInviter,
                         'unread': True,
                         'timestamp': offer_start_at,
-                        'detail': {"index": gallery_index, "root": root}
+                        'detail': Json({"index": gallery_index, "root": root})
                     }
                 }
             )
