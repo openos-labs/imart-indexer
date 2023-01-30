@@ -19,7 +19,7 @@ class OfferRejectEventObserver(Observer[OfferRejectEvent]):
         seqno = event.sequence_number
         data = OfferRejectEventData(**event.data)
         index = int(data.id)
-        updated_at = datetime.fromtimestamp(int(data.offer_start_at))
+        updated_at = datetime.fromtimestamp(int(data.timestamp))
         async with prisma_client.tx(timeout=60000) as transaction:
             result = await transaction.curationoffer.update(
                 where={
