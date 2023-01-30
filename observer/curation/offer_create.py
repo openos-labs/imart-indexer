@@ -116,7 +116,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'type': enums.NotificationType.CurationOfferReceivedFromInviter,
                         'unread': True,
                         'timestamp': offer_start_at,
-                        'detail': f'{{"index": {gallery_index}, "root": {root}}}'
+                        'detail': {"index": gallery_index, "root": root}
                     },
                     'update': {
                         'receiver': data.destination,
@@ -126,7 +126,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'type': enums.NotificationType.CurationOfferReceivedFromInviter,
                         'unread': True,
                         'timestamp': offer_start_at,
-                        'detail': f'{{"index": {gallery_index}, "root": {root}}}'
+                        'detail': {"index": gallery_index, "root": root}
                     }
                 }
             )

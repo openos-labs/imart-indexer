@@ -125,7 +125,7 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                         'type': enums.NotificationType.CurationOfferAcceptedFromInvitee,
                         'unread': True,
                         'timestamp': updated_at,
-                        'detail': f'{{"name": {token_data_id.name}, "collection": {token_data_id.collection}, "creator": {token_data_id.creator}, "propertyVersion": {token_id.property_version}}}'
+                        'detail': {"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version}
                     },
                     'update': {
                         'receiver': data.source,
@@ -135,7 +135,7 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                         'type': enums.NotificationType.CurationOfferAcceptedFromInvitee,
                         'unread': True,
                         'timestamp': updated_at,
-                        'detail': f'{{"name": {token_data_id.name}, "collection": {token_data_id.collection}, "creator": {token_data_id.creator}, "propertyVersion": {token_id.property_version}}}'
+                        'detail': {"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version}
                     }
                 }
             )
