@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import List, Tuple
+from common.util import new_uuid
 from observer.observer import Observer
 from model.curation.offer_reject_event import OfferRejectEvent, OfferRejectEventData
 from model.state import State
@@ -47,5 +48,37 @@ class OfferRejectEventObserver(Observer[OfferRejectEvent]):
                 raise Exception(
                     f'[Curation reject Offer]: Failed to update offset')
 
+            await transaction.notification.upsert(
+                where={
+                    'receiver_type_timestamp': {
+                        'receiver': data.source,
+                        'type': enums.NotificationType.CurationOfferRejectedFromInvitee,
+                        'timestamp': updated_at
+                    }
+                },
+                data={
+                    'create': {
+                        'id': new_uuid(),
+                        'receiver': data.source,
+                        'title': "Your offer has been rejected",
+                        'content': "From IMart",
+                        'image': "",
+                        'type': enums.NotificationType.CurationOfferRejectedFromInvitee,
+                        'unread': True,
+                        'timestamp': updated_at,
+                        'detail': f'{{"name": {result.tokenName}, "collection": {result.collection}, "creator": {result.tokenCreator}, "propertyVersion": {result.propertyVersion}}}'
+                    },
+                    'update': {
+                        'receiver': data.source,
+                        'title': "Your offer has been rejected",
+                        'content': "From IMart",
+                        'image': "",
+                        'type': enums.NotificationType.CurationOfferRejectedFromInvitee,
+                        'unread': True,
+                        'timestamp': updated_at,
+                        'detail': f'{{"name": {result.tokenName}, "collection": {result.collection}, "creator": {result.tokenCreator}, "propertyVersion": {result.propertyVersion}}}'
+                    }
+                }
+            )
             new_state.new_offset.curation_offer_reject_excuted_offset = updated_offset.curation_offer_reject_excuted_offset
             return new_state, True

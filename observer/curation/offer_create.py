@@ -32,19 +32,21 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
             int(data.commission_feerate_numerator) // \
             int(data.commission_feerate_denominator)
 
+        root = config.curation.address()
+
         async with prisma_client.tx(timeout=60000) as transaction:
             result = await transaction.curationoffer.upsert(
                 where={
                     'index_root': {
                         'index': index,
-                        'root': config.curation.address()
+                        'root': root
                     }
                 },
                 data={
                     'create': {
                         'id': new_uuid(),
                         'index': index,
-                        'root': config.curation.address(),
+                        'root': root,
                         'galleryIndex': gallery_index,
                         'collection': token_data_id.collection,
                         'tokenName': token_data_id.name,
@@ -96,5 +98,37 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                 raise Exception(
                     f'[Curator send Offer]: Failed to update offset')
 
+            await transaction.notification.upsert(
+                where={
+                    'receiver_type_timestamp': {
+                        'receiver': data.destination,
+                        'type': enums.NotificationType.CurationOfferReceivedFromInviter,
+                        'timestamp': offer_start_at
+                    }
+                },
+                data={
+                    'create': {
+                        'id': new_uuid(),
+                        'receiver': data.destination,
+                        'title': "You have received an offer",
+                        'content': "From Mixverse",
+                        'image': "",
+                        'type': enums.NotificationType.CurationOfferReceivedFromInviter,
+                        'unread': True,
+                        'timestamp': offer_start_at,
+                        'detail': f'{{"index": {gallery_index}, "root": {root}}}'
+                    },
+                    'update': {
+                        'receiver': data.destination,
+                        'title': "You have received an offer",
+                        'content': "From Mixverse",
+                        'image': "",
+                        'type': enums.NotificationType.CurationOfferReceivedFromInviter,
+                        'unread': True,
+                        'timestamp': offer_start_at,
+                        'detail': f'{{"index": {gallery_index}, "root": {root}}}'
+                    }
+                }
+            )
             new_state.new_offset.curation_offer_create_excuted_offset = updated_offset.curation_offer_create_excuted_offset
             return new_state, True

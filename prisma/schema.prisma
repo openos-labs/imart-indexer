@@ -476,10 +476,16 @@ enum NotificationType {
 
 model Notification {
     id        String           @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    receiver  String           @db.VarChar(64)
     title     String
     content   String
     image     String?
     type      NotificationType
     unread    Boolean          @default(true)
     timestamp DateTime
+    detail    Json?            @default("{}")
+
+    @@unique([receiver, type, timestamp])
+    @@index([receiver])
+    @@index([receiver, unread])
 }

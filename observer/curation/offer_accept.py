@@ -107,5 +107,38 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                 raise Exception(
                     f'[Invitee accept offer]: Failed to update offset')
 
+            await transaction.notification.upsert(
+                where={
+                    'receiver_type_timestamp': {
+                        'receiver': data.source,
+                        'type': enums.NotificationType.CurationOfferAcceptedFromInvitee,
+                        'timestamp': updated_at
+                    }
+                },
+                data={
+                    'create': {
+                        'id': new_uuid(),
+                        'receiver': data.source,
+                        'title': "Your offer has been accepted",
+                        'content': "From IMart",
+                        'image': "",
+                        'type': enums.NotificationType.CurationOfferAcceptedFromInvitee,
+                        'unread': True,
+                        'timestamp': updated_at,
+                        'detail': f'{{"name": {token_data_id.name}, "collection": {token_data_id.collection}, "creator": {token_data_id.creator}, "propertyVersion": {token_id.property_version}}}'
+                    },
+                    'update': {
+                        'receiver': data.source,
+                        'title': "Your offer has been accepted",
+                        'content': "From IMart",
+                        'image': "",
+                        'type': enums.NotificationType.CurationOfferAcceptedFromInvitee,
+                        'unread': True,
+                        'timestamp': updated_at,
+                        'detail': f'{{"name": {token_data_id.name}, "collection": {token_data_id.collection}, "creator": {token_data_id.creator}, "propertyVersion": {token_id.property_version}}}'
+                    }
+                }
+            )
+
             new_state.new_offset.curation_offer_accept_excuted_offset = updated_offset.curation_offer_accept_excuted_offset
             return new_state, True
