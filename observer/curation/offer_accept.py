@@ -60,6 +60,7 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                         'index': index,
                         'root': config.curation.address(),
                         'galleryIndex': gallery_index,
+                        'curator':  updated_offer.source,
                         'collection': token_data_id.collection,
                         'tokenName': token_data_id.name,
                         'tokenCreator': token_data_id.creator,

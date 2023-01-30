@@ -406,6 +406,7 @@ model CurationExhibit {
     index             BigInt
     root              String
     galleryIndex      BigInt
+    curator           String                @default("") @db.VarChar(64)
     collection        String
     tokenCreator      String
     tokenName         String
@@ -460,4 +461,25 @@ model UserContact {
     user     User          @relation(fields: [id], references: [id])
     email    String?
     accounts Web2Account[]
+}
+
+enum NotificationType {
+    CurationOfferReceivedFromInviter
+    CurationOfferRejectedFromInvitee
+    CurationOfferAcceptedFromInvitee
+    CurationOfferExpired
+    CurationExhibitExpired
+    CurationExhibitListed
+    CurationExhibitCanceled
+    CurationExhibitSold
+}
+
+model Notification {
+    id        String           @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    title     String
+    content   String
+    image     String?
+    type      NotificationType
+    unread    Boolean          @default(true)
+    timestamp DateTime
 }
