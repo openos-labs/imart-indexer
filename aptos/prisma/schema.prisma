@@ -425,6 +425,7 @@ model CurationExhibit {
     status            CurationExhibitStatus
     updatedAt         DateTime
 
+    @@unique([index, root])
     @@unique([origin, collection, tokenCreator, tokenName, propertyVersion])
     @@index([status])
     @@index([galleryIndex])
