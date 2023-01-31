@@ -384,6 +384,8 @@ model CurationOffer {
     destination       String              @map("to")
     price             String
     commissionFeeRate String
+    currency          String              @default("APT")
+    decimals          Int                 @default(8)
     offerStartAt      DateTime
     offerExpiredAt    DateTime
     exhibitDuration   Int
@@ -414,6 +416,8 @@ model CurationExhibit {
     origin            String
     price             String
     commissionFeeRate String
+    currency          String                @default("APT")
+    decimals          Int                   @default(8)
     expiredAt         DateTime
     location          String
     url               String
