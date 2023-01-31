@@ -406,7 +406,7 @@ model CurationExhibit {
     index             BigInt
     root              String
     galleryIndex      BigInt
-    curator           String                @default("") @db.VarChar(64)
+    curator           String                @default("") @db.VarChar(66)
     collection        String
     tokenCreator      String
     tokenName         String
@@ -421,7 +421,7 @@ model CurationExhibit {
     status            CurationExhibitStatus
     updatedAt         DateTime
 
-    @@unique([index, root])
+    @@unique([origin, collection, tokenCreator, tokenName, propertyVersion])
     @@index([status])
     @@index([galleryIndex])
     @@index([galleryIndex, status])
@@ -476,7 +476,7 @@ enum NotificationType {
 
 model Notification {
     id        String           @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    receiver  String           @db.VarChar(64)
+    receiver  String           @db.VarChar(66)
     title     String
     content   String
     image     String?
