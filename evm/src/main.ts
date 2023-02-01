@@ -1,13 +1,11 @@
-import { Curation__factory, IMartToken__factory } from "./typechain";
+import { Curation__factory } from "./typechain";
 import { TypedEvent, TypedEventFilter } from "./typechain/common";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { Contract, State, StateFlow } from "./types";
 import { events, eventStream } from "./subject";
-import { PrismaClient } from "@prisma/client";
 import { delay } from "./utils/delay";
 import { Subject } from "rxjs";
 import {
-  CreationObserver,
   processEvents,
   ExhibitCanceledObserver,
   ExhibitFrozenObserver,
@@ -20,18 +18,15 @@ import {
   OfferCreatedObserver,
   OfferRejectedObserver,
 } from "./observer";
-import * as env from "dotenv";
-import { GalleryCreatedObserver } from "./observer/curation/gallery_created";
-env.config();
 
-const prisma = new PrismaClient();
-const { ALCHEMY_API, CONTRACT_CREATION, CONTRACT_CURATION, DURATION_SECS } =
-  process.env;
+import { GalleryCreatedObserver } from "./observer/curation/gallery_created";
+import { prisma } from "./io";
+import { ALCHEMY_API, CONTRACT_CURATION, DURATION_SECS } from "./config";
+
 const restPeriod = Number(DURATION_SECS);
 
 async function main() {
-  await creationWorkers();
-  // await curationWorkers();
+  await curationWorkers();
 }
 
 async function worker<T extends TypedEvent, F extends TypedEventFilter<T>>(
@@ -117,17 +112,6 @@ async function initialState(): Promise<State> {
   };
 }
 
-async function creationWorkers() {
-  const provider = new JsonRpcProvider(ALCHEMY_API);
-  const creation = IMartToken__factory.connect(CONTRACT_CREATION, provider);
-  await worker(
-    creation,
-    creation.filters.OwnershipTransferred(),
-    new CreationObserver(),
-    "create_token_excuted_offset"
-  );
-}
-
 async function curationWorkers() {
   const provider = new JsonRpcProvider(ALCHEMY_API);
   const Curation = Curation__factory.connect(CONTRACT_CURATION, provider);
@@ -138,7 +122,6 @@ async function curationWorkers() {
     new GalleryCreatedObserver(),
     "gallery_create_excuted_offset"
   );
-
   await worker(
     Curation,
     Curation.filters.OfferCreated(),

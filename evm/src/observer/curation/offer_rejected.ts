@@ -1,6 +1,9 @@
+import { CONTRACT_CURATION } from "../../config";
+import { prisma } from "../../io";
 import { TypedEvent } from "../../typechain/common";
+import { OfferRejectedEvent } from "../../typechain/Curation";
 import { State } from "../../types";
-import { Observer } from "../observer";
+import { handleError, Observer } from "../observer";
 
 export class OfferRejectedObserver extends Observer {
   async processAll<T extends TypedEvent>(
@@ -9,10 +12,47 @@ export class OfferRejectedObserver extends Observer {
   ): Promise<State> {
     return super.processAll(state, events);
   }
-  process<T extends TypedEvent>(
+  async process<T extends TypedEvent>(
     state: State,
     event: T
   ): Promise<{ success: boolean; state: State }> {
-    throw new Error("Method not implemented.");
+    const blockNo = BigInt(event.blockNumber);
+    const [id, _] = (event as OfferRejectedEvent).args;
+    const createOffer = prisma.curationOffer.update({
+      where: {
+        index_root: {
+          index: id.toBigInt(),
+          root: CONTRACT_CURATION,
+        },
+      },
+      data: {
+        status: "rejected",
+      },
+    });
+    const updateOffset = prisma.eventOffset.update({
+      where: {
+        id: 1,
+      },
+      data: {
+        curation_offer_reject_excuted_offset: blockNo,
+      },
+    });
+    try {
+      const [_, updatedState] = await prisma.$transaction([
+        createOffer,
+        updateOffset,
+      ]);
+      if (updatedState.curation_offer_reject_excuted_offset != blockNo) {
+        return { success: false, state };
+      }
+      const newState = {
+        ...state,
+        curation_offer_reject_excuted_offset: blockNo,
+      };
+      return { success: true, state: newState };
+    } catch (e) {
+      handleError(e);
+      return { success: false, state };
+    }
   }
 }

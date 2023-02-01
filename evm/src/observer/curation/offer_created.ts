@@ -1,6 +1,9 @@
+import { CONTRACT_CURATION } from "../../config";
+import { prisma } from "../../io";
 import { TypedEvent } from "../../typechain/common";
+import { OfferCreatedEvent } from "../../typechain/Curation";
 import { State } from "../../types";
-import { Observer } from "../observer";
+import { handleError, Observer } from "../observer";
 
 export class OfferCreatedObserver extends Observer {
   async processAll<T extends TypedEvent>(
@@ -9,10 +12,81 @@ export class OfferCreatedObserver extends Observer {
   ): Promise<State> {
     return super.processAll(state, events);
   }
-  process<T extends TypedEvent>(
+  async process<T extends TypedEvent>(
     state: State,
     event: T
   ): Promise<{ success: boolean; state: State }> {
-    throw new Error("Method not implemented.");
+    const blockNo = BigInt(event.blockNumber);
+    const [
+      id,
+      collection,
+      tokenId,
+      from,
+      to,
+      price,
+      galleryId,
+      commissionFeerate,
+      offerStartAt,
+      offerExpiredAt,
+      exhibitDuration,
+      url,
+      detail,
+    ] = (event as OfferCreatedEvent).args;
+    const createOffer = prisma.curationOffer.upsert({
+      where: {
+        index_root: {
+          index: id.toBigInt(),
+          root: CONTRACT_CURATION,
+        },
+      },
+      create: {
+        index: id.toBigInt(),
+        root: CONTRACT_CURATION,
+        galleryIndex: galleryId.toBigInt(),
+        collection,
+        tokenCreator: "",
+        tokenName: tokenId.toString(),
+        propertyVersion: 0,
+        source: from,
+        destination: to,
+        price: price.toString(),
+        commissionFeeRate: commissionFeerate.toString(),
+        currency: "0x0000000000000000000000000000000000000000",
+        decimals: 18,
+        offerStartAt: new Date(offerStartAt.toNumber()),
+        offerExpiredAt: new Date(offerExpiredAt.toNumber()),
+        exhibitDuration: exhibitDuration.toNumber(),
+        url,
+        detail,
+        status: "pending",
+        updatedAt: new Date(offerStartAt.toNumber()),
+      },
+      update: {},
+    });
+    const updateOffset = prisma.eventOffset.update({
+      where: {
+        id: 1,
+      },
+      data: {
+        curation_offer_create_excuted_offset: blockNo,
+      },
+    });
+    try {
+      const [_, updatedState] = await prisma.$transaction([
+        createOffer,
+        updateOffset,
+      ]);
+      if (updatedState.curation_offer_create_excuted_offset != blockNo) {
+        return { success: false, state };
+      }
+      const newState = {
+        ...state,
+        curation_offer_create_excuted_offset: blockNo,
+      };
+      return { success: true, state: newState };
+    } catch (e) {
+      handleError(e);
+      return { success: false, state };
+    }
   }
 }
