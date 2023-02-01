@@ -111,7 +111,7 @@ export declare namespace Curation {
     commissionFeeRate: PromiseOrValue<BigNumberish>;
     offerStartAt: PromiseOrValue<BigNumberish>;
     offerExpiredAt: PromiseOrValue<BigNumberish>;
-    exhibitDuration: PromiseOrValue<BigNumberish>;
+    exhibitExpiredAt: PromiseOrValue<BigNumberish>;
     url: PromiseOrValue<string>;
     detail: PromiseOrValue<string>;
     status: PromiseOrValue<BigNumberish>;
@@ -143,7 +143,7 @@ export declare namespace Curation {
     commissionFeeRate: BigNumber;
     offerStartAt: BigNumber;
     offerExpiredAt: BigNumber;
-    exhibitDuration: BigNumber;
+    exhibitExpiredAt: BigNumber;
     url: string;
     detail: string;
     status: number;
@@ -574,7 +574,7 @@ export interface OfferAcceptedEventObject {
   price: BigNumber;
   galleryId: BigNumber;
   commissionFeeRate: BigNumber;
-  exhibitDuration: BigNumber;
+  exhibitExpiredAt: BigNumber;
   timestamp: BigNumber;
 }
 export type OfferAcceptedEvent = TypedEvent<
@@ -621,7 +621,7 @@ export interface OfferCreatedEventObject {
   commissionFeeRate: BigNumber;
   offerStartAt: BigNumber;
   offerExpiredAt: BigNumber;
-  exhibitDuration: BigNumber;
+  exhibitExpiredAt: BigNumber;
   url: string;
   detail: string;
 }
@@ -836,7 +836,7 @@ export interface Curation extends BaseContract {
         commissionFeeRate: BigNumber;
         offerStartAt: BigNumber;
         offerExpiredAt: BigNumber;
-        exhibitDuration: BigNumber;
+        exhibitExpiredAt: BigNumber;
         url: string;
         detail: string;
         status: number;
@@ -886,7 +886,7 @@ export interface Curation extends BaseContract {
       price: PromiseOrValue<BigNumberish>,
       commissionFeeRate: PromiseOrValue<BigNumberish>,
       offerDuration: PromiseOrValue<BigNumberish>,
-      exhibitDuration: PromiseOrValue<BigNumberish>,
+      exhibitExpiredAt: PromiseOrValue<BigNumberish>,
       url: PromiseOrValue<string>,
       detail: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1061,7 +1061,7 @@ export interface Curation extends BaseContract {
       commissionFeeRate: BigNumber;
       offerStartAt: BigNumber;
       offerExpiredAt: BigNumber;
-      exhibitDuration: BigNumber;
+      exhibitExpiredAt: BigNumber;
       url: string;
       detail: string;
       status: number;
@@ -1111,7 +1111,7 @@ export interface Curation extends BaseContract {
     price: PromiseOrValue<BigNumberish>,
     commissionFeeRate: PromiseOrValue<BigNumberish>,
     offerDuration: PromiseOrValue<BigNumberish>,
-    exhibitDuration: PromiseOrValue<BigNumberish>,
+    exhibitExpiredAt: PromiseOrValue<BigNumberish>,
     url: PromiseOrValue<string>,
     detail: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1286,7 +1286,7 @@ export interface Curation extends BaseContract {
         commissionFeeRate: BigNumber;
         offerStartAt: BigNumber;
         offerExpiredAt: BigNumber;
-        exhibitDuration: BigNumber;
+        exhibitExpiredAt: BigNumber;
         url: string;
         detail: string;
         status: number;
@@ -1334,7 +1334,7 @@ export interface Curation extends BaseContract {
       price: PromiseOrValue<BigNumberish>,
       commissionFeeRate: PromiseOrValue<BigNumberish>,
       offerDuration: PromiseOrValue<BigNumberish>,
-      exhibitDuration: PromiseOrValue<BigNumberish>,
+      exhibitExpiredAt: PromiseOrValue<BigNumberish>,
       url: PromiseOrValue<string>,
       detail: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -1507,7 +1507,7 @@ export interface Curation extends BaseContract {
       price?: null,
       galleryId?: null,
       commissionFeeRate?: null,
-      exhibitDuration?: null,
+      exhibitExpiredAt?: null,
       timestamp?: null
     ): OfferAcceptedEventFilter;
     OfferAccepted(
@@ -1519,7 +1519,7 @@ export interface Curation extends BaseContract {
       price?: null,
       galleryId?: null,
       commissionFeeRate?: null,
-      exhibitDuration?: null,
+      exhibitExpiredAt?: null,
       timestamp?: null
     ): OfferAcceptedEventFilter;
 
@@ -1551,7 +1551,7 @@ export interface Curation extends BaseContract {
       commissionFeeRate?: null,
       offerStartAt?: null,
       offerExpiredAt?: null,
-      exhibitDuration?: null,
+      exhibitExpiredAt?: null,
       url?: null,
       detail?: null
     ): OfferCreatedEventFilter;
@@ -1566,7 +1566,7 @@ export interface Curation extends BaseContract {
       commissionFeeRate?: null,
       offerStartAt?: null,
       offerExpiredAt?: null,
-      exhibitDuration?: null,
+      exhibitExpiredAt?: null,
       url?: null,
       detail?: null
     ): OfferCreatedEventFilter;
@@ -1704,7 +1704,7 @@ export interface Curation extends BaseContract {
       price: PromiseOrValue<BigNumberish>,
       commissionFeeRate: PromiseOrValue<BigNumberish>,
       offerDuration: PromiseOrValue<BigNumberish>,
-      exhibitDuration: PromiseOrValue<BigNumberish>,
+      exhibitExpiredAt: PromiseOrValue<BigNumberish>,
       url: PromiseOrValue<string>,
       detail: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1849,7 +1849,7 @@ export interface Curation extends BaseContract {
       price: PromiseOrValue<BigNumberish>,
       commissionFeeRate: PromiseOrValue<BigNumberish>,
       offerDuration: PromiseOrValue<BigNumberish>,
-      exhibitDuration: PromiseOrValue<BigNumberish>,
+      exhibitExpiredAt: PromiseOrValue<BigNumberish>,
       url: PromiseOrValue<string>,
       detail: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
