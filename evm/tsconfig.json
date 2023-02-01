@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "lib": ["ES2020", "DOM"],
+    "target": "ES5",
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"],
+  "exclude": ["src/**/*.test.ts"],
+  "files": ["./hardhat.config.ts"]
+}
