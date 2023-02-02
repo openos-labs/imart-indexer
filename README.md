@@ -41,34 +41,36 @@
                                                  DB / Cache
 ```
 
-## Collection 数据导入
-
-脚本依赖于 prisma，先编辑 .env, 再执行
+## Ganerate prisma client
 
 ```
-// .env
-DB_URL="mysql://root:root@localhost:3306/imart"
+// evm
+cd ./evm
+npx prisma generate
+
+// aptos
+cd ./aptos
+python3 -m venv venv
+source venv/bin/activate
+prisma generate
 ```
 
-```python
-$ prisma db push
-$ prisma generate
-
-$ python3 -m bin.collection_data_gathering --account 0x1af632aeaa009748aa14c2271f8f9687d8cee0d91e4957e5cc575c856717bfde --node https://fullnode.testnet.aptoslabs.com/v1
-```
-
-## 部署
+## Deployment
 
 ```
-// build
-docker build -t imart-event-worker:v1 -f ./Dockerfile .
+// evm
+docker build -t event-worker-evm:v1 -f $PWD/evm/Dockerfile $PWD/evm
+docker compose up -d event-worker-evm
 
-// run
-docker run -d -v $PWD:/app/event-worker imart-event-worker:v1
+// aptos
+docker build -t event-worker-aptos:v1 -f $PWD/aptos/Dockerfile $PWD/aptos
+docker compose up -d event-worker-aptos
+
 ```
 
-## 日志
+## Log
 
 ```
-tail -n 10 error.log
+tail -n 10 evm/error.log
+tail -n 10 aptos/error.log
 ```
