@@ -21,9 +21,9 @@ import {
 
 import { GalleryCreatedObserver } from "./observer/curation/gallery_created";
 import { prisma } from "./io";
-import { ALCHEMY_API, CONTRACT_CURATION, DURATION_SECS } from "./config";
+import { ALCHEMY_API, CONTRACT_CURATION, DURATION_MILLIS } from "./config";
 
-const restPeriod = Number(DURATION_SECS);
+const restPeriod = Number(DURATION_MILLIS);
 
 async function main() {
   await curationWorkers();
