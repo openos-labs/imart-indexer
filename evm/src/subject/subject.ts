@@ -1,4 +1,5 @@
 import { Subject } from "rxjs";
+import { handleError } from "../observer";
 import { TypedEvent, TypedEventFilter } from "../typechain/common";
 import { State, Contract } from "../types";
 
@@ -13,6 +14,11 @@ export async function events<
   T extends TypedEvent,
   F extends TypedEventFilter<T>
 >(contract: Contract, filter: F, blockNo: number) {
-  const events = await contract.queryFilter(filter, blockNo);
-  return events as T[];
+  try {
+    const events = await contract.queryFilter(filter, blockNo);
+    return events as T[];
+  } catch (e) {
+    handleError(e);
+    return [];
+  }
 }
