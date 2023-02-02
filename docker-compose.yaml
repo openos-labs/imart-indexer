@@ -1,0 +1,16 @@
+version: '3.9'
+services:
+  event-worker-aptos:
+    working_dir: /app/event-worker-aptos
+    restart: always
+    image: event-worker-aptos:v1
+    volumes:
+      - ./aptos:/app/event-worker-aptos
+    command: /bin/sh -c "prisma generate  && python3 ./main.py"
+  event-worker-evm:
+    working_dir: /app/event-worker-evm
+    restart: always
+    image: event-worker-evm:v1
+    volumes:
+      - ./evm:/app/event-worker-evm
+    command: /bin/sh -c "npx prisma generate && yarn start"

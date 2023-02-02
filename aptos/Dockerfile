@@ -1,6 +1,6 @@
 FROM python:3
 
-WORKDIR /app/event-worker
+WORKDIR /app/event-worker-aptos
 
 COPY requirements.txt ./
 RUN pip3 install -r requirements.txt
