@@ -18,7 +18,7 @@ async function main() {
     ),
     "https://google.com",
     "{}",
-    { gasLimit: 200000, gasPrice: 250 }
+    { gasLimit: 400000, gasPrice: 1500000000 }
   );
   console.log(tx);
 }

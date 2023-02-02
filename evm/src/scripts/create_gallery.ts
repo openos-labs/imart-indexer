@@ -10,7 +10,7 @@ async function main() {
     "0x0000000000000000000000000000000000000000",
     BigNumber.from(0),
     "art",
-    "amovane2",
+    "alice2",
     "https://mixverse-spaces.s3.amazonaws.com/mixverse-gallery-1.json",
     false,
     { gasLimit: 250000, gasPrice: 1500000000 }

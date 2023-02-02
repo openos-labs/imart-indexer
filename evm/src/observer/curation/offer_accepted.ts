@@ -10,7 +10,10 @@ export class OfferAcceptedObserver extends Observer {
     state: State,
     events: T[]
   ): Promise<State> {
-    return super.processAll(state, events);
+    const newEvents = events.filter(
+      (e) => e.blockNumber > Number(state.curation_offer_accept_excuted_offset)
+    );
+    return super.processAll(state, newEvents);
   }
   async process<T extends TypedEvent>(
     state: State,
