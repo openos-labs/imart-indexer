@@ -13,9 +13,13 @@
     "build": "yarn generate-types",
     "start": "ts-node src/main.ts",
     "seed": "ts-node prisma/seed.ts",
-    "create-gallery": "ts-node src/scripts/create_gallery.ts",
-    "send-offer": "ts-node src/scripts/sent_offer.ts",
-    "create-token": "ts-node src/scripts/create_token.ts"
+    "script/create-token": "ts-node src/scripts/create_token.ts",
+    "script/create-gallery": "ts-node src/scripts/create_gallery.ts",
+    "script/send-offer": "ts-node src/scripts/sent_offer.ts",
+    "script/accept-offer": "ts-node src/scripts/accept_offer.ts",
+    "script/reject-offer": "ts-node src/scripts/reject_offer.ts",
+    "script/list-exhibit": "ts-node src/scripts/list_exhibit.ts",
+    "script/buy-exhibit": "ts-node src/scripts/buy_exhibit.ts"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.13.15",
