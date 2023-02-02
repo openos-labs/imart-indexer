@@ -68,7 +68,7 @@ export class OfferAcceptedObserver extends Observer {
         origin: to,
         price: price.toString(),
         commissionFeeRate: commissionFeeRate.toString(),
-        currency: "",
+        currency: "0x0000000000000000000000000000000000000000",
         decimals: 18,
         expiredAt: new Date(exhibitExpiredAt.toNumber() * 1000),
         location: "",
