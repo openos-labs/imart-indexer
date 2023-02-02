@@ -36,6 +36,7 @@ export class GalleryCreatedObserver extends Observer {
       data: {
         index: id.toBigInt(),
         root: CONTRACT_CURATION,
+        chain: "ETHEREUM",
         owner,
         spaceType,
         name,

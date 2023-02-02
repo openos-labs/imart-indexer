@@ -45,6 +45,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                 data={
                     'create': {
                         'id': new_uuid(),
+                        'chain': enums.Chain.APTOS,
                         'index': index,
                         'root': root,
                         'galleryIndex': gallery_index,
@@ -67,6 +68,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'detail': data.detail
                     },
                     'update': {
+                        'chain': enums.Chain.APTOS,
                         'galleryIndex': gallery_index,
                         'collection': token_data_id.collection,
                         'tokenName': token_data_id.name,

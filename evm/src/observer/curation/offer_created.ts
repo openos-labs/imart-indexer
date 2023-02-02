@@ -44,6 +44,7 @@ export class OfferCreatedObserver extends Observer {
       },
       create: {
         index: id.toBigInt(),
+        chain: "ETHEREUM",
         root: CONTRACT_CURATION,
         galleryIndex: galleryId.toBigInt(),
         collection,

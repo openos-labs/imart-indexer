@@ -6,6 +6,7 @@ from model.event import Event
 from common.db import prisma_client
 from config import config
 from common.util import new_uuid
+from prisma import enums
 
 
 class GalleryCreateEventObserver(Observer[GalleryCreateEvent]):
@@ -30,6 +31,7 @@ class GalleryCreateEventObserver(Observer[GalleryCreateEvent]):
                 data={
                     'create': {
                         'id': new_uuid(),
+                        'chain': enums.Chain.APTOS,
                         'index': index,
                         'root': config.curation.address(),
                         'name': data.name,
@@ -38,6 +40,7 @@ class GalleryCreateEventObserver(Observer[GalleryCreateEvent]):
                         'metadataUri': data.metadata_uri
                     },
                     'update': {
+                        'chain': enums.Chain.APTOS,
                         'name': data.name,
                         'owner': data.owner,
                         'spaceType': data.space_type,

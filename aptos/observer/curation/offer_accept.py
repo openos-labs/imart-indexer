@@ -57,6 +57,7 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                 data={
                     'create': {
                         'id': new_uuid(),
+                        'chain': enums.Chain.APTOS,
                         'index': index,
                         'root': config.curation.address(),
                         'galleryIndex': gallery_index,
@@ -78,6 +79,7 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                         'updatedAt': updated_at
                     },
                     'update': {
+                        'chain': enums.Chain.APTOS,
                         'galleryIndex': gallery_index,
                         'collection': token_data_id.collection,
                         'tokenName': token_data_id.name,

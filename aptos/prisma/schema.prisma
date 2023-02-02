@@ -132,6 +132,7 @@ enum Chain {
     IC
     FLOW
     APTOS
+    ETHEREUM
 }
 
 enum MetadataType {
@@ -373,6 +374,7 @@ enum CurationExhibitStatus {
 
 model CurationOffer {
     id                String              @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    chain             Chain               @default(APTOS)
     index             BigInt
     root              String
     galleryIndex      BigInt
@@ -405,6 +407,7 @@ model CurationOffer {
 
 model CurationExhibit {
     id                String                @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    chain             Chain                 @default(APTOS)
     index             BigInt
     root              String
     galleryIndex      BigInt
@@ -434,6 +437,7 @@ model CurationExhibit {
 
 model CurationGallery {
     id          String @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    chain       Chain  @default(APTOS)
     index       BigInt
     root        String
     owner       String
