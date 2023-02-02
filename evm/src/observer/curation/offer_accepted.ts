@@ -69,12 +69,12 @@ export class OfferAcceptedObserver extends Observer {
         commissionFeeRate: commissionFeeRate.toString(),
         currency: "",
         decimals: 18,
-        expiredAt: new Date(exhibitExpiredAt.toNumber()),
+        expiredAt: new Date(exhibitExpiredAt.toNumber() * 1000),
         location: "",
         url: offer.url,
         detail: offer.detail,
         status: "reserved",
-        updatedAt: new Date(timestamp.toNumber()),
+        updatedAt: new Date(timestamp.toNumber() * 1000),
       },
     });
 
