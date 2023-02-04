@@ -18,6 +18,205 @@ enum TxType {
     TRANSFER
 }
 
+enum Chain {
+    IC
+    FLOW
+    APTOS
+    ETHEREUM
+}
+
+enum MetadataType {
+    VIDEO
+    MUSIC
+    IMAGE
+    SPACE
+    OTHER
+}
+
+enum OrderStatus {
+    LISTING
+    SOLD
+    CANCELED
+}
+
+enum OfferStatus {
+    CREATED
+    ACCEPTED
+    CANCELED
+}
+
+enum SaleStatus {
+    UNAUDITED
+    UPCOMING
+    LIVE
+    ENDED
+}
+
+model User {
+    id             String       @id
+    publicKey      String?      @default("")
+    name           String?      @default("")
+    logo           String?      @default("")
+    cover          String?      @default("")
+    description    String?      @default("")
+    character      String?      @default("")
+    authentication Int          @default(0)
+    Message        Message[]
+    UserContact    UserContact?
+
+    @@index([publicKey])
+}
+
+model Collection {
+    id           String       @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    chain        Chain
+    metadataType MetadataType
+    category     String
+    contractName String
+    contract     String       @default("")
+    name         String
+    creator      String
+    description  String       @db.VarChar(400)
+    cover        String?      @default("")
+    logo         String?      @default("")
+    maximum      String       @default("0") @db.VarChar(78)
+    volume       String       @default("0") @db.VarChar(78)
+    floorPrice   String?      @default("0") @db.VarChar(78)
+    uri          String?      @default("")
+    supply       String       @default("0") @db.VarChar(78)
+    communities  Community[]
+    Sale         Sale[]
+
+    @@unique([chain, creator, name])
+    @@index([chain])
+    @@index([category])
+    @@index([metadataType])
+    @@index([chain, category])
+    @@index([chain, metadataType])
+}
+
+//**************************************************************************************************
+// IMart market - Aptos
+//**************************************************************************************************
+model AptosOrder {
+    id           String      @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    collectionId String      @db.VarChar(64)
+    seller       String      @db.VarChar(66)
+    buyer        String?     @db.VarChar(66)
+    price        String      @default("0") @db.VarChar(78)
+    quantity     String      @default("1") @db.VarChar(78)
+    currency     String      @default("")
+    status       OrderStatus
+    createTime   DateTime
+    seqno        String      @default("0") @db.VarChar(78)
+    token        AptosToken? @relation(fields: [tokenId], references: [id])
+    tokenId      String?     @db.VarChar(64)
+
+    @@unique([tokenId, seller, status, createTime])
+    @@index([collectionId])
+    @@index([tokenId])
+    @@index([collectionId, tokenId])
+    @@index([status])
+    @@index([seller])
+}
+
+model AptosToken {
+    id              String       @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    collectionId    String       @db.VarChar(64)
+    owner           String       @default("")
+    creator         String       @default("")
+    collection      String       @default("")
+    name            String       @default("")
+    description     String       @default("")
+    uri             String       @default("")
+    propertyVersion String       @default("0")
+    seqno           String       @default("0") @db.VarChar(78)
+    royalty         Json?        @default("{}")
+    AptosOrder      AptosOrder[]
+
+    @@unique([creator, name, collection, propertyVersion])
+    @@index([collectionId])
+    @@index([owner])
+}
+
+model AptosOffer {
+    id           String      @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    tokenId      String      @db.VarChar(64)
+    collectionId String      @db.VarChar(64)
+    price        String      @default("0") @db.VarChar(78)
+    currency     String
+    quantity     String?     @default("1") @db.VarChar(78)
+    openedAt     DateTime
+    endedAt      DateTime
+    offerer      String
+    status       OfferStatus
+
+    @@unique([tokenId, openedAt, offerer, status])
+    @@index([tokenId])
+    @@index([offerer])
+}
+
+model AptosActivity {
+    id           String   @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    orderId      String?  @db.VarChar(64)
+    tokenId      String   @db.VarChar(64)
+    collectionId String   @db.VarChar(64)
+    source       String?  @default("") @map("from")
+    destination  String?  @default("") @map("to")
+    txHash       String?  @default("")
+    txType       TxType
+    quantity     String?  @default("1") @db.VarChar(78)
+    price        String?  @default("0") @db.VarChar(78)
+    txTimestamp  DateTime
+
+    @@index([collectionId])
+    @@index([txType])
+    @@index([tokenId])
+    @@index([tokenId, txType, txTimestamp])
+    @@index([collectionId, txType, txTimestamp])
+}
+
+model Community {
+    id           String      @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    name         String
+    icon         String
+    link         String
+    Collection   Collection? @relation(fields: [collectionId], references: [id])
+    collectionId String?     @db.VarChar(64)
+}
+
+model Sale {
+    id               String     @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    status           SaleStatus
+    publicMintTime   DateTime
+    expirationTime   DateTime?
+    title            String
+    description      String
+    mintingEnabled   Boolean    @default(false)
+    tokenSupply      String     @default("0") @db.VarChar(78)
+    mintedTokenCount String     @default("0") @db.VarChar(78)
+    mintPrice        String     @default("0") @db.VarChar(78)
+    mintPayload      String
+    collectionId     String     @db.VarChar(64)
+    collection       Collection @relation(fields: [collectionId], references: [id])
+
+    @@index([status])
+}
+
+model Comment {
+    id           String   @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    collectionId String   @db.VarChar(64)
+    tokenId      String   @db.VarChar(64)
+    address      String   @db.VarChar(66)
+    content      String   @db.VarChar(400)
+    createTime   DateTime
+
+    @@index([address, collectionId, tokenId])
+}
+
+//**************************************************************************************************
+// Mixverse
+//**************************************************************************************************
 model Gallery {
     id          String   @id
     spaceType   String   @default("art")
@@ -110,111 +309,6 @@ model Decoration {
     @@index([user])
 }
 
-model Token {
-    id              String  @id @db.VarChar(66)
-    curationId      String? @default("") @db.VarChar(66)
-    collectionId    String  @db.VarChar(66)
-    collection      String
-    name            String
-    creator         String
-    owner           String
-    description     String  @default("") @db.VarChar(400)
-    image           String  @default("")
-    uri             String  @default("")
-    propertyVersion String  @default("0")
-
-    @@index([owner])
-    @@index([curationId])
-    @@index([collectionId])
-}
-
-enum Chain {
-    IC
-    FLOW
-    APTOS
-    ETHEREUM
-}
-
-enum MetadataType {
-    VIDEO
-    MUSIC
-    IMAGE
-    SPACE
-    OTHER
-}
-
-enum OrderStatus {
-    LISTING
-    SOLD
-    CANCELED
-}
-
-enum OfferStatus {
-    CREATED
-    ACCEPTED
-    CANCELED
-}
-
-enum SaleStatus {
-    UNAUDITED
-    UPCOMING
-    LIVE
-    ENDED
-}
-
-model Community {
-    id           String      @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    name         String
-    icon         String
-    link         String
-    Collection   Collection? @relation(fields: [collectionId], references: [id])
-    collectionId String?     @db.VarChar(64)
-}
-
-model Sale {
-    id               String     @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    status           SaleStatus
-    publicMintTime   DateTime
-    expirationTime   DateTime?
-    title            String
-    description      String
-    mintingEnabled   Boolean    @default(false)
-    tokenSupply      String     @default("0") @db.VarChar(78)
-    mintedTokenCount String     @default("0") @db.VarChar(78)
-    mintPrice        String     @default("0") @db.VarChar(78)
-    mintPayload      String
-    collectionId     String     @db.VarChar(64)
-    collection       Collection @relation(fields: [collectionId], references: [id])
-
-    @@index([status])
-}
-
-model Comment {
-    id           String   @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    collectionId String   @db.VarChar(64)
-    tokenId      String   @db.VarChar(64)
-    address      String   @db.VarChar(66)
-    content      String   @db.VarChar(400)
-    createTime   DateTime
-
-    @@index([address, collectionId, tokenId])
-}
-
-model User {
-    id             String       @id
-    publicKey      String?      @default("")
-    name           String?      @default("")
-    logo           String?      @default("")
-    cover          String?      @default("")
-    description    String?      @default("")
-    character      String?      @default("")
-    authentication Int          @default(0)
-    Message        Message[]
-    UserContact    UserContact?
-
-    @@index([publicKey])
-}
-
 model Message {
     id         String   @id @default(dbgenerated("(uuid())")) @db.VarChar(66)
     galleryId  String
@@ -227,134 +321,9 @@ model Message {
     @@index([galleryId])
 }
 
-model Collection {
-    id           String       @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    chain        Chain
-    metadataType MetadataType
-    category     String
-    contractName String
-    contract     String       @default("")
-    name         String
-    creator      String
-    description  String       @db.VarChar(400)
-    cover        String?      @default("")
-    logo         String?      @default("")
-    maximum      String       @default("0") @db.VarChar(78)
-    volume       String       @default("0") @db.VarChar(78)
-    floorPrice   String?      @default("0") @db.VarChar(78)
-    uri          String?      @default("")
-    supply       String       @default("0") @db.VarChar(78)
-    communities  Community[]
-    Sale         Sale[]
-
-    @@unique([chain, creator, name])
-    @@index([chain])
-    @@index([category])
-    @@index([metadataType])
-    @@index([chain, category])
-    @@index([chain, metadataType])
-}
-
 //**************************************************************************************************
-// Aptos
+// Mixverse x IMart: Curation
 //**************************************************************************************************
-model AptosOrder {
-    id           String      @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    collectionId String      @db.VarChar(64)
-    seller       String      @db.VarChar(66)
-    buyer        String?     @db.VarChar(66)
-    price        String      @default("0") @db.VarChar(78)
-    quantity     String      @default("1") @db.VarChar(78)
-    currency     String      @default("")
-    status       OrderStatus
-    createTime   DateTime
-    seqno        String      @default("0") @db.VarChar(78)
-    token        AptosToken? @relation(fields: [tokenId], references: [id])
-    tokenId      String?     @db.VarChar(64)
-
-    @@unique([tokenId, seller, status, createTime])
-    @@index([collectionId])
-    @@index([tokenId])
-    @@index([collectionId, tokenId])
-    @@index([status])
-    @@index([seller])
-}
-
-model AptosToken {
-    id              String       @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    collectionId    String       @db.VarChar(64)
-    owner           String       @default("")
-    creator         String       @default("")
-    collection      String       @default("")
-    name            String       @default("")
-    description     String       @default("")
-    uri             String       @default("")
-    propertyVersion String       @default("0")
-    seqno           String       @default("0") @db.VarChar(78)
-    AptosOrder      AptosOrder[]
-
-    @@unique([creator, name, collection, propertyVersion])
-    @@index([collectionId])
-    @@index([owner])
-}
-
-model AptosOffer {
-    id           String      @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    tokenId      String      @db.VarChar(64)
-    collectionId String      @db.VarChar(64)
-    price        String      @default("0") @db.VarChar(78)
-    currency     String
-    quantity     String?     @default("1") @db.VarChar(78)
-    openedAt     DateTime
-    endedAt      DateTime
-    offerer      String
-    status       OfferStatus
-
-    @@unique([tokenId, openedAt, offerer, status])
-    @@index([tokenId])
-    @@index([offerer])
-}
-
-model AptosActivity {
-    id           String   @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    orderId      String?  @db.VarChar(64)
-    tokenId      String   @db.VarChar(64)
-    collectionId String   @db.VarChar(64)
-    source       String?  @default("") @map("from")
-    destination  String?  @default("") @map("to")
-    txHash       String?  @default("")
-    txType       TxType
-    quantity     String?  @default("1") @db.VarChar(78)
-    price        String?  @default("0") @db.VarChar(78)
-    txTimestamp  DateTime
-
-    @@index([collectionId])
-    @@index([txType])
-    @@index([tokenId])
-    @@index([tokenId, txType, txTimestamp])
-    @@index([collectionId, txType, txTimestamp])
-}
-
-model EventOffset {
-    id                                   Int    @id @default(0)
-    buy_event_excuted_offset             BigInt @default(-1)
-    list_event_excuted_offset            BigInt @default(-1)
-    delist_event_excuted_offset          BigInt @default(-1)
-    create_offer_excuted_offset          BigInt @default(-1)
-    accept_offer_excuted_offset          BigInt @default(-1)
-    cancel_offer_excuted_offset          BigInt @default(-1)
-    create_token_excuted_offset          BigInt @default(-1)
-    gallery_create_excuted_offset        BigInt @default(-1)
-    exhibit_list_excuted_offset          BigInt @default(-1)
-    exhibit_cancel_excuted_offset        BigInt @default(-1)
-    exhibit_freeze_excuted_offset        BigInt @default(-1)
-    exhibit_redeem_excuted_offset        BigInt @default(-1)
-    exhibit_buy_excuted_offset           BigInt @default(-1)
-    curation_offer_create_excuted_offset BigInt @default(-1)
-    curation_offer_accept_excuted_offset BigInt @default(-1)
-    curation_offer_reject_excuted_offset BigInt @default(-1)
-    curation_offer_cancel_excuted_offset BigInt @default(-1)
-}
 
 enum CurationOfferStatus {
     pending
@@ -497,4 +466,25 @@ model Notification {
     @@unique([receiver, type, timestamp])
     @@index([receiver])
     @@index([receiver, unread])
+}
+
+model EventOffset {
+    id                                   Int    @id @default(0)
+    buy_event_excuted_offset             BigInt @default(-1)
+    list_event_excuted_offset            BigInt @default(-1)
+    delist_event_excuted_offset          BigInt @default(-1)
+    create_offer_excuted_offset          BigInt @default(-1)
+    accept_offer_excuted_offset          BigInt @default(-1)
+    cancel_offer_excuted_offset          BigInt @default(-1)
+    create_token_excuted_offset          BigInt @default(-1)
+    gallery_create_excuted_offset        BigInt @default(-1)
+    exhibit_list_excuted_offset          BigInt @default(-1)
+    exhibit_cancel_excuted_offset        BigInt @default(-1)
+    exhibit_freeze_excuted_offset        BigInt @default(-1)
+    exhibit_redeem_excuted_offset        BigInt @default(-1)
+    exhibit_buy_excuted_offset           BigInt @default(-1)
+    curation_offer_create_excuted_offset BigInt @default(-1)
+    curation_offer_accept_excuted_offset BigInt @default(-1)
+    curation_offer_reject_excuted_offset BigInt @default(-1)
+    curation_offer_cancel_excuted_offset BigInt @default(-1)
 }
