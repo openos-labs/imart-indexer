@@ -54,6 +54,7 @@ from subject.offer.create import CreateOfferSubject
 from subject.offer.cancel import CancelOfferSubject
 from subject.offer.accept import AcceptOfferSubject
 from subject.creation.create_token import CreateTokenSubject
+from subject.creation.create_collection import CreateCollectionSubject
 from model.state import State, initial_state
 from observer.curation.exhibit_buy import ExhibitBuyEventObserver
 from observer.curation.exhibit_freeze import ExhibitFreezeEventObserver
@@ -73,6 +74,7 @@ from observer.offer.cancel import CancelOfferEventObserver
 from observer.offer.accept import AcceptOfferEventObserver
 from observer.observer import Observer
 from observer.creation.token import CreateTokenEventObserver
+from observer.creation.collection import CreateCollectionEventObserver
 import asyncio
 import logging
 from typing import Tuple
@@ -87,6 +89,7 @@ subject_to_observer = {
     "CancelOfferSubject": CancelOfferEventObserver(),
     "AcceptOfferSubject": AcceptOfferEventObserver(),
     "CreateTokenSubject": CreateTokenEventObserver(),
+    "CreateCollectionSubject": CreateCollectionEventObserver(),
     "GalleryCreateSubject": GalleryCreateEventObserver(),
     "OfferCreateSubject": OfferCreateEventObserver(),
     "OfferAcceptSubject": OfferAcceptEventObserver(),
@@ -106,7 +109,8 @@ event_to_subject = {
     "offer_token_events": CreateOfferSubject(),
     "accept_offer_events": AcceptOfferSubject(),
     "cancel_offer_events": CancelOfferSubject(),
-    "create_events": CreateTokenSubject(),
+    "token_created_events": CreateTokenSubject(),
+    "collection_created_events": CreateCollectionSubject(),
     "gallery_created_events": GalleryCreateSubject(),
     "offer_created_events": OfferCreateSubject(),
     "offer_accepted_events": OfferAcceptSubject(),
