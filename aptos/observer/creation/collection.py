@@ -1,5 +1,5 @@
 from typing import List, Tuple
-from aptos.common.util import primary_key_of_collection
+from common.util import primary_key_of_collection
 from observer.observer import Observer
 from model.creation.create_collection_event import CreateCollectionEvent, CreateCollectionEventData
 from model.state import State
