@@ -54,10 +54,6 @@ class Dumper:
         maximum = data['maximum']
         maximum = min(sys.maxsize, int(maximum))
         description = data['description']
-        rawCollectionId = {
-            "creator": creator,
-            "name": name
-        }
         try:
             result = await prisma_client.collection.upsert(
                 where={
@@ -69,7 +65,7 @@ class Dumper:
                 },
                 data={
                     'create': {
-                        'id': primary_key_of_collection(creator, name),
+                        'id': primary_key_of_collection('', creator, name),
                         'chain': enums.Chain.APTOS,
                         'metadataType': enums.MetadataType.IMAGE,
                         'category': '',
@@ -130,7 +126,7 @@ class Dumper:
                     'creator_name_collection_propertyVersion': rawTokenId
                 }, data={
                     'create': {
-                        'id': primary_key_of_token(creator, collection, name),
+                        'id': primary_key_of_token('', creator, collection, name),
                         'collectionId': result.id,
                         'collection': collection,
                         'name': name,

@@ -8,7 +8,7 @@ class CreateTokenEventData:
     description: str
     name: str
     uri: str
-    user: str
+    creator: str
     token_id: TokenId
 
 

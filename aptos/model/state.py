@@ -21,6 +21,8 @@ class Offset:
     curation_offer_accept_excuted_offset: int
     curation_offer_reject_excuted_offset: int
     curation_offer_cancel_excuted_offset: int
+    creation_token_created_excuted_offset: int
+    creation_collection_created_excuted_offset: int
 
 
 @dataclass
@@ -30,7 +32,7 @@ class State:
 
 
 def empty_offset() -> Offset:
-    return Offset(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1)
+    return Offset(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1)
 
 
 async def initial_state() -> State:
@@ -55,7 +57,9 @@ async def initial_state() -> State:
                 'curation_offer_create_excuted_offset': -1,
                 'curation_offer_accept_excuted_offset': -1,
                 'curation_offer_reject_excuted_offset': -1,
-                'curation_offer_cancel_excuted_offset': -1
+                'curation_offer_cancel_excuted_offset': -1,
+                'creation_token_created_excuted_offset': -1,
+                'creation_collection_created_excuted_offset': -1
             }
         )
         return State(new_offset=empty_offset(), old_offset=empty_offset())
@@ -76,7 +80,9 @@ async def initial_state() -> State:
         offset.curation_offer_create_excuted_offset,
         offset.curation_offer_accept_excuted_offset,
         offset.curation_offer_reject_excuted_offset,
-        offset.curation_offer_cancel_excuted_offset
+        offset.curation_offer_cancel_excuted_offset,
+        offset.creation_token_created_excuted_offset,
+        offset.creation_collection_created_excuted_offset
     )
 
     return State(new_offset=new_offset, old_offset=empty_offset())

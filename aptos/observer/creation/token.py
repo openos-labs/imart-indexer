@@ -9,8 +9,6 @@ from common.db import prisma_client
 from prisma import enums
 from common.util import primary_key_of_token
 
-DEFAULT_CREATOR = "0x94961b26c3541d4be6638913335da22cf3c45aa3d44ff110d9df8890c0c1a34b"
-
 
 class CreateTokenEventObserver(Observer[CreateTokenEvent]):
 
@@ -38,9 +36,9 @@ class CreateTokenEventObserver(Observer[CreateTokenEvent]):
 
             result = await transaction.aptostoken.create(
                 data={
-                    'id': primary_key_of_token(data.user, token_data_id.collection, data.name),
+                    'id': primary_key_of_token('', data.creator, token_data_id.collection, data.name),
                     'collectionId': collection.id,
-                    'owner': data.user,
+                    'owner': data.creator,
                     'creator': token_data_id.creator,
                     'collection': token_data_id.collection,
                     'name': data.name,
@@ -57,11 +55,11 @@ class CreateTokenEventObserver(Observer[CreateTokenEvent]):
             updated_offset = await transaction.eventoffset.update(
                 where={'id': 0},
                 data={
-                    "create_token_excuted_offset": int(seqno)
+                    "creation_token_created_excuted_offset": int(seqno)
                 }
             )
             if updated_offset == None:
                 raise Exception(f'[Create token]: Failed to update offset')
 
-            new_state.new_offset.create_token_excuted_offset = updated_offset.create_token_excuted_offset
+            new_state.new_offset.creation_token_created_excuted_offset = updated_offset.creation_token_created_excuted_offset
             return new_state, True

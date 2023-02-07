@@ -24,7 +24,7 @@ async def main():
                     },
                     data={
                         'create': {
-                            'id': primary_key_of_collection(item['creator'], item['name']),
+                            'id': primary_key_of_collection('', item['creator'], item['name']),
                             'chain': enums.Chain.APTOS,
                             'metadataType': enums.MetadataType.IMAGE,
                             'category': '',

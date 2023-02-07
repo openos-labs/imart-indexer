@@ -72,6 +72,7 @@ model Collection {
     chain        Chain
     metadataType MetadataType
     category     String
+    tags         String       @default("")
     contractName String
     contract     String       @default("")
     name         String
@@ -84,6 +85,7 @@ model Collection {
     floorPrice   String?      @default("0") @db.VarChar(78)
     uri          String?      @default("")
     supply       String       @default("0") @db.VarChar(78)
+    royalty      Json?        @default("{}")
     communities  Community[]
     Sale         Sale[]
 
@@ -469,22 +471,24 @@ model Notification {
 }
 
 model EventOffset {
-    id                                   Int    @id @default(0)
-    buy_event_excuted_offset             BigInt @default(-1)
-    list_event_excuted_offset            BigInt @default(-1)
-    delist_event_excuted_offset          BigInt @default(-1)
-    create_offer_excuted_offset          BigInt @default(-1)
-    accept_offer_excuted_offset          BigInt @default(-1)
-    cancel_offer_excuted_offset          BigInt @default(-1)
-    create_token_excuted_offset          BigInt @default(-1)
-    gallery_create_excuted_offset        BigInt @default(-1)
-    exhibit_list_excuted_offset          BigInt @default(-1)
-    exhibit_cancel_excuted_offset        BigInt @default(-1)
-    exhibit_freeze_excuted_offset        BigInt @default(-1)
-    exhibit_redeem_excuted_offset        BigInt @default(-1)
-    exhibit_buy_excuted_offset           BigInt @default(-1)
-    curation_offer_create_excuted_offset BigInt @default(-1)
-    curation_offer_accept_excuted_offset BigInt @default(-1)
-    curation_offer_reject_excuted_offset BigInt @default(-1)
-    curation_offer_cancel_excuted_offset BigInt @default(-1)
+    id                                         Int    @id @default(0)
+    buy_event_excuted_offset                   BigInt @default(-1)
+    list_event_excuted_offset                  BigInt @default(-1)
+    delist_event_excuted_offset                BigInt @default(-1)
+    create_offer_excuted_offset                BigInt @default(-1)
+    accept_offer_excuted_offset                BigInt @default(-1)
+    cancel_offer_excuted_offset                BigInt @default(-1)
+    create_token_excuted_offset                BigInt @default(-1)
+    gallery_create_excuted_offset              BigInt @default(-1)
+    exhibit_list_excuted_offset                BigInt @default(-1)
+    exhibit_cancel_excuted_offset              BigInt @default(-1)
+    exhibit_freeze_excuted_offset              BigInt @default(-1)
+    exhibit_redeem_excuted_offset              BigInt @default(-1)
+    exhibit_buy_excuted_offset                 BigInt @default(-1)
+    curation_offer_create_excuted_offset       BigInt @default(-1)
+    curation_offer_accept_excuted_offset       BigInt @default(-1)
+    curation_offer_reject_excuted_offset       BigInt @default(-1)
+    curation_offer_cancel_excuted_offset       BigInt @default(-1)
+    creation_token_created_excuted_offset      BigInt @default(-1)
+    creation_collection_created_excuted_offset BigInt @default(-1)
 }

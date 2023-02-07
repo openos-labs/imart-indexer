@@ -13,9 +13,10 @@ offer:
     - accept_offer_events
     - cancel_offer_events
 creation:
-  event_handle: 0xc842c666c8e6b0bab13d8c71ef1fcb15f5d84700aba44691322854f360055883::creation::CreationEvents
+  event_handle: f24eccf903734362487736c594ee3023049f081d8403d2c73b5932dc43283545::creation::CreationEvents
   event_fields:
-    - create_events
+    - token_created_events
+    - collection_created_events
 curation:
   event_handle: 0xc842c666c8e6b0bab13d8c71ef1fcb15f5d84700aba44691322854f360055883::curation::CurationEvents
   event_fields:
