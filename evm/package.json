@@ -14,6 +14,7 @@
     "start": "ts-node src/main.ts",
     "seed": "ts-node prisma/seed.ts",
     "script/create-token": "ts-node src/scripts/create_token.ts",
+    "script/create-collection": "ts-node src/scripts/create_collection.ts",
     "script/create-gallery": "ts-node src/scripts/create_gallery.ts",
     "script/send-offer": "ts-node src/scripts/sent_offer.ts",
     "script/accept-offer": "ts-node src/scripts/accept_offer.ts",

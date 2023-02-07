@@ -34,7 +34,7 @@ export class CreateCollectionObserver extends Observer {
     ] = (event as CollectionCreatedEvent).args;
     const royalty = {};
     for (let i = 0; i < payees.length; i++) {
-      royalty[payees[i]] = royalties[i];
+      royalty[payees[i]] = royalties[i].toString();
     }
     const createCollection = prisma.collection.upsert({
       where: {

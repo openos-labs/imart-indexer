@@ -14,11 +14,16 @@ const IMartCollective = IMartCollective__factory.connect(
   provider
 );
 async function main() {
-  const tx = await IMartCollective.connect(signer).mint(
-    "",
-    signer.address,
+  const tx = await IMartCollective.connect(signer).createCollection(
+    "test",
+    "category",
+    ["tags"],
+    "test desc",
     "https://mixverse-spaces.s3.amazonaws.com/mixverse-gallery-1.json",
-    { gasLimit: 3050000, gasPrice: 1500000000 }
+    [signer.address],
+    [ethers.utils.parseEther("0.001")],
+    10,
+    { gasLimit: 5050000, gasPrice: 1500000000 }
   );
   console.log(tx);
 }
