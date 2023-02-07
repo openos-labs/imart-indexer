@@ -491,4 +491,6 @@ model EventOffset {
     curation_offer_cancel_excuted_offset       BigInt @default(-1)
     creation_token_created_excuted_offset      BigInt @default(-1)
     creation_collection_created_excuted_offset BigInt @default(-1)
+    single_collective_created_excuted_offset   BigInt @default(-1)
+    multiple_collective_created_excuted_offset BigInt @default(-1)
 }
