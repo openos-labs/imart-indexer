@@ -1,5 +1,4 @@
 from typing import List, Tuple
-from config import config
 from model.token_id import TokenDataId, TokenId
 from observer.observer import Observer
 from model.creation.create_token_event import CreateTokenEvent, CreateTokenEventData
@@ -24,7 +23,7 @@ class CreateTokenEventObserver(Observer[CreateTokenEvent]):
         collection = await prisma_client.collection.find_unique(where={
             'chain_creator_name': {
                 'chain': enums.Chain.APTOS,
-                'creator': config.creation.address(),
+                'creator': data.creator,
                 'name': token_data_id.collection,
             }
         })
