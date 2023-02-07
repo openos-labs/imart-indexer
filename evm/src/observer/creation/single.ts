@@ -4,14 +4,14 @@ import { CollectionCreatedEvent } from "../../typechain/IMartCollective";
 import { State } from "../../types";
 import { handleError, Observer } from "../observer";
 
-export class CreateCollectionObserver extends Observer {
+export class SingleCollectiveCreateObserver extends Observer {
   async processAll<T extends TypedEvent>(
     state: State,
     events: T[]
   ): Promise<State> {
     const newEvents = events.filter(
       (e) =>
-        e.blockNumber > Number(state.creation_collection_created_excuted_offset)
+        e.blockNumber > Number(state.single_collective_created_excuted_offset)
     );
     return super.processAll(state, newEvents);
   }
@@ -72,7 +72,7 @@ export class CreateCollectionObserver extends Observer {
         id: 1,
       },
       data: {
-        creation_collection_created_excuted_offset: blockNo,
+        single_collective_created_excuted_offset: blockNo,
       },
     });
     try {
@@ -80,12 +80,12 @@ export class CreateCollectionObserver extends Observer {
         createCollection,
         updateState,
       ]);
-      if (updatedState.creation_collection_created_excuted_offset != blockNo) {
+      if (updatedState.single_collective_created_excuted_offset != blockNo) {
         return { success: false, state };
       }
       const newState = {
         ...state,
-        creation_collection_created_excuted_offset: blockNo,
+        single_collective_created_excuted_offset: blockNo,
       };
       return { success: true, state: newState };
     } catch (e) {

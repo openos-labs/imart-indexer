@@ -1,5 +1,5 @@
 import { Subject } from "rxjs";
-import { IMartCollective, Curation } from "./typechain";
+import { MultipleCollective, SingleCollective, Curation } from "./typechain";
 
 export type State = {
   // buy_event_excuted_offset: bigint;
@@ -21,8 +21,10 @@ export type State = {
   curation_offer_cancel_excuted_offset: bigint;
   creation_token_created_excuted_offset: bigint;
   creation_collection_created_excuted_offset: bigint;
+  single_collective_created_excuted_offset: bigint;
+  multiple_collective_created_excuted_offset: bigint;
 };
 
 export type StateFlow = Subject<State>;
 
-export type Contract = IMartCollective | Curation;
+export type Contract = MultipleCollective | SingleCollective | Curation;

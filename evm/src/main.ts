@@ -1,4 +1,8 @@
-import { Curation__factory, IMartCollective__factory } from "./typechain";
+import {
+  Curation__factory,
+  SingleCollective__factory,
+  MultipleCollective__factory,
+} from "./typechain";
 import { TypedEvent, TypedEventFilter } from "./typechain/common";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { Contract, State, StateFlow } from "./types";
@@ -17,15 +21,17 @@ import {
   OfferCanceledObserver,
   OfferCreatedObserver,
   OfferRejectedObserver,
-  CreateCollectionObserver,
+  SingleCollectiveCreateObserver,
+  MultipleCollectiveCreateObserver,
 } from "./observer";
 
 import { GalleryCreatedObserver } from "./observer/curation/gallery_created";
 import { prisma } from "./io";
 import {
   ALCHEMY_API,
-  CONTRACT_CREATION,
   CONTRACT_CURATION,
+  CONTRACT_MULTIPLE_COLLECTIVE,
+  CONTRACT_SINGLE_COLLECTIVE,
   DURATION_MILLIS,
 } from "./config";
 
@@ -105,6 +111,8 @@ async function initialState(): Promise<State> {
     exhibit_freeze_excuted_offset,
     exhibit_cancel_excuted_offset,
     gallery_create_excuted_offset,
+    single_collective_created_excuted_offset,
+    multiple_collective_created_excuted_offset,
   } = execution;
   return {
     create_token_excuted_offset,
@@ -120,20 +128,33 @@ async function initialState(): Promise<State> {
     gallery_create_excuted_offset,
     creation_token_created_excuted_offset,
     creation_collection_created_excuted_offset,
+    single_collective_created_excuted_offset,
+    multiple_collective_created_excuted_offset,
   };
 }
 
 async function creationWorkers() {
   const provider = new JsonRpcProvider(ALCHEMY_API);
-  const Creation = IMartCollective__factory.connect(
-    CONTRACT_CREATION,
+  const SingleCollective = SingleCollective__factory.connect(
+    CONTRACT_SINGLE_COLLECTIVE,
     provider
   );
   await worker(
-    Creation,
-    Creation.filters.CollectionCreated(),
-    new CreateCollectionObserver(),
-    "creation_collection_created_excuted_offset"
+    SingleCollective,
+    SingleCollective.filters.CollectionCreated(),
+    new SingleCollectiveCreateObserver(),
+    "single_collective_created_excuted_offset"
+  );
+
+  const MultipleCollective = MultipleCollective__factory.connect(
+    CONTRACT_MULTIPLE_COLLECTIVE,
+    provider
+  );
+  await worker(
+    MultipleCollective,
+    MultipleCollective.filters.CollectionCreated(),
+    new MultipleCollectiveCreateObserver(),
+    "multiple_collective_created_excuted_offset"
   );
 }
 

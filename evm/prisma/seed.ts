@@ -25,6 +25,8 @@ async function main() {
       curation_offer_cancel_excuted_offset: blockNo,
       creation_token_created_excuted_offset: blockNo,
       creation_collection_created_excuted_offset: blockNo,
+      single_collective_created_excuted_offset: blockNo,
+      multiple_collective_created_excuted_offset: blockNo,
     },
     create: {
       id: 1,
@@ -47,6 +49,8 @@ async function main() {
       curation_offer_cancel_excuted_offset: blockNo,
       creation_token_created_excuted_offset: blockNo,
       creation_collection_created_excuted_offset: blockNo,
+      single_collective_created_excuted_offset: blockNo,
+      multiple_collective_created_excuted_offset: blockNo,
     },
   });
   console.log(result);
