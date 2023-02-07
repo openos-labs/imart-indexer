@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 async function main() {
   const client = new PrismaClient();
-  const blockNo = 8399151;
+  const blockNo = 8446918;
   const result = await client.eventOffset.upsert({
     where: { id: 1 },
     update: {
@@ -23,6 +23,8 @@ async function main() {
       curation_offer_accept_excuted_offset: blockNo,
       curation_offer_reject_excuted_offset: blockNo,
       curation_offer_cancel_excuted_offset: blockNo,
+      creation_token_created_excuted_offset: blockNo,
+      creation_collection_created_excuted_offset: blockNo,
     },
     create: {
       id: 1,
@@ -43,6 +45,8 @@ async function main() {
       curation_offer_accept_excuted_offset: blockNo,
       curation_offer_reject_excuted_offset: blockNo,
       curation_offer_cancel_excuted_offset: blockNo,
+      creation_token_created_excuted_offset: blockNo,
+      creation_collection_created_excuted_offset: blockNo,
     },
   });
   console.log(result);

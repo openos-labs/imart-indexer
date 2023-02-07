@@ -1,4 +1,4 @@
-import { Curation__factory } from "./typechain";
+import { Curation__factory, IMartCollective__factory } from "./typechain";
 import { TypedEvent, TypedEventFilter } from "./typechain/common";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { Contract, State, StateFlow } from "./types";
@@ -17,15 +17,22 @@ import {
   OfferCanceledObserver,
   OfferCreatedObserver,
   OfferRejectedObserver,
+  CreateCollectionObserver,
 } from "./observer";
 
 import { GalleryCreatedObserver } from "./observer/curation/gallery_created";
 import { prisma } from "./io";
-import { ALCHEMY_API, CONTRACT_CURATION, DURATION_MILLIS } from "./config";
+import {
+  ALCHEMY_API,
+  CONTRACT_CREATION,
+  CONTRACT_CURATION,
+  DURATION_MILLIS,
+} from "./config";
 
 const restPeriod = Number(DURATION_MILLIS);
 
 async function main() {
+  await creationWorkers();
   await curationWorkers();
 }
 
@@ -85,6 +92,8 @@ async function initialState(): Promise<State> {
     throw new Error("Missing initial state");
   }
   const {
+    creation_collection_created_excuted_offset,
+    creation_token_created_excuted_offset,
     create_token_excuted_offset,
     curation_offer_accept_excuted_offset,
     curation_offer_cancel_excuted_offset,
@@ -109,7 +118,23 @@ async function initialState(): Promise<State> {
     exhibit_freeze_excuted_offset,
     exhibit_cancel_excuted_offset,
     gallery_create_excuted_offset,
+    creation_token_created_excuted_offset,
+    creation_collection_created_excuted_offset,
   };
+}
+
+async function creationWorkers() {
+  const provider = new JsonRpcProvider(ALCHEMY_API);
+  const Creation = IMartCollective__factory.connect(
+    CONTRACT_CREATION,
+    provider
+  );
+  await worker(
+    Creation,
+    Creation.filters.CollectionCreated(),
+    new CreateCollectionObserver(),
+    "creation_collection_created_excuted_offset"
+  );
 }
 
 async function curationWorkers() {

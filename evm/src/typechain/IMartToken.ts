@@ -31,6 +31,7 @@ export interface IMartTokenInterface extends utils.Interface {
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "currentTokenId()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
@@ -56,6 +57,7 @@ export interface IMartTokenInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "approve"
       | "balanceOf"
+      | "currentTokenId"
       | "getApproved"
       | "isApprovedForAll"
       | "name"
@@ -84,6 +86,10 @@ export interface IMartTokenInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "balanceOf",
     values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "currentTokenId",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getApproved",
@@ -168,6 +174,10 @@ export interface IMartTokenInterface extends utils.Interface {
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "currentTokenId",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
@@ -326,6 +336,8 @@ export interface IMartToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    currentTokenId(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -352,7 +364,7 @@ export interface IMartToken extends BaseContract {
 
     safeMint(
       to: PromiseOrValue<string>,
-      uri: PromiseOrValue<string>,
+      _uri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -431,6 +443,8 @@ export interface IMartToken extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  currentTokenId(overrides?: CallOverrides): Promise<BigNumber>;
+
   getApproved(
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -457,7 +471,7 @@ export interface IMartToken extends BaseContract {
 
   safeMint(
     to: PromiseOrValue<string>,
-    uri: PromiseOrValue<string>,
+    _uri: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -536,6 +550,8 @@ export interface IMartToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    currentTokenId(overrides?: CallOverrides): Promise<BigNumber>;
+
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -560,7 +576,7 @@ export interface IMartToken extends BaseContract {
 
     safeMint(
       to: PromiseOrValue<string>,
-      uri: PromiseOrValue<string>,
+      _uri: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -684,6 +700,8 @@ export interface IMartToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    currentTokenId(overrides?: CallOverrides): Promise<BigNumber>;
+
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -710,7 +728,7 @@ export interface IMartToken extends BaseContract {
 
     safeMint(
       to: PromiseOrValue<string>,
-      uri: PromiseOrValue<string>,
+      _uri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -790,6 +808,8 @@ export interface IMartToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    currentTokenId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -816,7 +836,7 @@ export interface IMartToken extends BaseContract {
 
     safeMint(
       to: PromiseOrValue<string>,
-      uri: PromiseOrValue<string>,
+      _uri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

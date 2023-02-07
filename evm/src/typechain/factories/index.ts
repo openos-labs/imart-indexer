@@ -2,5 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export { Curation__factory } from "./Curation__factory";
+export { IMart__factory } from "./IMart__factory";
+export { IMartCollective__factory } from "./IMartCollective__factory";
 export { IMartToken__factory } from "./IMartToken__factory";
 export { MixverseSpace__factory } from "./MixverseSpace__factory";
