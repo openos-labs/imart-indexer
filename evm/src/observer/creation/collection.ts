@@ -1,4 +1,3 @@
-import { sha256 } from "ethers/lib/utils";
 import { prisma } from "../../io";
 import { TypedEvent } from "../../typechain/common";
 import { CollectionCreatedEvent } from "../../typechain/IMartCollective";
@@ -46,7 +45,7 @@ export class CreateCollectionObserver extends Observer {
         },
       },
       create: {
-        id: sha256(`${creator}::${root}`),
+        id: root,
         chain: "ETHEREUM",
         metadataType: "IMAGE",
         category,
