@@ -1,24 +1,29 @@
 node_url: https://fullnode.testnet.aptoslabs.com/v1
+node_urls:
+  - https://fullnode.testnet.aptoslabs.com/v1
+  - https://aptos-testnet.s.chainbase.online/2ILrhaas4bLBIxB68k1lWA9xIpn/v1
+  - https://aptos-testnet.s.chainbase.online/2LTUn7qC8EVMQGCFM2S4yqBrGeV/v1
+
 redis_url: redis://test-env.dpjsjb.clustercfg.memorydb.us-east-1.amazonaws.com:6379
 fixed_market:
-  event_handle: 0x544a612e8b2fedb6ce6799d7b8d529127a497c31850cfb2ef8c5bf0a883ec688::FixedMarket::FixedMarketEvents
+  event_handle: 0x0d42d82754ff68a86b11e10ffb91e8bda89a8b14f587dce7244b97279d19a965::fixed_price_market::FixedMarketEvents
   event_fields:
     - buy_token_events
     - list_token_events
     - delist_token_events
 offer:
-  event_handle: 0x544a612e8b2fedb6ce6799d7b8d529127a497c31850cfb2ef8c5bf0a883ec688::offer::OfferEvents
+  event_handle: 0x0d42d82754ff68a86b11e10ffb91e8bda89a8b14f587dce7244b97279d19a965::offer::OfferEvents
   event_fields:
     - offer_token_events
     - accept_offer_events
     - cancel_offer_events
 creation:
-  event_handle: 0xf24eccf903734362487736c594ee3023049f081d8403d2c73b5932dc43283545::creation::CreationEvents
+  event_handle: 0x0d42d82754ff68a86b11e10ffb91e8bda89a8b14f587dce7244b97279d19a965::creation::CreationEvents
   event_fields:
     - collection_created_events
     - token_created_events
 curation:
-  event_handle: 0xc842c666c8e6b0bab13d8c71ef1fcb15f5d84700aba44691322854f360055883::curation::CurationEvents
+  event_handle: 0x0d42d82754ff68a86b11e10ffb91e8bda89a8b14f587dce7244b97279d19a965::curation::CurationEvents
   event_fields:
     - gallery_created_events
     - offer_created_events

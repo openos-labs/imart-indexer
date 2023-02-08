@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from random import randint
 from typing import List, Tuple
 from yaml import Loader
 import yaml
@@ -17,9 +18,11 @@ class EventType:
     def address(self) -> str:
         return self.event_handle.split('::')[0]
 
+
 @dataclass
 class Config:
     node_url: str
+    node_urls: List[str]
     redis_url: str
     fixed_market: EventType
     offer: EventType
@@ -31,6 +34,10 @@ class Config:
         self.creation = EventType(**self.creation)
         self.fixed_market = EventType(**self.fixed_market)
         self.curation = EventType(**self.curation)
+
+    def rand_node(self):
+        i = randint(0, len(self.node_urls) - 1)
+        return self.node_urls[i]
 
     def event_types(self):
         event_types = []

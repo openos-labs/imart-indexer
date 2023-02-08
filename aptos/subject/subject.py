@@ -9,7 +9,7 @@ class Subject(Generic[T]):
 
     def url(self, event_handle: str, event_field: str, start: int, limit: int = 100) -> str:
         address = event_handle.split('::')[0]
-        return f"{config.node_url}/accounts/{address}/events/{event_handle}/{event_field}?start={start}&limit={limit}"
+        return f"{config.rand_node()}/accounts/{address}/events/{event_handle}/{event_field}?start={start}&limit={limit}"
 
     async def get_events(self, url: str) -> List[Event]:
         async with aiohttp.ClientSession() as session:
