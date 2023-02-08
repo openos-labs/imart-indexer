@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from typing import Generic, List
 from config import config
@@ -6,6 +7,8 @@ import aiohttp
 
 
 class Subject(Generic[T]):
+    def __init__(self) -> None:
+        self.sema = asyncio.BoundedSemaphore(1)
 
     def url(self, event_handle: str, event_field: str, start: int, limit: int = 100) -> str:
         address = event_handle.split('::')[0]
@@ -13,7 +16,7 @@ class Subject(Generic[T]):
 
     async def get_events(self, url: str) -> List[Event]:
         async with aiohttp.ClientSession() as session:
-            async with session.get(url) as resp:
+            async with self.sema, session.get(url) as resp:
                 if resp.status == 200:
                     data = await resp.json()
                     events = list(map(lambda x: Event(**x), data))
