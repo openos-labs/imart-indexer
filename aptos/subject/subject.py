@@ -15,6 +15,7 @@ class Subject(Generic[T]):
         return f"{config.rand_node()}/accounts/{address}/events/{event_handle}/{event_field}?start={start}&limit={limit}"
 
     async def get_events(self, url: str) -> List[Event]:
+        await asyncio.sleep(config.release_for_ratelimit())
         async with aiohttp.ClientSession() as session:
             async with self.sema, session.get(url) as resp:
                 if resp.status == 200:
@@ -23,7 +24,8 @@ class Subject(Generic[T]):
                     return events
                 err_resp = await resp.text()
                 logging.error(f"[subject]: {err_resp}")
-                await asyncio.sleep(config.release_for_ratelimit())
+                if 'RequestLimitExceeded' in err_resp:
+                    await asyncio.sleep(config.release_for_ratelimit())
                 return []
 
     async def event_stream(self, event_handle: str, event_field: str):
