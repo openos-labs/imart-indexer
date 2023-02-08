@@ -23,6 +23,7 @@ class Subject(Generic[T]):
                     return events
                 err_resp = await resp.text()
                 logging.error(f"[subject]: {err_resp}")
+                await asyncio.sleep(config.release_for_ratelimit())
                 return []
 
     async def event_stream(self, event_handle: str, event_field: str):

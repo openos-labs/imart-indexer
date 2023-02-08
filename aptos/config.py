@@ -55,6 +55,9 @@ class Config:
     def duration_of_http_polling(self):
         return int(env['DURATION'])
 
+    def release_for_ratelimit(self):
+        return int(env['RELEASE_FOR_RATELIMIT'])
+
 
 global config
 with open("config.yaml", 'r') as file:
