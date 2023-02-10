@@ -122,7 +122,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'type': enums.NotificationType.CurationOfferReceived,
                         'unread': True,
                         'timestamp': offer_start_at,
-                        'detail': Json({"index": gallery_index, "root": root})
+                        'detail': Json({"chain": "APTOS", "index": gallery_index, "root": root})
                     },
                     'update': {
                         'receiver': data.destination,
@@ -132,7 +132,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'type': enums.NotificationType.CurationOfferReceived,
                         'unread': True,
                         'timestamp': offer_start_at,
-                        'detail': Json({"index": gallery_index, "root": root})
+                        'detail': Json({"chain": "APTOS", "index": gallery_index, "root": root})
                     }
                 }
             )

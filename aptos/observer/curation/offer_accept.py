@@ -131,7 +131,7 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                         'type': enums.NotificationType.CurationOfferAccepted,
                         'unread': True,
                         'timestamp': updated_at,
-                        'detail': Json({"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
+                        'detail': Json({"chain": "APTOS", "name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
                     },
                     'update': {
                         'receiver': data.source,
@@ -141,7 +141,7 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                         'type': enums.NotificationType.CurationOfferAccepted,
                         'unread': True,
                         'timestamp': updated_at,
-                        'detail': Json({"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
+                        'detail': Json({"chain": "APTOS", "name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
                     }
                 }
             )

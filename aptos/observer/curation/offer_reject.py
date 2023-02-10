@@ -66,7 +66,7 @@ class OfferRejectEventObserver(Observer[OfferRejectEvent]):
                         'type': enums.NotificationType.CurationOfferRejected,
                         'unread': True,
                         'timestamp': updated_at,
-                        'detail': Json({"name": result.tokenName, "collection": result.collection, "creator": result.tokenCreator, "propertyVersion": result.propertyVersion})
+                        'detail': Json({"chain": "APTOS", "name": result.tokenName, "collection": result.collection, "creator": result.tokenCreator, "propertyVersion": result.propertyVersion})
                     },
                     'update': {
                         'receiver': data.source,
@@ -76,7 +76,7 @@ class OfferRejectEventObserver(Observer[OfferRejectEvent]):
                         'type': enums.NotificationType.CurationOfferRejected,
                         'unread': True,
                         'timestamp': updated_at,
-                        'detail': Json({"name": result.tokenName, "collection": result.collection, "creator": result.tokenCreator, "propertyVersion": result.propertyVersion})
+                        'detail': Json({"chain": "APTOS", "name": result.tokenName, "collection": result.collection, "creator": result.tokenCreator, "propertyVersion": result.propertyVersion})
                     }
                 }
             )
