@@ -1,3 +1,4 @@
+import { NotificationType, Prisma } from "@prisma/client";
 import { CONTRACT_CURATION } from "../../config";
 import { prisma } from "../../io";
 import { TypedEvent } from "../../typechain/common";
@@ -35,6 +36,7 @@ export class OfferCreatedObserver extends Observer {
       url,
       detail,
     ] = (event as OfferCreatedEvent).args;
+    const startAt = new Date(offerStartAt.toNumber() * 1000);
     const createOffer = prisma.curationOffer.upsert({
       where: {
         index_root: {
@@ -57,13 +59,13 @@ export class OfferCreatedObserver extends Observer {
         commissionFeeRate: commissionFeerate.toString(),
         currency: "0x0000000000000000000000000000000000000000",
         decimals: 18,
-        offerStartAt: new Date(offerStartAt.toNumber() * 1000),
+        offerStartAt: startAt,
         offerExpiredAt: new Date(offerExpiredAt.toNumber() * 1000),
         exhibitDuration: exhibitDuration.toNumber(),
         url,
         detail,
         status: "pending",
-        updatedAt: new Date(offerStartAt.toNumber() * 1000),
+        updatedAt: startAt,
       },
       update: {},
     });
@@ -75,10 +77,35 @@ export class OfferCreatedObserver extends Observer {
         curation_offer_create_excuted_offset: blockNo,
       },
     });
+    const notify = prisma.notification.upsert({
+      where: {
+        receiver_type_timestamp: {
+          receiver: to,
+          type: NotificationType.CurationOfferReceived,
+          timestamp: startAt,
+        },
+      },
+      create: {
+        receiver: to,
+        title: "You have received an offer",
+        content: "From Mixverse",
+        image: "",
+        type: NotificationType.CurationOfferReceived,
+        unread: true,
+        timestamp: startAt,
+        detail: {
+          chain: "ETHEREUM",
+          root: CONTRACT_CURATION,
+          index: galleryId.toString(),
+        } as Prisma.JsonObject,
+      },
+      update: {},
+    });
     try {
-      const [_, updatedState] = await prisma.$transaction([
+      const [, updatedState] = await prisma.$transaction([
         createOffer,
         updateOffset,
+        notify,
       ]);
       if (updatedState.curation_offer_create_excuted_offset != blockNo) {
         return { success: false, state };

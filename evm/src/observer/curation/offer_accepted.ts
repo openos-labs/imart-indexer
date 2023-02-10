@@ -1,3 +1,4 @@
+import { NotificationType, Prisma } from "@prisma/client";
 import { CONTRACT_CURATION } from "../../config";
 import { prisma } from "../../io";
 import { TypedEvent } from "../../typechain/common";
@@ -54,6 +55,7 @@ export class OfferAcceptedObserver extends Observer {
       },
     });
 
+    const updatedAt = new Date(timestamp.toNumber() * 1000);
     const createExhibit = prisma.curationExhibit.create({
       data: {
         index: id.toBigInt(),
@@ -75,7 +77,7 @@ export class OfferAcceptedObserver extends Observer {
         url: offer.url,
         detail: offer.detail,
         status: "reserved",
-        updatedAt: new Date(timestamp.toNumber() * 1000),
+        updatedAt,
       },
     });
 
@@ -87,11 +89,36 @@ export class OfferAcceptedObserver extends Observer {
         curation_offer_accept_excuted_offset: blockNo,
       },
     });
+    const notify = prisma.notification.upsert({
+      where: {
+        receiver_type_timestamp: {
+          receiver: from,
+          type: NotificationType.CurationOfferAccepted,
+          timestamp: updatedAt,
+        },
+      },
+      create: {
+        receiver: from,
+        title: "Your offer has been accepted",
+        content: "From Mixverse",
+        image: "",
+        type: NotificationType.CurationOfferAccepted,
+        unread: true,
+        timestamp: updatedAt,
+        detail: {
+          chain: "ETHEREUM",
+          collectionId: collection,
+          tokenId: tokenId.toString(),
+        } as Prisma.JsonObject,
+      },
+      update: {},
+    });
     try {
       const [offer, exhibit, updatedState] = await prisma.$transaction([
         updateOffer,
         createExhibit,
         updateOffset,
+        notify,
       ]);
       if (
         !offer ||

@@ -1,3 +1,4 @@
+import { NotificationType, Prisma } from "@prisma/client";
 import { CONTRACT_CURATION } from "../../config";
 import { prisma } from "../../io";
 import { TypedEvent } from "../../typechain/common";
@@ -20,7 +21,9 @@ export class OfferRejectedObserver extends Observer {
     event: T
   ): Promise<{ success: boolean; state: State }> {
     const blockNo = BigInt(event.blockNumber);
-    const [id, _] = (event as OfferRejectedEvent).args;
+    const [id, collectionId, tokenId, from, , timestamp] = (
+      event as OfferRejectedEvent
+    ).args;
     const createOffer = prisma.curationOffer.update({
       where: {
         index_root: {
@@ -40,10 +43,36 @@ export class OfferRejectedObserver extends Observer {
         curation_offer_reject_excuted_offset: blockNo,
       },
     });
+    const updatedAt = new Date(timestamp.toNumber() * 1000);
+    const notify = prisma.notification.upsert({
+      where: {
+        receiver_type_timestamp: {
+          receiver: from,
+          type: NotificationType.CurationOfferRejected,
+          timestamp: updatedAt,
+        },
+      },
+      create: {
+        receiver: from,
+        title: "Your offer has been rejected",
+        content: "From Mixverse",
+        image: "",
+        type: NotificationType.CurationOfferRejected,
+        unread: true,
+        timestamp: updatedAt,
+        detail: {
+          chain: "ETHEREUM",
+          collectionId: collectionId.toString(),
+          tokenId: tokenId.toString(),
+        } as Prisma.JsonObject,
+      },
+      update: {},
+    });
     try {
       const [_, updatedState] = await prisma.$transaction([
         createOffer,
         updateOffset,
+        notify,
       ]);
       if (updatedState.curation_offer_reject_excuted_offset != blockNo) {
         return { success: false, state };
