@@ -108,7 +108,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                 where={
                     'receiver_type_timestamp': {
                         'receiver': data.destination,
-                        'type': enums.NotificationType.CurationOfferReceivedFromInviter,
+                        'type': enums.NotificationType.CurationOfferReceived,
                         'timestamp': offer_start_at
                     }
                 },
@@ -119,7 +119,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'title': "You have received an offer",
                         'content': "From Mixverse",
                         'image': "",
-                        'type': enums.NotificationType.CurationOfferReceivedFromInviter,
+                        'type': enums.NotificationType.CurationOfferReceived,
                         'unread': True,
                         'timestamp': offer_start_at,
                         'detail': Json({"index": gallery_index, "root": root})
@@ -129,7 +129,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'title': "You have received an offer",
                         'content': "From Mixverse",
                         'image': "",
-                        'type': enums.NotificationType.CurationOfferReceivedFromInviter,
+                        'type': enums.NotificationType.CurationOfferReceived,
                         'unread': True,
                         'timestamp': offer_start_at,
                         'detail': Json({"index": gallery_index, "root": root})

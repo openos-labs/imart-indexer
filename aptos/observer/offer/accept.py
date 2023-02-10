@@ -7,7 +7,7 @@ from model.offer.accept_offer_event import AcceptOfferEvent, AcceptOfferEventDat
 from model.state import State
 from model.event import Event
 from common.db import prisma_client
-from prisma import enums
+from prisma import enums, Json
 
 
 class AcceptOfferEventObserver(Observer[AcceptOfferEvent]):
@@ -19,6 +19,7 @@ class AcceptOfferEventObserver(Observer[AcceptOfferEvent]):
         new_state = state
         seqno = event.sequence_number
         data = AcceptOfferEventData(**event.data)
+        token_id = TokenId(**data.token_id)
         token_data_id = TokenDataId(**TokenId(**data.token_id).token_data_id)
 
         token = await prisma_client.aptostoken.find_unique(where={
@@ -103,4 +104,38 @@ class AcceptOfferEventObserver(Observer[AcceptOfferEvent]):
                 raise Exception(f'[Accept Offer]: Failed to update offset')
 
             new_state.new_offset.accept_offer_excuted_offset = updated_offset.accept_offer_excuted_offset
+
+            await transaction.notification.upsert(
+                where={
+                    'receiver_type_timestamp': {
+                        'receiver': data.coin_owner,
+                        'type': enums.NotificationType.MarketOfferAccepted,
+                        'timestamp': timestamp
+                    }
+                },
+                data={
+                    'create': {
+                        'id': new_uuid(),
+                        'receiver': data.coin_owner,
+                        'title': "Your market offer has been accepted",
+                        'content': "From IMart",
+                        'image': "",
+                        'type': enums.NotificationType.MarketOfferAccepted,
+                        'unread': True,
+                        'timestamp': timestamp,
+                        'detail': Json({"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
+                    },
+                    'update': {
+                        'receiver': data.coin_owner,
+                        'title': "Your market offer has been accepted",
+                        'content': "From IMart",
+                        'image': "",
+                        'type': enums.NotificationType.MarketOfferAccepted,
+                        'unread': True,
+                        'timestamp': timestamp,
+                        'detail': Json({"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
+                    }
+                }
+            )
+
             return new_state, True

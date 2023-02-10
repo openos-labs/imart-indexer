@@ -444,14 +444,18 @@ model UserContact {
 }
 
 enum NotificationType {
-    CurationOfferReceivedFromInviter
-    CurationOfferRejectedFromInvitee
-    CurationOfferAcceptedFromInvitee
+    CurationOfferReceived
+    CurationOfferRejected
+    CurationOfferAccepted
     CurationOfferExpired
     CurationExhibitExpired
     CurationExhibitListed
     CurationExhibitCanceled
     CurationExhibitSold
+    MarketOrderFilled
+    MarketOfferReceived
+    MarketOfferAccepted
+    MarketOfferRejected
 }
 
 model Notification {

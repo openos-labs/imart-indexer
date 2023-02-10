@@ -52,7 +52,7 @@ class OfferRejectEventObserver(Observer[OfferRejectEvent]):
                 where={
                     'receiver_type_timestamp': {
                         'receiver': data.source,
-                        'type': enums.NotificationType.CurationOfferRejectedFromInvitee,
+                        'type': enums.NotificationType.CurationOfferRejected,
                         'timestamp': updated_at
                     }
                 },
@@ -63,7 +63,7 @@ class OfferRejectEventObserver(Observer[OfferRejectEvent]):
                         'title': "Your offer has been rejected",
                         'content': "From IMart",
                         'image': "",
-                        'type': enums.NotificationType.CurationOfferRejectedFromInvitee,
+                        'type': enums.NotificationType.CurationOfferRejected,
                         'unread': True,
                         'timestamp': updated_at,
                         'detail': Json({"name": result.tokenName, "collection": result.collection, "creator": result.tokenCreator, "propertyVersion": result.propertyVersion})
@@ -73,7 +73,7 @@ class OfferRejectEventObserver(Observer[OfferRejectEvent]):
                         'title': "Your offer has been rejected",
                         'content': "From IMart",
                         'image': "",
-                        'type': enums.NotificationType.CurationOfferRejectedFromInvitee,
+                        'type': enums.NotificationType.CurationOfferRejected,
                         'unread': True,
                         'timestamp': updated_at,
                         'detail': Json({"name": result.tokenName, "collection": result.collection, "creator": result.tokenCreator, "propertyVersion": result.propertyVersion})

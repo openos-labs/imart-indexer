@@ -8,7 +8,7 @@ from model.order.buy_event import BuyEvent, BuyEventData
 from model.state import State
 from model.event import Event
 from common.db import prisma_client
-from prisma import enums
+from prisma import enums, Json
 
 
 class BuyEventObserver(Observer[BuyEvent]):
@@ -20,6 +20,7 @@ class BuyEventObserver(Observer[BuyEvent]):
         new_state = state
         seqno = event.sequence_number
         data = BuyEventData(**event.data)
+        token_id = TokenId(**data.token_id)
         token_data_id = TokenDataId(**TokenId(**data.token_id).token_data_id)
 
         token = await prisma_client.aptostoken.find_first(where={
@@ -94,9 +95,43 @@ class BuyEventObserver(Observer[BuyEvent]):
                 raise Exception(f"[Buy order]: Failed to update offset")
 
             new_state.new_offset.buy_events_excuted_offset = updated_offset.buy_event_excuted_offset
-            
+
             # delete cache
             redis_cli.delete(f"cache:imart:aptosOrder:id:{token.id}")
             redis_cli.delete(f"cache:imart:aptosToken:id:{token.id}")
-            redis_cli.delete(f"cache:imart:collectionstats:id:{token.collectionId}")
+            redis_cli.delete(
+                f"cache:imart:collectionstats:id:{token.collectionId}")
+
+            await transaction.notification.upsert(
+                where={
+                    'receiver_type_timestamp': {
+                        'receiver': data.seller,
+                        'type': enums.NotificationType.MarketOrderFilled,
+                        'timestamp': timestamp
+                    }
+                },
+                data={
+                    'create': {
+                        'id': new_uuid(),
+                        'receiver': data.seller,
+                        'title': "Your order has been filled",
+                        'content': "From IMart",
+                        'image': "",
+                        'type': enums.NotificationType.MarketOrderFilled,
+                        'unread': True,
+                        'timestamp': timestamp,
+                        'detail': Json({"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
+                    },
+                    'update': {
+                        'receiver': data.seller,
+                        'title': "Your order has been filled",
+                        'content': "From IMart",
+                        'image': "",
+                        'type': enums.NotificationType.MarketOrderFilled,
+                        'unread': True,
+                        'timestamp': timestamp,
+                        'detail': Json({"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
+                    }
+                }
+            )
             return new_state, True

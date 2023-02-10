@@ -117,7 +117,7 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                 where={
                     'receiver_type_timestamp': {
                         'receiver': data.source,
-                        'type': enums.NotificationType.CurationOfferAcceptedFromInvitee,
+                        'type': enums.NotificationType.CurationOfferAccepted,
                         'timestamp': updated_at
                     }
                 },
@@ -128,7 +128,7 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                         'title': "Your offer has been accepted",
                         'content': "From IMart",
                         'image': "",
-                        'type': enums.NotificationType.CurationOfferAcceptedFromInvitee,
+                        'type': enums.NotificationType.CurationOfferAccepted,
                         'unread': True,
                         'timestamp': updated_at,
                         'detail': Json({"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
@@ -138,7 +138,7 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                         'title': "Your offer has been accepted",
                         'content': "From IMart",
                         'image': "",
-                        'type': enums.NotificationType.CurationOfferAcceptedFromInvitee,
+                        'type': enums.NotificationType.CurationOfferAccepted,
                         'unread': True,
                         'timestamp': updated_at,
                         'detail': Json({"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})

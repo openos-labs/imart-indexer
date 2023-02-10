@@ -6,7 +6,7 @@ from model.offer.create_offer_event import CreateOfferEvent, CreateOfferEventDat
 from model.state import State
 from model.event import Event
 from common.db import prisma_client
-from prisma import enums
+from prisma import enums, Json
 from datetime import datetime
 from common.util import new_uuid
 
@@ -20,6 +20,7 @@ class CreateOfferEventObserver(Observer[CreateOfferEvent]):
         new_state = state
         seqno = event.sequence_number
         data = CreateOfferEventData(**event.data)
+        token_id = TokenId(**data.token_id)
         token_data_id = TokenDataId(**TokenId(**data.token_id).token_data_id)
         coin_type_info = CoinTypeInfo(**data.coin_type_info)
 
@@ -68,4 +69,37 @@ class CreateOfferEventObserver(Observer[CreateOfferEvent]):
                 raise Exception(f'[Create Offer]: Failed to update offset')
 
             new_state.new_offset.create_offer_excuted_offset = updated_offset.create_offer_excuted_offset
+
+            await transaction.notification.upsert(
+                where={
+                    'receiver_type_timestamp': {
+                        'receiver': token.owner,
+                        'type': enums.NotificationType.MarketOfferReceived,
+                        'timestamp': openedAt
+                    }
+                },
+                data={
+                    'create': {
+                        'id': new_uuid(),
+                        'receiver': token.owner,
+                        'title': f"You have received an offer from {data.coin_owner}",
+                        'content': "From IMart",
+                        'image': "",
+                        'type': enums.NotificationType.MarketOfferReceived,
+                        'unread': True,
+                        'timestamp': openedAt,
+                        'detail': Json({"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
+                    },
+                    'update': {
+                        'receiver': token.owner,
+                        'title': f"You have received an offer from {data.coin_owner}",
+                        'content': "From IMart",
+                        'image': "",
+                        'type': enums.NotificationType.MarketOfferReceived,
+                        'unread': True,
+                        'timestamp': openedAt,
+                        'detail': Json({"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
+                    }
+                }
+            )
             return new_state, True
