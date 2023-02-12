@@ -32,19 +32,26 @@ class CreateTokenEventObserver(Observer[CreateTokenEvent]):
                 f'[Create token]: collection not found, but created token event({data}) was existed')
 
         async with prisma_client.tx(timeout=60000) as transaction:
-
-            result = await transaction.aptostoken.create(
+            id = primary_key_of_token(
+                '', data.creator, token_data_id.collection, data.name)
+            result = await transaction.aptostoken.upsert(
+                where={
+                    'id': id
+                },
                 data={
-                    'id': primary_key_of_token('', data.creator, token_data_id.collection, data.name),
-                    'collectionId': collection.id,
-                    'owner': data.creator,
-                    'creator': token_data_id.creator,
-                    'collection': token_data_id.collection,
-                    'name': data.name,
-                    'description': data.description,
-                    'uri': data.uri,
-                    'propertyVersion': token_id.property_version,
-                    'seqno': seqno
+                    'create': {
+                        'id': id,
+                        'collectionId': collection.id,
+                        'owner': data.creator,
+                        'creator': token_data_id.creator,
+                        'collection': token_data_id.collection,
+                        'name': data.name,
+                        'description': data.description,
+                        'uri': data.uri,
+                        'propertyVersion': token_id.property_version,
+                        'seqno': seqno
+                    },
+                    'update': {}
                 }
             )
             if result == None:
