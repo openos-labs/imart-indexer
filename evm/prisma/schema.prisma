@@ -344,28 +344,27 @@ enum CurationExhibitStatus {
 }
 
 model CurationOffer {
-    id                String              @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    chain             Chain               @default(APTOS)
-    index             BigInt
-    root              String
-    galleryIndex      BigInt
-    collection        String
-    tokenCreator      String
-    tokenName         String
-    propertyVersion   Int
-    source            String              @map("from")
-    destination       String              @map("to")
-    price             String
-    commissionFeeRate String
-    currency          String              @default("APT")
-    decimals          Int                 @default(8)
-    offerStartAt      DateTime
-    offerExpiredAt    DateTime
-    exhibitDuration   Int
-    url               String
-    detail            String
-    status            CurationOfferStatus
-    updatedAt         DateTime
+    id              String              @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    chain           Chain               @default(APTOS)
+    index           BigInt
+    root            String
+    galleryIndex    BigInt
+    collection      String
+    tokenCreator    String
+    tokenName       String
+    propertyVersion Int
+    source          String              @map("from")
+    destination     String              @map("to")
+    price           String
+    currency        String              @default("0x1::aptos_coin::AptosCoin")
+    decimals        Int                 @default(8)
+    offerStartAt    DateTime
+    offerExpiredAt  DateTime
+    exhibitDuration Int
+    url             String
+    detail          String
+    status          CurationOfferStatus
+    updatedAt       DateTime
 
     @@unique([index, root])
     @@index([status])
@@ -377,27 +376,26 @@ model CurationOffer {
 }
 
 model CurationExhibit {
-    id                String                @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    chain             Chain                 @default(APTOS)
-    index             BigInt
-    root              String
-    galleryIndex      BigInt
-    curator           String                @default("") @db.VarChar(66)
-    collection        String
-    tokenCreator      String
-    tokenName         String
-    propertyVersion   Int                   @default(0)
-    origin            String
-    price             String
-    commissionFeeRate String
-    currency          String                @default("APT")
-    decimals          Int                   @default(8)
-    expiredAt         DateTime
-    location          String
-    url               String
-    detail            String
-    status            CurationExhibitStatus
-    updatedAt         DateTime
+    id              String                @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    chain           Chain                 @default(APTOS)
+    index           BigInt
+    root            String
+    galleryIndex    BigInt
+    curator         String                @default("") @db.VarChar(66)
+    collection      String
+    tokenCreator    String
+    tokenName       String
+    propertyVersion Int                   @default(0)
+    origin          String
+    price           String
+    currency        String                @default("0x1::aptos_coin::AptosCoin")
+    decimals        Int                   @default(8)
+    expiredAt       DateTime
+    location        String
+    url             String
+    detail          String
+    status          CurationExhibitStatus
+    updatedAt       DateTime
 
     @@unique([index, root])
     @@unique([origin, collection, tokenCreator, tokenName, propertyVersion])
@@ -407,14 +405,15 @@ model CurationExhibit {
 }
 
 model CurationGallery {
-    id          String @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    chain       Chain  @default(APTOS)
-    index       BigInt
-    root        String
-    owner       String
-    spaceType   String
-    name        String
-    metadataUri String
+    id              String @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    chain           Chain  @default(APTOS)
+    index           BigInt
+    root            String
+    owner           String
+    spaceType       String
+    name            String
+    metadataUri     String
+    commissionRates Json?  @default("{}")
 
     @@unique([index, root])
     @@index([owner])

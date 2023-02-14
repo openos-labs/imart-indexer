@@ -32,10 +32,9 @@ export class MultipleCollectiveCreateObserver extends Observer {
       royalties,
       maximum,
     ] = (event as CollectionCreatedEvent).args;
-    const royalty = {};
-    for (let i = 0; i < payees.length; i++) {
-      royalty[payees[i]] = royalties[i].toString();
-    }
+    const royalty = payees.reduce((acc, key, i) => {
+      return { ...acc, [key]: royalties[i].toString() };
+    }, {});
     const createCollection = prisma.collection.upsert({
       where: {
         chain_creator_name: {

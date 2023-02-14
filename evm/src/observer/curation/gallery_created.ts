@@ -30,8 +30,14 @@ export class GalleryCreatedObserver extends Observer {
       metadataUri,
       isToken,
       timestamp,
+      payees,
+      rates,
+      commissionPool,
     ] = (event as GalleryCreatedEvent).args;
 
+    const commissionRates = payees.reduce((acc, key, i) => {
+      return { ...acc, [key]: rates[i].toString() };
+    }, {});
     const createGallery = prisma.curationGallery.create({
       data: {
         index: id.toBigInt(),
@@ -41,6 +47,7 @@ export class GalleryCreatedObserver extends Observer {
         spaceType,
         name,
         metadataUri,
+        commissionRates,
       },
     });
 

@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export { Collective__factory } from "./Collective__factory";
+export { CommissionPool__factory } from "./CommissionPool__factory";
 export { Curation__factory } from "./Curation__factory";
 export { IToken__factory } from "./IToken__factory";
 export { MixverseSpace__factory } from "./MixverseSpace__factory";

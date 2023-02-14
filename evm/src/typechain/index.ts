@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { Collective } from "./Collective";
+export type { CommissionPool } from "./CommissionPool";
 export type { Curation } from "./Curation";
 export type { IToken } from "./IToken";
 export type { MixverseSpace } from "./MixverseSpace";
@@ -11,6 +12,7 @@ export type { SingleCollective } from "./SingleCollective";
 export type { SingleToken } from "./SingleToken";
 export * as factories from "./factories";
 export { Collective__factory } from "./factories/Collective__factory";
+export { CommissionPool__factory } from "./factories/CommissionPool__factory";
 export { Curation__factory } from "./factories/Curation__factory";
 export { IToken__factory } from "./factories/IToken__factory";
 export { MixverseSpace__factory } from "./factories/MixverseSpace__factory";
