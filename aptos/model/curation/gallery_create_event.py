@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List
 from model.event import Event
 from model.token_id import TokenId
 
@@ -12,6 +13,8 @@ class GalleryCreateEventData:
     name: str
     metadata_uri: str
     timestamp: str
+    payees: List[str]
+    commission_rates: List[str]
 
 
 @dataclass

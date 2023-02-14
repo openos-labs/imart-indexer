@@ -4,11 +4,9 @@ from observer.observer import Observer
 from model.curation.exhibit_list_event import ExhibitListEvent, ExhibitListEventData
 from model.state import State
 from model.event import Event
-from model.token_id import TokenDataId, TokenId
 from common.db import prisma_client
 from prisma import enums
 from config import config
-from common.util import new_uuid
 
 
 class ExhibitListEventObserver(Observer[ExhibitListEvent]):

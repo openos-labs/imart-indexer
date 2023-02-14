@@ -26,9 +26,6 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
         token_data_id = TokenDataId(**token_id.token_data_id)
         expired_at = datetime.fromtimestamp(int(data.exhibit_duration))
         updated_at = datetime.fromtimestamp(int(data.timestamp))
-        commission_feerate = str(10**8 *
-                                 int(data.commission_feerate_numerator) //
-                                 int(data.commission_feerate_denominator))
 
         async with prisma_client.tx(timeout=60000) as transaction:
             updated_offer = await transaction.curationoffer.update(
@@ -68,7 +65,6 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                         'propertyVersion': int(token_id.property_version),
                         'origin': data.destination,
                         'price': data.price,
-                        'commissionFeeRate': commission_feerate,
                         'currency': '0x1::aptos_coin::AptosCoin',
                         'decimals': 8,
                         'expiredAt': expired_at,
@@ -87,7 +83,6 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                         'propertyVersion': int(token_id.property_version),
                         'origin': data.destination,
                         'price': data.price,
-                        'commissionFeeRate': commission_feerate,
                         'currency': '0x1::aptos_coin::AptosCoin',
                         'decimals': 8,
                         'expiredAt': expired_at,

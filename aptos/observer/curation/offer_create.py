@@ -28,9 +28,6 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
         offer_start_at = datetime.fromtimestamp(int(data.offer_start_at))
         offer_expired_at = datetime.fromtimestamp(int(data.offer_expired_at))
         exhibit_duration = int(data.exhibit_duration)
-        commission_feerate = 10**8 * \
-            int(data.commission_feerate_numerator) // \
-            int(data.commission_feerate_denominator)
 
         root = config.curation.address()
 
@@ -56,7 +53,6 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'source': data.source,
                         'destination': data.destination,
                         'price': data.price,
-                        'commissionFeeRate': str(commission_feerate),
                         'currency': '0x1::aptos_coin::AptosCoin',
                         'decimals': 8,
                         'offerStartAt': offer_start_at,
@@ -77,7 +73,6 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'source': data.source,
                         'destination': data.destination,
                         'price': data.price,
-                        'commissionFeeRate': str(commission_feerate),
                         'currency': '0x1::aptos_coin::AptosCoin',
                         'decimals': 8,
                         'offerStartAt': offer_start_at,
