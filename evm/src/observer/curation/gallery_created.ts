@@ -48,6 +48,7 @@ export class GalleryCreatedObserver extends Observer {
         name,
         metadataUri,
         commissionRates,
+        commissionPool,
       },
     });
 
