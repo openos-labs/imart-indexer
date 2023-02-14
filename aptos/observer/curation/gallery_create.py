@@ -38,7 +38,8 @@ class GalleryCreateEventObserver(Observer[GalleryCreateEvent]):
                         'owner': data.owner,
                         'spaceType': data.space_type,
                         'metadataUri': data.metadata_uri,
-                        'commissionRates': Json(dict(zip(data.payees, data.commission_rates)))
+                        'commissionRates': Json(dict(zip(data.payees, data.commission_rates))),
+                        'commissionPool': ""
                     },
                     'update': {
                         'chain': enums.Chain.APTOS,
