@@ -29,7 +29,6 @@ export class OfferAcceptedObserver extends Observer {
       to,
       price,
       galleryId,
-      commissionFeeRate,
       exhibitExpiredAt,
       timestamp,
     ] = (event as OfferAcceptedEvent).args;
@@ -69,7 +68,6 @@ export class OfferAcceptedObserver extends Observer {
         propertyVersion: 0,
         origin: to,
         price: price.toString(),
-        commissionFeeRate: commissionFeeRate.toString(),
         currency: "0x0000000000000000000000000000000000000000",
         decimals: 18,
         expiredAt: new Date(exhibitExpiredAt.toNumber() * 1000),
