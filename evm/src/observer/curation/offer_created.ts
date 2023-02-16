@@ -45,7 +45,7 @@ export class OfferCreatedObserver extends Observer {
       },
       create: {
         index: id.toBigInt(),
-        chain: "ETHEREUM",
+        chain: "ETH",
         root: CONTRACT_CURATION,
         galleryIndex: galleryId.toBigInt(),
         collection,
@@ -92,7 +92,7 @@ export class OfferCreatedObserver extends Observer {
         unread: true,
         timestamp: startAt,
         detail: {
-          chain: "ETHEREUM",
+          chain: "ETH",
           root: CONTRACT_CURATION,
           index: galleryId.toString(),
         } as Prisma.JsonObject,

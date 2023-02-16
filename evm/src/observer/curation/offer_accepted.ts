@@ -58,7 +58,7 @@ export class OfferAcceptedObserver extends Observer {
     const createExhibit = prisma.curationExhibit.create({
       data: {
         index: id.toBigInt(),
-        chain: "ETHEREUM",
+        chain: "ETH",
         root: CONTRACT_CURATION,
         galleryIndex: galleryId.toBigInt(),
         curator: from,
@@ -104,7 +104,7 @@ export class OfferAcceptedObserver extends Observer {
         unread: true,
         timestamp: updatedAt,
         detail: {
-          chain: "ETHEREUM",
+          chain: "ETH",
           collectionId: collection,
           tokenId: tokenId.toString(),
         } as Prisma.JsonObject,

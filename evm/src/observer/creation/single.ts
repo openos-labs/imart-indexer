@@ -38,14 +38,14 @@ export class SingleCollectiveCreateObserver extends Observer {
     const createCollection = prisma.collection.upsert({
       where: {
         chain_creator_name: {
-          chain: "ETHEREUM",
+          chain: "ETH",
           name,
           creator,
         },
       },
       create: {
         id: root,
-        chain: "ETHEREUM",
+        chain: "ETH",
         metadataType: "IMAGE",
         category,
         tags: tags.join(","),

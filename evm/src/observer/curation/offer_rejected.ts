@@ -61,7 +61,7 @@ export class OfferRejectedObserver extends Observer {
         unread: true,
         timestamp: updatedAt,
         detail: {
-          chain: "ETHEREUM",
+          chain: "ETH",
           collectionId: collectionId.toString(),
           tokenId: tokenId.toString(),
         } as Prisma.JsonObject,
