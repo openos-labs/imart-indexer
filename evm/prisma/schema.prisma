@@ -16,6 +16,7 @@ enum TxType {
     CANCEL
     SALE
     TRANSFER
+    MINT
 }
 
 enum Chain {

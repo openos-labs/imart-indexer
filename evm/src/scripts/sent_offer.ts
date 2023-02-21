@@ -11,7 +11,6 @@ async function main() {
     BigNumber.from(1),
     BigNumber.from(1),
     ethers.utils.parseEther("0.01"),
-    ethers.utils.parseEther("0.0001"),
     BigNumber.from(3600 * 24 * 30),
     BigNumber.from(
       Number((new Date().getTime() / 1000).toFixed(0)) + 3600 * 24 * 30
