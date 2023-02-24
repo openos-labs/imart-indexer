@@ -87,6 +87,7 @@ model Collection {
     uri          String?      @default("")
     supply       String       @default("0") @db.VarChar(78)
     royalty      Json?        @default("{}")
+    standard     String       @default("ERC721")
     communities  Community[]
     Sale         Sale[]
 

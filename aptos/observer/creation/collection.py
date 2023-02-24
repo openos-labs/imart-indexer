@@ -46,6 +46,7 @@ class CreateCollectionEventObserver(Observer[CreateCollectionEvent]):
                         'uri': data.uri,
                         'supply': '0',
                         'royalty': Json(dict(zip(data.payees, data.royalties))),
+                        'standard': 'ERC721'
                     },
                     'update': {}
                 })
