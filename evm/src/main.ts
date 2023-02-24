@@ -28,7 +28,7 @@ import {
 import { GalleryCreatedObserver } from "./observer/curation/gallery_created";
 import { prisma } from "./io";
 import {
-  ALCHEMY_API,
+  INFURA_API,
   CONTRACT_CURATION,
   CONTRACT_MULTIPLE_COLLECTIVE,
   CONTRACT_SINGLE_COLLECTIVE,
@@ -134,7 +134,7 @@ async function initialState(): Promise<State> {
 }
 
 async function creationWorkers() {
-  const provider = new JsonRpcProvider(ALCHEMY_API);
+  const provider = new JsonRpcProvider(INFURA_API);
   const SingleCollective = SingleCollective__factory.connect(
     CONTRACT_SINGLE_COLLECTIVE,
     provider
@@ -159,7 +159,7 @@ async function creationWorkers() {
 }
 
 async function curationWorkers() {
-  const provider = new JsonRpcProvider(ALCHEMY_API);
+  const provider = new JsonRpcProvider(INFURA_API);
   const Curation = Curation__factory.connect(CONTRACT_CURATION, provider);
 
   await worker(
