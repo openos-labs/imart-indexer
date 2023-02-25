@@ -11,8 +11,6 @@ class OfferAcceptEventData:
     destination: str
     price: str
     gallery_id: str
-    commission_feerate_numerator: str
-    commission_feerate_denominator: str
     exhibit_expired_at: str
     timestamp: str
 
