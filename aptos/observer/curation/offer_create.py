@@ -27,7 +27,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
         updated_at = datetime.fromtimestamp(int(data.offer_start_at))
         offer_start_at = datetime.fromtimestamp(int(data.offer_start_at))
         offer_expired_at = datetime.fromtimestamp(int(data.offer_expired_at))
-        exhibit_duration = int(data.exhibit_duration)
+        exhibit_expired_at = int(data.exhibit_expired_at)
 
         root = config.curation.address()
 
@@ -57,7 +57,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'decimals': 8,
                         'offerStartAt': offer_start_at,
                         'offerExpiredAt': offer_expired_at,
-                        'exhibitDuration': exhibit_duration,
+                        'exhibitDuration': exhibit_expired_at,
                         'status': enums.CurationOfferStatus.pending,
                         'updatedAt': updated_at,
                         'url': data.url,
@@ -77,7 +77,7 @@ class OfferCreateEventObserver(Observer[OfferCreateEvent]):
                         'decimals': 8,
                         'offerStartAt': offer_start_at,
                         'offerExpiredAt': offer_expired_at,
-                        'exhibitDuration': exhibit_duration,
+                        'exhibitDuration': exhibit_expired_at,
                         'status': enums.CurationOfferStatus.pending,
                         'updatedAt': updated_at,
                         'url': data.url,

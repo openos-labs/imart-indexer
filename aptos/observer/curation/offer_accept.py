@@ -24,7 +24,7 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
         gallery_index = int(data.gallery_id)
         token_id = TokenId(**data.token_id)
         token_data_id = TokenDataId(**token_id.token_data_id)
-        expired_at = datetime.fromtimestamp(int(data.exhibit_duration))
+        expired_at = datetime.fromtimestamp(int(data.exhibit_expired_at))
         updated_at = datetime.fromtimestamp(int(data.timestamp))
 
         async with prisma_client.tx(timeout=60000) as transaction:

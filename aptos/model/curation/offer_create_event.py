@@ -15,7 +15,7 @@ class OfferCreateEventData:
     commission_feerate_denominator: str
     offer_start_at: str
     offer_expired_at: str
-    exhibit_duration: str
+    exhibit_expired_at: str
     url: str
     detail: str
 
