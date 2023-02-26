@@ -28,14 +28,19 @@ import {
 import { GalleryCreatedObserver } from "./observer/curation/gallery_created";
 import { prisma } from "./io";
 import {
-  INFURA_API,
   CONTRACT_CURATION,
   CONTRACT_MULTIPLE_COLLECTIVE,
   CONTRACT_SINGLE_COLLECTIVE,
   DURATION_MILLIS,
+  PROVIDER_ENDPOINT_1,
+  PROVIDER_ENDPOINT_2,
+  PROVIDER_ENDPOINT_3,
 } from "./config";
 
 const restPeriod = Number(DURATION_MILLIS);
+const provider_1 = new JsonRpcProvider(PROVIDER_ENDPOINT_1);
+const provider_2 = new JsonRpcProvider(PROVIDER_ENDPOINT_2);
+const provider_3 = new JsonRpcProvider(PROVIDER_ENDPOINT_3);
 
 async function main() {
   await creationWorkers();
@@ -134,10 +139,9 @@ async function initialState(): Promise<State> {
 }
 
 async function creationWorkers() {
-  const provider = new JsonRpcProvider(INFURA_API);
   const SingleCollective = SingleCollective__factory.connect(
     CONTRACT_SINGLE_COLLECTIVE,
-    provider
+    provider_1
   );
   await worker(
     SingleCollective,
@@ -148,7 +152,7 @@ async function creationWorkers() {
 
   const MultipleCollective = MultipleCollective__factory.connect(
     CONTRACT_MULTIPLE_COLLECTIVE,
-    provider
+    provider_1
   );
   await worker(
     MultipleCollective,
@@ -159,66 +163,66 @@ async function creationWorkers() {
 }
 
 async function curationWorkers() {
-  const provider = new JsonRpcProvider(INFURA_API);
-  const Curation = Curation__factory.connect(CONTRACT_CURATION, provider);
+  const CurationA = Curation__factory.connect(CONTRACT_CURATION, provider_2);
+  const CurationB = Curation__factory.connect(CONTRACT_CURATION, provider_3);
 
   await worker(
-    Curation,
-    Curation.filters.GalleryCreated(),
+    CurationA,
+    CurationA.filters.GalleryCreated(),
     new GalleryCreatedObserver(),
     "gallery_create_excuted_offset"
   );
   await worker(
-    Curation,
-    Curation.filters.OfferCreated(),
+    CurationA,
+    CurationA.filters.OfferCreated(),
     new OfferCreatedObserver(),
     "curation_offer_create_excuted_offset"
   );
   await worker(
-    Curation,
-    Curation.filters.OfferAccepted(),
+    CurationA,
+    CurationA.filters.OfferAccepted(),
     new OfferAcceptedObserver(),
     "curation_offer_accept_excuted_offset"
   );
   await worker(
-    Curation,
-    Curation.filters.OfferCanceled(),
+    CurationA,
+    CurationA.filters.OfferCanceled(),
     new OfferCanceledObserver(),
     "curation_offer_cancel_excuted_offset"
   );
   await worker(
-    Curation,
-    Curation.filters.OfferRejected(),
+    CurationA,
+    CurationA.filters.OfferRejected(),
     new OfferRejectedObserver(),
     "curation_offer_reject_excuted_offset"
   );
   await worker(
-    Curation,
-    Curation.filters.ExhibitFrozen(),
+    CurationB,
+    CurationB.filters.ExhibitFrozen(),
     new ExhibitFrozenObserver(),
     "exhibit_freeze_excuted_offset"
   );
   await worker(
-    Curation,
-    Curation.filters.ExhibitListed(),
+    CurationB,
+    CurationB.filters.ExhibitListed(),
     new ExhibitListedObserver(),
     "exhibit_list_excuted_offset"
   );
   await worker(
-    Curation,
-    Curation.filters.ExhibitRedeemed(),
+    CurationB,
+    CurationB.filters.ExhibitRedeemed(),
     new ExhibitRedeemedObserver(),
     "exhibit_redeem_excuted_offset"
   );
   await worker(
-    Curation,
-    Curation.filters.ExhibitSold(),
+    CurationB,
+    CurationB.filters.ExhibitSold(),
     new ExhibitSoldObserver(),
     "exhibit_buy_excuted_offset"
   );
   await worker(
-    Curation,
-    Curation.filters.ExhibitCanceled(),
+    CurationB,
+    CurationB.filters.ExhibitCanceled(),
     new ExhibitCanceledObserver(),
     "exhibit_cancel_excuted_offset"
   );
