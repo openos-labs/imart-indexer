@@ -13,4 +13,4 @@ services:
     image: event-worker-evm:v1
     volumes:
       - ./evm:/app/event-worker-evm
-    command: /bin/sh -c "npx prisma generate && npm start"
+    command: /bin/sh -c "npx prisma generate && yarn start"
