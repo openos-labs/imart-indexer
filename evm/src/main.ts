@@ -36,6 +36,7 @@ import {
   PROVIDER_ENDPOINT_2,
   PROVIDER_ENDPOINT_3,
 } from "./config";
+import { redis } from "./io/redis";
 
 const restPeriod = Number(DURATION_MILLIS);
 const provider_1 = new JsonRpcProvider(PROVIDER_ENDPOINT_1);
@@ -43,6 +44,8 @@ const provider_2 = new JsonRpcProvider(PROVIDER_ENDPOINT_2);
 const provider_3 = new JsonRpcProvider(PROVIDER_ENDPOINT_3);
 
 async function main() {
+  redis.on("error", (err) => console.log("Redis Client Error", err));
+  await redis.connect();
   await creationWorkers();
   await curationWorkers();
 }

@@ -61,7 +61,7 @@ export class OfferRejectedObserver extends Observer {
         tokenId: tokenId.toString(),
       },
     };
-    redis.lpush(`imart:notifications:${from}`, JSON.stringify(notification));
+    redis.LPUSH(`imart:notifications:${from}`, JSON.stringify(notification));
     const notify = prisma.notification.upsert({
       where: {
         receiver_type_timestamp: {

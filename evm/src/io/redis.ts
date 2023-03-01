@@ -1,3 +1,5 @@
-import { Redis } from "ioredis";
+import * as env from "dotenv";
+import { createClient } from "redis";
+env.config();
 
-export const redis = new Redis(process.env.REDIS_URL);
+export const redis = createClient({ url: process.env.REDIS_URL });
