@@ -1,6 +1,8 @@
 from datetime import datetime
+import json
 from typing import List, Tuple
 from common.util import new_uuid
+from common.redis import redis_cli
 from observer.observer import Observer
 from model.curation.offer_reject_event import OfferRejectEvent, OfferRejectEventData
 from model.state import State
@@ -48,6 +50,19 @@ class OfferRejectEventObserver(Observer[OfferRejectEvent]):
                 raise Exception(
                     f'[Curation reject Offer]: Failed to update offset')
 
+            notification = {
+                'id': new_uuid(),
+                'receiver': data.source,
+                'title': "Your offer has been rejected",
+                'content': "From IMart",
+                'image': "",
+                'type': enums.NotificationType.CurationOfferRejected,
+                'unread': True,
+                'timestamp': updated_at,
+                'detail': Json({"chain": "APTOS", "name": result.tokenName, "collection": result.collection, "creator": result.tokenCreator, "propertyVersion": result.propertyVersion})
+            }
+            redis_cli.lpush(f"imart:notifications:{data.source}", json.dumps(notification))
+            
             await transaction.notification.upsert(
                 where={
                     'receiver_type_timestamp': {
@@ -57,17 +72,7 @@ class OfferRejectEventObserver(Observer[OfferRejectEvent]):
                     }
                 },
                 data={
-                    'create': {
-                        'id': new_uuid(),
-                        'receiver': data.source,
-                        'title': "Your offer has been rejected",
-                        'content': "From IMart",
-                        'image': "",
-                        'type': enums.NotificationType.CurationOfferRejected,
-                        'unread': True,
-                        'timestamp': updated_at,
-                        'detail': Json({"chain": "APTOS", "name": result.tokenName, "collection": result.collection, "creator": result.tokenCreator, "propertyVersion": result.propertyVersion})
-                    },
+                    'create': notification,
                     'update': {
                         'receiver': data.source,
                         'title': "Your offer has been rejected",

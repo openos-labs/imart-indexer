@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 from typing import List, Tuple
 from common.util import new_uuid
 from common.redis import redis_cli
@@ -102,6 +103,18 @@ class BuyEventObserver(Observer[BuyEvent]):
             redis_cli.delete(
                 f"cache:imart:collectionstats:id:{token.collectionId}")
 
+            notification = {
+                'id': new_uuid(),
+                'receiver': data.seller,
+                'title': "Your order has been filled",
+                'content': "From IMart",
+                'image': "",
+                'type': enums.NotificationType.MarketOrderFilled,
+                'unread': True,
+                'timestamp': timestamp,
+                'detail': Json({"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
+            }
+            redis_cli.lpush(f"imart:notifications:{data.seller}", json.dumps(notification))
             await transaction.notification.upsert(
                 where={
                     'receiver_type_timestamp': {
@@ -111,17 +124,7 @@ class BuyEventObserver(Observer[BuyEvent]):
                     }
                 },
                 data={
-                    'create': {
-                        'id': new_uuid(),
-                        'receiver': data.seller,
-                        'title': "Your order has been filled",
-                        'content': "From IMart",
-                        'image': "",
-                        'type': enums.NotificationType.MarketOrderFilled,
-                        'unread': True,
-                        'timestamp': timestamp,
-                        'detail': Json({"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
-                    },
+                    'create': notification,
                     'update': {
                         'receiver': data.seller,
                         'title': "Your order has been filled",

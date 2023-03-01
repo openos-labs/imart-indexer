@@ -1,6 +1,8 @@
 from datetime import datetime
+import json
 from typing import List, Tuple
 from common.util import new_uuid
+from common.redis import redis_cli
 from model.token_id import TokenDataId, TokenId
 from observer.observer import Observer
 from model.curation.offer_accept_event import OfferAcceptEvent, OfferAcceptEventData
@@ -108,6 +110,19 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                 raise Exception(
                     f'[Invitee accept offer]: Failed to update offset')
 
+            notification = {
+                'id': new_uuid(),
+                'receiver': data.source,
+                'title': "Your offer has been accepted",
+                'content': "From IMart",
+                'image': "",
+                'type': enums.NotificationType.CurationOfferAccepted,
+                'unread': True,
+                'timestamp': updated_at,
+                'detail': Json({"chain": "APTOS", "name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
+            }
+            redis_cli.lpush(f"imart:notifications:{data.source}", json.dumps(notification))
+
             await transaction.notification.upsert(
                 where={
                     'receiver_type_timestamp': {
@@ -117,17 +132,7 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
                     }
                 },
                 data={
-                    'create': {
-                        'id': new_uuid(),
-                        'receiver': data.source,
-                        'title': "Your offer has been accepted",
-                        'content': "From IMart",
-                        'image': "",
-                        'type': enums.NotificationType.CurationOfferAccepted,
-                        'unread': True,
-                        'timestamp': updated_at,
-                        'detail': Json({"chain": "APTOS", "name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
-                    },
+                    'create': notification,
                     'update': {
                         'receiver': data.source,
                         'title': "Your offer has been accepted",

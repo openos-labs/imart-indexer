@@ -54,6 +54,7 @@
     "dotenv": "^16.0.3",
     "hardhat": "^2.12.6",
     "hardhat-gas-reporter": "^1.0.9",
+    "ioredis": "^5.3.1",
     "js-cookie": "^2.2.1",
     "mocha": "^10.2.0",
     "prisma": "4.9.0",

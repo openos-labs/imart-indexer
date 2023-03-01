@@ -1,6 +1,8 @@
 import { NotificationType, Prisma } from "@prisma/client";
+import { randomUUID } from "crypto";
 import { CONTRACT_CURATION } from "../../config";
 import { prisma } from "../../io";
+import { redis } from "../../io/redis";
 import { TypedEvent } from "../../typechain/common";
 import { OfferAcceptedEvent } from "../../typechain/Curation";
 import { State } from "../../types";
@@ -87,6 +89,22 @@ export class OfferAcceptedObserver extends Observer {
         curation_offer_accept_excuted_offset: blockNo,
       },
     });
+    const notification = {
+      id: randomUUID(),
+      receiver: from,
+      title: "Your offer has been accepted",
+      content: "From Mixverse",
+      image: "",
+      type: NotificationType.CurationOfferAccepted,
+      unread: true,
+      timestamp: updatedAt,
+      detail: {
+        chain: "ETH",
+        collectionId: collection,
+        tokenId: tokenId.toString(),
+      },
+    };
+    redis.lpush(`imart:notifications:${from}`, JSON.stringify(notification));
     const notify = prisma.notification.upsert({
       where: {
         receiver_type_timestamp: {
@@ -96,13 +114,7 @@ export class OfferAcceptedObserver extends Observer {
         },
       },
       create: {
-        receiver: from,
-        title: "Your offer has been accepted",
-        content: "From Mixverse",
-        image: "",
-        type: NotificationType.CurationOfferAccepted,
-        unread: true,
-        timestamp: updatedAt,
+        ...notification,
         detail: {
           chain: "ETH",
           collectionId: collection,
