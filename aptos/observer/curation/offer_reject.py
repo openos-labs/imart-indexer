@@ -61,7 +61,7 @@ class OfferRejectEventObserver(Observer[OfferRejectEvent]):
                 'timestamp': updated_at,
                 'detail': Json({"chain": "APTOS", "name": result.tokenName, "collection": result.collection, "creator": result.tokenCreator, "propertyVersion": result.propertyVersion})
             }
-            redis_cli.lpush(f"imart:notifications:{data.source}", json.dumps(notification))
+            redis_cli.lpush(f"imart:notifications:{data.source.lower()}", json.dumps(notification))
             
             await transaction.notification.upsert(
                 where={

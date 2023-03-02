@@ -114,7 +114,7 @@ class BuyEventObserver(Observer[BuyEvent]):
                 'timestamp': timestamp,
                 'detail': Json({"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
             }
-            redis_cli.lpush(f"imart:notifications:{data.seller}", json.dumps(notification))
+            redis_cli.lpush(f"imart:notifications:{data.seller.lower()}", json.dumps(notification))
             await transaction.notification.upsert(
                 where={
                     'receiver_type_timestamp': {
