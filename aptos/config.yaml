@@ -1,10 +1,7 @@
 node_url: https://fullnode.testnet.aptoslabs.com/v1
 node_urls:
   - https://fullnode.testnet.aptoslabs.com/v1
-  - https://aptos-testnet.s.chainbase.online/2ILrhaas4bLBIxB68k1lWA9xIpn/v1
-  - https://aptos-testnet.s.chainbase.online/2LTUn7qC8EVMQGCFM2S4yqBrGeV/v1
-  - https://aptos-testnet.s.chainbase.online/2LTeDlbd48GMlW1bs62fubLpWKB/v1
-  - https://aptos-testnet.s.chainbase.online/2LTeFltN01BPGK57HxrCf554tJh/v1
+  - https://aptos-testnet.blockeden.xyz/fgxchgx48sALxGNo3UsC/v1
 
 redis_url: redis://test-env.dpjsjb.clustercfg.memorydb.us-east-1.amazonaws.com:6379
 fixed_market:
