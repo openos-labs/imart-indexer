@@ -426,6 +426,7 @@ model CurationGallery {
 enum Web2AccountType {
     instagram
     twitter
+    discord
 }
 
 model Web2Account {

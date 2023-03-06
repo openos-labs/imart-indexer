@@ -107,7 +107,7 @@ def fund():
 def save_account(name, account):
     with open(f'{name}.{args.network}.secret', 'w') as config:
         data = json.dumps(
-            {"private_key": str(account.private_key), "account_address": str(account.account_address)})
+            {"private_key": str(account.private_key), "account_address": str(account.account_address)}, indent=4, sort_keys=True, default=str)
         config.write(data)
 
 
