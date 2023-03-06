@@ -5,7 +5,7 @@ node_urls:
 
 redis_url: redis://test-env.dpjsjb.clustercfg.memorydb.us-east-1.amazonaws.com:6379
 fixed_market:
-  event_handle: 0x5e895990e6134dc0e5774090b5657410e78713a1ae4839870857a1b57bd370b4 ::fixed_price_market::FixedMarketEvents
+  event_handle: 0x5e895990e6134dc0e5774090b5657410e78713a1ae4839870857a1b57bd370b4::fixed_price_market::FixedMarketEvents
   event_fields:
     - buy_token_events
     - list_token_events
