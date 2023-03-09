@@ -11,19 +11,6 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "newOwner",
-        type: "address",
-      },
-    ],
-    name: "assignOwner",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
         name: "to",
         type: "address",
       },
@@ -86,6 +73,19 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ] as const;

@@ -34,8 +34,7 @@ export interface CommissionPoolInterface extends utils.Interface {
     "deposit(uint256,address)": FunctionFragment;
     "getClaimable(uint256,address)": FunctionFragment;
     "getGalleryCommission(uint256)": FunctionFragment;
-    "owner()": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
+    "initialize(address)": FunctionFragment;
     "setGalleryCommission(uint256,address[],uint256[])": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
@@ -46,8 +45,7 @@ export interface CommissionPoolInterface extends utils.Interface {
       | "deposit"
       | "getClaimable"
       | "getGalleryCommission"
-      | "owner"
-      | "renounceOwnership"
+      | "initialize"
       | "setGalleryCommission"
       | "transferOwnership"
   ): FunctionFragment;
@@ -68,10 +66,9 @@ export interface CommissionPoolInterface extends utils.Interface {
     functionFragment: "getGalleryCommission",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
+    functionFragment: "initialize",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "setGalleryCommission",
@@ -96,11 +93,7 @@ export interface CommissionPoolInterface extends utils.Interface {
     functionFragment: "getGalleryCommission",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setGalleryCommission",
     data: BytesLike
@@ -112,11 +105,11 @@ export interface CommissionPoolInterface extends utils.Interface {
 
   events: {
     "ClaimableUpdated(uint256,address,uint256)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
+    "Initialized(uint8)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ClaimableUpdated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
 }
 
 export interface ClaimableUpdatedEventObject {
@@ -132,17 +125,12 @@ export type ClaimableUpdatedEvent = TypedEvent<
 export type ClaimableUpdatedEventFilter =
   TypedEventFilter<ClaimableUpdatedEvent>;
 
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
+export interface InitializedEventObject {
+  version: number;
 }
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface CommissionPool extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -193,9 +181,8 @@ export interface CommissionPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string[], BigNumber[]]>;
 
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
-    renounceOwnership(
+    initialize(
+      owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -234,9 +221,8 @@ export interface CommissionPool extends BaseContract {
     overrides?: CallOverrides
   ): Promise<[string[], BigNumber[]]>;
 
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  renounceOwnership(
+  initialize(
+    owner: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -275,9 +261,10 @@ export interface CommissionPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string[], BigNumber[]]>;
 
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+    initialize(
+      owner: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     setGalleryCommission(
       galleryId: PromiseOrValue<BigNumberish>,
@@ -304,14 +291,8 @@ export interface CommissionPool extends BaseContract {
       claimableBalance?: null
     ): ClaimableUpdatedEventFilter;
 
-    "OwnershipTransferred(address,address)"(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
   };
 
   estimateGas: {
@@ -337,9 +318,8 @@ export interface CommissionPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    renounceOwnership(
+    initialize(
+      owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -379,9 +359,8 @@ export interface CommissionPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    renounceOwnership(
+    initialize(
+      owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

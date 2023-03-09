@@ -4,6 +4,8 @@
 export { Collective__factory } from "./Collective__factory";
 export { CommissionPool__factory } from "./CommissionPool__factory";
 export { Curation__factory } from "./Curation__factory";
+export { ERC1155__factory } from "./ERC1155__factory";
+export { ERC721__factory } from "./ERC721__factory";
 export { IToken__factory } from "./IToken__factory";
 export { MixverseSpace__factory } from "./MixverseSpace__factory";
 export { MultipleCollective__factory } from "./MultipleCollective__factory";

@@ -78,19 +78,13 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
-        internalType: "address",
-        name: "previousOwner",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "newOwner",
-        type: "address",
+        indexed: false,
+        internalType: "uint8",
+        name: "version",
+        type: "uint8",
       },
     ],
-    name: "OwnershipTransferred",
+    name: "Initialized",
     type: "event",
   },
   {
@@ -144,13 +138,18 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "_owner",
+        type: "address",
+      },
+      {
         internalType: "string",
-        name: "name",
+        name: "_name",
         type: "string",
       },
       {
         internalType: "string",
-        name: "symbol",
+        name: "_symbol",
         type: "string",
       },
     ],
@@ -162,6 +161,19 @@ const _abi = [
         type: "address",
       },
     ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+    ],
+    name: "initialize",
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -184,26 +196,6 @@ const _abi = [
       },
     ],
     name: "mint",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "owner",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "renounceOwnership",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

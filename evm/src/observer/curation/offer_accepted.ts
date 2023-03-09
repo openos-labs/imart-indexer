@@ -31,6 +31,7 @@ export class OfferAcceptedObserver extends Observer {
       to,
       price,
       galleryId,
+      exhibitId,
       exhibitExpiredAt,
       timestamp,
     ] = (event as OfferAcceptedEvent).args;
@@ -59,7 +60,7 @@ export class OfferAcceptedObserver extends Observer {
     const updatedAt = new Date(timestamp.toNumber() * 1000);
     const createExhibit = prisma.curationExhibit.create({
       data: {
-        index: id.toBigInt(),
+        index: exhibitId.toBigInt(),
         chain: "ETH",
         root: CONTRACT_CURATION,
         galleryIndex: galleryId.toBigInt(),

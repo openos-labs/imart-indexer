@@ -25,26 +25,22 @@ import type {
 
 export interface ITokenInterface extends utils.Interface {
   functions: {
-    "assignOwner(address)": FunctionFragment;
     "safeMint(address,uint256,string)": FunctionFragment;
     "setMarketplace(address)": FunctionFragment;
     "supply()": FunctionFragment;
     "supply(uint256)": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "assignOwner"
       | "safeMint"
       | "setMarketplace"
       | "supply()"
       | "supply(uint256)"
+      | "transferOwnership"
   ): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "assignOwner",
-    values: [PromiseOrValue<string>]
-  ): string;
   encodeFunctionData(
     functionFragment: "safeMint",
     values: [
@@ -62,11 +58,11 @@ export interface ITokenInterface extends utils.Interface {
     functionFragment: "supply(uint256)",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [PromiseOrValue<string>]
+  ): string;
 
-  decodeFunctionResult(
-    functionFragment: "assignOwner",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "safeMint", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setMarketplace",
@@ -75,6 +71,10 @@ export interface ITokenInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "supply()", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supply(uint256)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
 
@@ -108,11 +108,6 @@ export interface IToken extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    assignOwner(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     safeMint(
       to: PromiseOrValue<string>,
       balance: PromiseOrValue<BigNumberish>,
@@ -131,12 +126,12 @@ export interface IToken extends BaseContract {
       _id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
-  };
 
-  assignOwner(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+    transferOwnership(
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+  };
 
   safeMint(
     to: PromiseOrValue<string>,
@@ -157,12 +152,12 @@ export interface IToken extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  callStatic: {
-    assignOwner(
-      newOwner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+  transferOwnership(
+    newOwner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
+  callStatic: {
     safeMint(
       to: PromiseOrValue<string>,
       balance: PromiseOrValue<BigNumberish>,
@@ -181,16 +176,16 @@ export interface IToken extends BaseContract {
       _id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {};
 
   estimateGas: {
-    assignOwner(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     safeMint(
       to: PromiseOrValue<string>,
       balance: PromiseOrValue<BigNumberish>,
@@ -209,14 +204,14 @@ export interface IToken extends BaseContract {
       _id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    assignOwner(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
     safeMint(
       to: PromiseOrValue<string>,
       balance: PromiseOrValue<BigNumberish>,
@@ -234,6 +229,11 @@ export interface IToken extends BaseContract {
     "supply(uint256)"(
       _id: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

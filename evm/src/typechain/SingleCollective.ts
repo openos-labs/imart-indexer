@@ -30,10 +30,9 @@ import type {
 export interface SingleCollectiveInterface extends utils.Interface {
   functions: {
     "createCollection(string,string,string[],string,string,address[],uint256[],uint64)": FunctionFragment;
-    "createRoot(string,string)": FunctionFragment;
+    "createRoot(address,string,string)": FunctionFragment;
+    "initialize(address)": FunctionFragment;
     "mint(string,uint256,string)": FunctionFragment;
-    "owner()": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
     "setMarketplace(address)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
@@ -42,9 +41,8 @@ export interface SingleCollectiveInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "createCollection"
       | "createRoot"
+      | "initialize"
       | "mint"
-      | "owner"
-      | "renounceOwnership"
       | "setMarketplace"
       | "transferOwnership"
   ): FunctionFragment;
@@ -64,7 +62,15 @@ export interface SingleCollectiveInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "createRoot",
-    values: [PromiseOrValue<string>, PromiseOrValue<string>]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "mint",
@@ -73,11 +79,6 @@ export interface SingleCollectiveInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>
     ]
-  ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "setMarketplace",
@@ -93,12 +94,8 @@ export interface SingleCollectiveInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "createRoot", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "setMarketplace",
     data: BytesLike
@@ -110,11 +107,11 @@ export interface SingleCollectiveInterface extends utils.Interface {
 
   events: {
     "CollectionCreated(address,address,string,string,string[],string,string,address[],uint256[],uint64)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
+    "Initialized(uint8)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "CollectionCreated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
 }
 
 export interface CollectionCreatedEventObject {
@@ -148,17 +145,12 @@ export type CollectionCreatedEvent = TypedEvent<
 export type CollectionCreatedEventFilter =
   TypedEventFilter<CollectionCreatedEvent>;
 
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
+export interface InitializedEventObject {
+  version: number;
 }
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface SingleCollective extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -200,8 +192,14 @@ export interface SingleCollective extends BaseContract {
     ): Promise<ContractTransaction>;
 
     createRoot(
+      owner: PromiseOrValue<string>,
       name: PromiseOrValue<string>,
       symbol: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    initialize(
+      owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -209,12 +207,6 @@ export interface SingleCollective extends BaseContract {
       _collection: PromiseOrValue<string>,
       balance: PromiseOrValue<BigNumberish>,
       uri: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
-    renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -242,8 +234,14 @@ export interface SingleCollective extends BaseContract {
   ): Promise<ContractTransaction>;
 
   createRoot(
+    owner: PromiseOrValue<string>,
     name: PromiseOrValue<string>,
     symbol: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  initialize(
+    owner: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -251,12 +249,6 @@ export interface SingleCollective extends BaseContract {
     _collection: PromiseOrValue<string>,
     balance: PromiseOrValue<BigNumberish>,
     uri: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  renounceOwnership(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -284,10 +276,16 @@ export interface SingleCollective extends BaseContract {
     ): Promise<void>;
 
     createRoot(
+      owner: PromiseOrValue<string>,
       name: PromiseOrValue<string>,
       symbol: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    initialize(
+      owner: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     mint(
       _collection: PromiseOrValue<string>,
@@ -295,10 +293,6 @@ export interface SingleCollective extends BaseContract {
       uri: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     setMarketplace(
       _marketplace: PromiseOrValue<string>,
@@ -337,14 +331,8 @@ export interface SingleCollective extends BaseContract {
       maximum?: null
     ): CollectionCreatedEventFilter;
 
-    "OwnershipTransferred(address,address)"(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
   };
 
   estimateGas: {
@@ -361,8 +349,14 @@ export interface SingleCollective extends BaseContract {
     ): Promise<BigNumber>;
 
     createRoot(
+      owner: PromiseOrValue<string>,
       name: PromiseOrValue<string>,
       symbol: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    initialize(
+      owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -370,12 +364,6 @@ export interface SingleCollective extends BaseContract {
       _collection: PromiseOrValue<string>,
       balance: PromiseOrValue<BigNumberish>,
       uri: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -404,8 +392,14 @@ export interface SingleCollective extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     createRoot(
+      owner: PromiseOrValue<string>,
       name: PromiseOrValue<string>,
       symbol: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -413,12 +407,6 @@ export interface SingleCollective extends BaseContract {
       _collection: PromiseOrValue<string>,
       balance: PromiseOrValue<BigNumberish>,
       uri: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
