@@ -22,7 +22,7 @@ class OfferAcceptEventObserver(Observer[OfferAcceptEvent]):
         new_state = state
         seqno = event.sequence_number
         data = OfferAcceptEventData(**event.data)
-        index = int(data.id)
+        index = int(data.exhibit_id)
         gallery_index = int(data.gallery_id)
         token_id = TokenId(**data.token_id)
         token_data_id = TokenDataId(**token_id.token_data_id)

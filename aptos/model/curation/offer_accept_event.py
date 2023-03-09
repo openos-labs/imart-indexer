@@ -10,6 +10,7 @@ class OfferAcceptEventData:
     source: str
     destination: str
     price: str
+    exhibit_id: str
     gallery_id: str
     exhibit_expired_at: str
     timestamp: str

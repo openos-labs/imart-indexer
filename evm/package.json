@@ -20,7 +20,8 @@
     "script/accept-offer": "ts-node src/scripts/accept_offer.ts",
     "script/reject-offer": "ts-node src/scripts/reject_offer.ts",
     "script/list-exhibit": "ts-node src/scripts/list_exhibit.ts",
-    "script/buy-exhibit": "ts-node src/scripts/buy_exhibit.ts"
+    "script/buy-exhibit": "ts-node src/scripts/buy_exhibit.ts",
+    "script/redeem": "ts-node src/scripts/redeem.ts"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.13.15",
