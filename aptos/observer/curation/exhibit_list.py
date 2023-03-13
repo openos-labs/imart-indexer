@@ -53,7 +53,7 @@ class ExhibitListEventObserver(Observer[ExhibitListEvent]):
                         'location': "",
                         'url': "",
                         'detail': "",
-                        'status': enums.CurationExhibitStatus.reserved,
+                        'status': enums.CurationExhibitStatus.listing,
                         'updatedAt': updated_at
                     },
                     'update': {
