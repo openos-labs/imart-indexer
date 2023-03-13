@@ -1,5 +1,7 @@
 from datetime import datetime
 from typing import List, Tuple
+from aptos.common.util import new_uuid
+from aptos.model.token_id import TokenDataId, TokenId
 from observer.observer import Observer
 from model.curation.exhibit_list_event import ExhibitListEvent, ExhibitListEventData
 from model.state import State
@@ -18,6 +20,9 @@ class ExhibitListEventObserver(Observer[ExhibitListEvent]):
         new_state = state
         seqno = event.sequence_number
         data = ExhibitListEventData(**event.data)
+        gallery_index = int(data.gallery_id)
+        token_id = TokenId(**data.token_id)
+        token_data_id = TokenDataId(**token_id.token_data_id)
         updated_at = datetime.fromtimestamp(int(data.timestamp))
 
         async with prisma_client.tx(timeout=60000) as transaction:
@@ -29,8 +34,47 @@ class ExhibitListEventObserver(Observer[ExhibitListEvent]):
                     }
                 },
                 data={
-                    'status': enums.CurationExhibitStatus.listing,
-                    'updatedAt': updated_at
+                    'create': {
+                        'id': new_uuid(),
+                        'chain': enums.Chain.APTOS,
+                        'index': int(data.id),
+                        'root': config.curation.address(),
+                        'galleryIndex': gallery_index,
+                        'curator':  data.origin,
+                        'collection': token_data_id.collection,
+                        'tokenName': token_data_id.name,
+                        'tokenCreator': token_data_id.creator,
+                        'propertyVersion': int(token_id.property_version),
+                        'origin': data.origin,
+                        'price': data.price,
+                        'currency': '0x1::aptos_coin::AptosCoin',
+                        'decimals': 8,
+                        'expiredAt': 0,
+                        'location': "",
+                        'url': "",
+                        'detail': "",
+                        'status': enums.CurationExhibitStatus.reserved,
+                        'updatedAt': updated_at
+                    },
+                    'update': {
+                        'chain': enums.Chain.APTOS,
+                        'galleryIndex': gallery_index,
+                        'curator':  data.origin,
+                        'collection': token_data_id.collection,
+                        'tokenName': token_data_id.name,
+                        'tokenCreator': token_data_id.creator,
+                        'propertyVersion': int(token_id.property_version),
+                        'origin': data.origin,
+                        'price': data.price,
+                        'currency': '0x1::aptos_coin::AptosCoin',
+                        'decimals': 8,
+                        'expiredAt': 0,
+                        'location': "",
+                        'url': "",
+                        'detail': "",
+                        'status': enums.CurationExhibitStatus.listing,
+                        'updatedAt': updated_at
+                    }
                 }
             )
             if result == None or result.status != enums.CurationExhibitStatus.listing:
