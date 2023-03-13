@@ -26,7 +26,7 @@ class ExhibitListEventObserver(Observer[ExhibitListEvent]):
         updated_at = datetime.fromtimestamp(int(data.timestamp))
 
         async with prisma_client.tx(timeout=60000) as transaction:
-            result = await transaction.curationexhibit.update(
+            result = await transaction.curationexhibit.upsert(
                 where={
                     'index_root': {
                         'index': int(data.id),
