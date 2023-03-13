@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Tuple
-from aptos.common.util import new_uuid
-from aptos.model.token_id import TokenDataId, TokenId
+from common.util import new_uuid
+from model.token_id import TokenDataId, TokenId
 from observer.observer import Observer
 from model.curation.exhibit_list_event import ExhibitListEvent, ExhibitListEventData
 from model.state import State
