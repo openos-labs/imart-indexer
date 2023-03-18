@@ -65,7 +65,10 @@ export class OfferCreatedObserver extends Observer {
         status: "pending",
         updatedAt: startAt,
       },
-      update: {},
+      update: {
+        collectionIdentifier,
+        tokenIdentifier: tokenId.toString(),
+      },
     });
     const updateOffset = prisma.eventOffset.update({
       where: {
