@@ -23,7 +23,7 @@ export class OfferCreatedObserver extends Observer {
     const blockNo = BigInt(event.blockNumber);
     const [
       id,
-      collection,
+      collectionIdentifier,
       tokenId,
       from,
       to,
@@ -48,9 +48,9 @@ export class OfferCreatedObserver extends Observer {
         chain: "ETH",
         root: CONTRACT_CURATION,
         galleryIndex: galleryId.toBigInt(),
-        collection,
+        collectionIdentifier,
         tokenCreator: "",
-        tokenName: tokenId.toString(),
+        tokenIdentifier: tokenId.toString(),
         propertyVersion: 0,
         source: from,
         destination: to,

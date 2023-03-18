@@ -25,7 +25,7 @@ export class OfferAcceptedObserver extends Observer {
     const blockNo = BigInt(event.blockNumber);
     const [
       id,
-      collection,
+      collectionIdentifier,
       tokenId,
       from,
       to,
@@ -65,9 +65,9 @@ export class OfferAcceptedObserver extends Observer {
         root: CONTRACT_CURATION,
         galleryIndex: galleryId.toBigInt(),
         curator: from,
-        collection,
+        collectionIdentifier,
         tokenCreator: "",
-        tokenName: tokenId.toString(),
+        tokenIdentifier: tokenId.toString(),
         propertyVersion: 0,
         origin: to,
         price: price.toString(),
@@ -101,7 +101,7 @@ export class OfferAcceptedObserver extends Observer {
       timestamp: updatedAt,
       detail: {
         chain: "ETH",
-        collectionId: collection,
+        collectionId: collectionIdentifier,
         tokenId: tokenId.toString(),
       },
     };
@@ -118,7 +118,7 @@ export class OfferAcceptedObserver extends Observer {
         ...notification,
         detail: {
           chain: "ETH",
-          collectionId: collection,
+          collectionId: collectionIdentifier,
           tokenId: tokenId.toString(),
         } as Prisma.JsonObject,
       },
