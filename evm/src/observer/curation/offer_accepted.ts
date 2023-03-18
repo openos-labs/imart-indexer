@@ -58,8 +58,14 @@ export class OfferAcceptedObserver extends Observer {
     });
 
     const updatedAt = new Date(timestamp.toNumber() * 1000);
-    const createExhibit = prisma.curationExhibit.create({
-      data: {
+    const createExhibit = prisma.curationExhibit.upsert({
+      where: {
+        index_root: {
+          index: exhibitId.toBigInt(),
+          root: CONTRACT_CURATION,
+        },
+      },
+      create: {
         index: exhibitId.toBigInt(),
         chain: "ETH",
         root: CONTRACT_CURATION,
@@ -79,6 +85,10 @@ export class OfferAcceptedObserver extends Observer {
         detail: offer.detail,
         status: "reserved",
         updatedAt,
+      },
+      update: {
+        collectionIdentifier,
+        tokenIdentifier: tokenId.toString(),
       },
     });
 
@@ -105,7 +115,10 @@ export class OfferAcceptedObserver extends Observer {
         tokenId: tokenId.toString(),
       },
     };
-    redis.LPUSH(`imart:notifications:${from.toLowerCase()}`, JSON.stringify(notification));
+    redis.LPUSH(
+      `imart:notifications:${from.toLowerCase()}`,
+      JSON.stringify(notification)
+    );
     const notify = prisma.notification.upsert({
       where: {
         receiver_type_timestamp: {
