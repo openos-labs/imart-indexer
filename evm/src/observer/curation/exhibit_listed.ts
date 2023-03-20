@@ -20,15 +20,48 @@ export class ExhibitListedObserver extends Observer {
     event: T
   ): Promise<{ success: boolean; state: State }> {
     const blockNo = BigInt(event.blockNumber);
-    const [id, _] = (event as ExhibitListedEvent).args;
-    const createOffer = prisma.curationExhibit.update({
+    const [
+      id,
+      galleryId,
+      collection,
+      tokenId,
+      origin,
+      expiration,
+      price,
+      _,
+      url,
+      detail,
+      timestamp,
+    ] = (event as ExhibitListedEvent).args;
+    const createOffer = prisma.curationExhibit.upsert({
       where: {
         index_root: {
           index: id.toBigInt(),
           root: CONTRACT_CURATION,
         },
       },
-      data: {
+      create: {
+        index: id.toBigInt(),
+        chain: "ETH",
+        root: CONTRACT_CURATION,
+        galleryIndex: galleryId.toBigInt(),
+        curator: origin,
+        collectionIdentifier: collection,
+        tokenCreator: "",
+        tokenIdentifier: tokenId.toString(),
+        propertyVersion: 0,
+        origin,
+        price: price.toString(),
+        currency: "0x0000000000000000000000000000000000000000",
+        decimals: 18,
+        expiredAt: new Date(expiration.toNumber() * 1000),
+        location: "",
+        url: url,
+        detail: detail,
+        status: "listing",
+        updatedAt: new Date(timestamp.toNumber() * 1000),
+      },
+      update: {
         status: "listing",
       },
     });

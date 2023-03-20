@@ -12,7 +12,7 @@ export abstract class Observer {
     console.info(
       `[Observer]: received events from block no ${events[0].blockNumber} to ${
         events[events.length - 1].blockNumber
-      }: ${events}`
+      }: ${events.map((e) => JSON.stringify(e as T))}`
     );
     for (const event of events) {
       try {
