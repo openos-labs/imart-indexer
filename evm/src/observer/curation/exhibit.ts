@@ -1,17 +1,24 @@
 import { CONTRACT_CURATION } from "../../config";
 import { prisma } from "../../io";
 import { TypedEvent } from "../../typechain/common";
-import { ExhibitListedEvent } from "../../typechain/Curation";
+import { ExhibitChangedEvent } from "../../typechain/Curation";
 import { State } from "../../types";
 import { handleError, Observer } from "../observer";
 
-export class ExhibitListedObserver extends Observer {
+const eventTypeToStatus = {
+  ExhibitListed: "listing",
+  ExhibitCanceled: "reserved",
+  ExhibitSold: "sold",
+  ExhibitFrozen: "frozen",
+  ExhibitRedeemed: "redeemed",
+};
+export class ExhibitObserver extends Observer {
   async processAll<T extends TypedEvent>(
     state: State,
     events: T[]
   ): Promise<State> {
     const newEvents = events.filter(
-      (e) => e.blockNumber > Number(state.exhibit_list_excuted_offset)
+      (e) => e.blockNumber > Number(state.exhibit_excuted_offset)
     );
     return super.processAll(state, newEvents);
   }
@@ -22,6 +29,7 @@ export class ExhibitListedObserver extends Observer {
     const blockNo = BigInt(event.blockNumber);
     const [
       id,
+      eventType,
       galleryId,
       collection,
       tokenId,
@@ -32,7 +40,8 @@ export class ExhibitListedObserver extends Observer {
       url,
       detail,
       timestamp,
-    ] = (event as ExhibitListedEvent).args;
+    ] = (event as ExhibitChangedEvent).args;
+    const updatedAt = new Date(timestamp.toNumber() * 1000);
     const createOffer = prisma.curationExhibit.upsert({
       where: {
         index_root: {
@@ -58,11 +67,11 @@ export class ExhibitListedObserver extends Observer {
         location: "",
         url: url,
         detail: detail,
-        status: "listing",
-        updatedAt: new Date(timestamp.toNumber() * 1000),
+        status: eventTypeToStatus[eventType],
+        updatedAt,
       },
       update: {
-        status: "listing",
+        status: eventTypeToStatus[eventType],
       },
     });
     const updateOffset = prisma.eventOffset.update({
@@ -70,7 +79,7 @@ export class ExhibitListedObserver extends Observer {
         id: 1,
       },
       data: {
-        exhibit_list_excuted_offset: blockNo,
+        exhibit_excuted_offset: blockNo,
       },
     });
     try {
@@ -78,12 +87,12 @@ export class ExhibitListedObserver extends Observer {
         createOffer,
         updateOffset,
       ]);
-      if (updatedState.exhibit_list_excuted_offset != blockNo) {
+      if (updatedState.exhibit_excuted_offset != blockNo) {
         return { success: false, state };
       }
       const newState = {
         ...state,
-        exhibit_list_excuted_offset: blockNo,
+        exhibit_excuted_offset: blockNo,
       };
       return { success: true, state: newState };
     } catch (e) {

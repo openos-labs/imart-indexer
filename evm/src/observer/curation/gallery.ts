@@ -1,17 +1,17 @@
 import { CONTRACT_CURATION } from "../../config";
 import { prisma } from "../../io";
 import { TypedEvent } from "../../typechain/common";
-import { GalleryCreatedEvent } from "../../typechain/Curation";
+import { GalleryChangedEvent } from "../../typechain/Curation";
 import { State } from "../../types";
 import { handleError, Observer } from "../observer";
 
-export class GalleryCreatedObserver extends Observer {
+export class GalleryObserver extends Observer {
   async processAll<T extends TypedEvent>(
     state: State,
     events: T[]
   ): Promise<State> {
     const newEvents = events.filter(
-      (e) => e.blockNumber > Number(state.gallery_create_excuted_offset)
+      (e) => e.blockNumber > Number(state.gallery_excuted_offset)
     );
     return super.processAll(state, newEvents);
   }
@@ -22,6 +22,7 @@ export class GalleryCreatedObserver extends Observer {
     const blockNo = BigInt(event.blockNumber);
     const [
       id,
+      eventType,
       collection,
       tokenId,
       owner,
@@ -33,7 +34,7 @@ export class GalleryCreatedObserver extends Observer {
       payees,
       rates,
       commissionPool,
-    ] = (event as GalleryCreatedEvent).args;
+    ] = (event as GalleryChangedEvent).args;
 
     const commissionRates = payees.reduce((acc, key, i) => {
       return { ...acc, [key]: rates[i].toString() };
@@ -57,7 +58,7 @@ export class GalleryCreatedObserver extends Observer {
         id: 1,
       },
       data: {
-        gallery_create_excuted_offset: blockNo,
+        gallery_excuted_offset: blockNo,
       },
     });
     try {
@@ -65,12 +66,12 @@ export class GalleryCreatedObserver extends Observer {
         createGallery,
         updateState,
       ]);
-      if (updatedState.gallery_create_excuted_offset != blockNo) {
+      if (updatedState.gallery_excuted_offset != blockNo) {
         return { success: false, state };
       }
       const newState = {
         ...state,
-        gallery_create_excuted_offset: blockNo,
+        gallery_excuted_offset: blockNo,
       };
       return { success: true, state: newState };
     } catch (e) {

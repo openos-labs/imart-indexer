@@ -513,4 +513,7 @@ model EventOffset {
     creation_collection_created_excuted_offset BigInt @default(-1)
     single_collective_created_excuted_offset   BigInt @default(-1)
     multiple_collective_created_excuted_offset BigInt @default(-1)
+    gallery_excuted_offset                     BigInt @default(-1)
+    exhibit_excuted_offset                     BigInt @default(-1)
+    curation_offer_excuted_offset              BigInt @default(-1)
 }

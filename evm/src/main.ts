@@ -11,21 +11,14 @@ import { delay } from "./utils/delay";
 import { Subject } from "rxjs";
 import {
   processEvents,
-  ExhibitCanceledObserver,
-  ExhibitFrozenObserver,
-  ExhibitListedObserver,
-  ExhibitRedeemedObserver,
-  ExhibitSoldObserver,
+  ExhibitObserver,
   Observer,
-  OfferAcceptedObserver,
-  OfferCanceledObserver,
-  OfferCreatedObserver,
-  OfferRejectedObserver,
+  OfferObserver,
   SingleCollectiveCreateObserver,
   MultipleCollectiveCreateObserver,
 } from "./observer";
 
-import { GalleryCreatedObserver } from "./observer/curation/gallery_created";
+import { GalleryObserver } from "./observer/curation/gallery";
 import { prisma } from "./io";
 import {
   CONTRACT_CURATION,
@@ -121,6 +114,9 @@ async function initialState(): Promise<State> {
     gallery_create_excuted_offset,
     single_collective_created_excuted_offset,
     multiple_collective_created_excuted_offset,
+    gallery_excuted_offset,
+    exhibit_excuted_offset,
+    curation_offer_excuted_offset,
   } = execution;
   return {
     create_token_excuted_offset,
@@ -138,6 +134,9 @@ async function initialState(): Promise<State> {
     creation_collection_created_excuted_offset,
     single_collective_created_excuted_offset,
     multiple_collective_created_excuted_offset,
+    gallery_excuted_offset,
+    exhibit_excuted_offset,
+    curation_offer_excuted_offset,
   };
 }
 
@@ -171,62 +170,20 @@ async function curationWorkers() {
 
   await worker(
     CurationA,
-    CurationA.filters.GalleryCreated(),
-    new GalleryCreatedObserver(),
-    "gallery_create_excuted_offset"
+    CurationA.filters.GalleryChanged(),
+    new GalleryObserver(),
+    "gallery_excuted_offset"
   );
   await worker(
     CurationA,
-    CurationA.filters.OfferCreated(),
-    new OfferCreatedObserver(),
-    "curation_offer_create_excuted_offset"
-  );
-  await worker(
-    CurationA,
-    CurationA.filters.OfferAccepted(),
-    new OfferAcceptedObserver(),
-    "curation_offer_accept_excuted_offset"
-  );
-  await worker(
-    CurationA,
-    CurationA.filters.OfferCanceled(),
-    new OfferCanceledObserver(),
-    "curation_offer_cancel_excuted_offset"
-  );
-  await worker(
-    CurationA,
-    CurationA.filters.OfferRejected(),
-    new OfferRejectedObserver(),
-    "curation_offer_reject_excuted_offset"
+    CurationA.filters.OfferChanged(),
+    new OfferObserver(),
+    "curation_offer_excuted_offset"
   );
   await worker(
     CurationB,
-    CurationB.filters.ExhibitFrozen(),
-    new ExhibitFrozenObserver(),
-    "exhibit_freeze_excuted_offset"
-  );
-  await worker(
-    CurationB,
-    CurationB.filters.ExhibitListed(),
-    new ExhibitListedObserver(),
-    "exhibit_list_excuted_offset"
-  );
-  await worker(
-    CurationB,
-    CurationB.filters.ExhibitRedeemed(),
-    new ExhibitRedeemedObserver(),
-    "exhibit_redeem_excuted_offset"
-  );
-  await worker(
-    CurationB,
-    CurationB.filters.ExhibitSold(),
-    new ExhibitSoldObserver(),
-    "exhibit_buy_excuted_offset"
-  );
-  await worker(
-    CurationB,
-    CurationB.filters.ExhibitCanceled(),
-    new ExhibitCanceledObserver(),
-    "exhibit_cancel_excuted_offset"
+    CurationB.filters.ExhibitChanged(),
+    new ExhibitObserver(),
+    "exhibit_excuted_offset"
   );
 }

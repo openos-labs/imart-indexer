@@ -23,6 +23,9 @@ export type State = {
   creation_collection_created_excuted_offset: bigint;
   single_collective_created_excuted_offset: bigint;
   multiple_collective_created_excuted_offset: bigint;
+  gallery_excuted_offset: bigint;
+  exhibit_excuted_offset: bigint;
+  curation_offer_excuted_offset: bigint;
 };
 
 export type StateFlow = Subject<State>;
