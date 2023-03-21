@@ -4,19 +4,22 @@ from model.token_id import TokenId
 
 
 @dataclass
-class ExhibitListEventData:
+class OfferEventData:
     id: str
-    gallery_id: str
+    event_type: str
     token_id: TokenId
-    origin: str
-    expiration: str
+    source: str
+    destination: str
     price: str
-    location: str
+    gallery_id: str
+    offer_start_at: str
+    offer_expired_at: str
+    exhibit_expired_at: str
     url: str
     detail: str
     timestamp: str
 
 
 @dataclass
-class ExhibitListEvent(Event[ExhibitListEventData]):
+class OfferEvent(Event[OfferEventData]):
     pass

@@ -5,8 +5,9 @@ from model.token_id import TokenId
 
 
 @dataclass
-class GalleryCreateEventData:
+class GalleryEventData:
     id: str
+    event_type: str
     owner: str
     token_id: TokenId
     space_type: str
@@ -18,5 +19,5 @@ class GalleryCreateEventData:
 
 
 @dataclass
-class GalleryCreateEvent(Event[GalleryCreateEventData]):
+class GalleryEvent(Event[GalleryEventData]):
     pass

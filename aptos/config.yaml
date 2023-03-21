@@ -22,15 +22,8 @@ creation:
     - collection_created_events
     - token_created_events
 curation:
-  event_handle: 0x1c90da7e4cccf4d612f27dcbc72d142218f75ab8bc877a7331dcade480673f2c::curation::CurationEvents
+  event_handle: 0xe544fe1018243182cafe3fab04a07f82edf83b98a0c9a217db220660fe689f37::curation::CurationEvents
   event_fields:
-    - gallery_created_events
-    - offer_created_events
-    - offer_accepted_events
-    - offer_rejected_events
-    - offer_canceled_events
-    - exhibit_listed_events
-    - exhibit_canceled_events
-    - exhibit_sold_events
-    - exhibit_frozen_events
-    - exhibit_redeemed_events
+    - offer_events
+    - gallery_events
+    - exhibit_events

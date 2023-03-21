@@ -37,16 +37,9 @@
 #
 #                                                 DB / Cache
 
-from subject.curation.exhibit_redeem import ExhibitRedeemSubject
-from subject.curation.exhibit_list import ExhibitListSubject
-from subject.curation.exhibit_freeze import ExhibitFreezeSubject
-from subject.curation.exhibit_cancel import ExhibitCancelSubject
-from subject.curation.exhibit_buy import ExhibitBuySubject
-from subject.curation.offer_reject import OfferRejectSubject
-from subject.curation.offer_create import OfferCreateSubject
-from subject.curation.offer_cancel import OfferCancelSubject
-from subject.curation.offer_accept import OfferAcceptSubject
-from subject.curation.gallery_create import GalleryCreateSubject
+from subject.curation.exhibit import ExhibitSubject
+from subject.curation.offer import CurationOfferSubject
+from subject.curation.gallery import GallerySubject
 from subject.order.delist import DelistEventSubject
 from subject.order.list import ListEventSubject
 from subject.order.buy import BuyEventSubject
@@ -56,16 +49,9 @@ from subject.offer.accept import AcceptOfferSubject
 from subject.creation.create_token import CreateTokenSubject
 from subject.creation.create_collection import CreateCollectionSubject
 from model.state import State, initial_state
-from observer.curation.exhibit_buy import ExhibitBuyEventObserver
-from observer.curation.exhibit_freeze import ExhibitFreezeEventObserver
-from observer.curation.exhibit_redeem import ExhibitRedeemEventObserver
-from observer.curation.exhibit_cancel import ExhibitCancelEventObserver
-from observer.curation.exhibit_list import ExhibitListEventObserver
-from observer.curation.offer_reject import OfferRejectEventObserver
-from observer.curation.offer_cancel import OfferCancelEventObserver
-from observer.curation.offer_accept import OfferAcceptEventObserver
-from observer.curation.offer_create import OfferCreateEventObserver
-from observer.curation.gallery_create import GalleryCreateEventObserver
+from observer.curation.exhibit import ExhibitEventObserver
+from observer.curation.offer import CurationOfferEventObserver
+from observer.curation.gallery import GalleryEventObserver
 from observer.order.delist import DelistEventObserver
 from observer.order.list import ListEventObserver
 from observer.order.buy import BuyEventObserver
@@ -90,16 +76,9 @@ subject_to_observer = {
     "AcceptOfferSubject": AcceptOfferEventObserver(),
     "CreateTokenSubject": CreateTokenEventObserver(),
     "CreateCollectionSubject": CreateCollectionEventObserver(),
-    "GalleryCreateSubject": GalleryCreateEventObserver(),
-    "OfferCreateSubject": OfferCreateEventObserver(),
-    "OfferAcceptSubject": OfferAcceptEventObserver(),
-    "OfferCancelSubject": OfferCancelEventObserver(),
-    "OfferRejectSubject": OfferRejectEventObserver(),
-    "ExhibitListSubject": ExhibitListEventObserver(),
-    "ExhibitBuySubject": ExhibitBuyEventObserver(),
-    "ExhibitFreezeSubject": ExhibitFreezeEventObserver(),
-    "ExhibitCancelSubject": ExhibitCancelEventObserver(),
-    "ExhibitRedeemSubject": ExhibitRedeemEventObserver()
+    "GallerySubject": GalleryEventObserver(),
+    "CurationOfferSubject": CurationOfferEventObserver(),
+    "ExhibitSubject": ExhibitEventObserver()
 }
 
 event_to_subject = {
@@ -111,16 +90,9 @@ event_to_subject = {
     "cancel_offer_events": CancelOfferSubject(),
     "token_created_events": CreateTokenSubject(),
     "collection_created_events": CreateCollectionSubject(),
-    "gallery_created_events": GalleryCreateSubject(),
-    "offer_created_events": OfferCreateSubject(),
-    "offer_accepted_events": OfferAcceptSubject(),
-    "offer_rejected_events": OfferRejectSubject(),
-    "offer_canceled_events": OfferCancelSubject(),
-    "exhibit_listed_events": ExhibitListSubject(),
-    "exhibit_canceled_events": ExhibitCancelSubject(),
-    "exhibit_sold_events": ExhibitBuySubject(),
-    "exhibit_frozen_events": ExhibitFreezeSubject(),
-    "exhibit_redeemed_events": ExhibitRedeemSubject()
+    "gallery_events": GallerySubject(),
+    "offer_events": CurationOfferSubject(),
+    "exhibit_events": ExhibitSubject()
 }
 
 

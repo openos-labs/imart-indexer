@@ -3,27 +3,36 @@ from typing import List, Tuple
 from common.util import new_uuid
 from model.token_id import TokenDataId, TokenId
 from observer.observer import Observer
-from model.curation.exhibit_list_event import ExhibitListEvent, ExhibitListEventData
+from model.curation.exhibit_event import ExhibitEvent, ExhibitEventData
 from model.state import State
 from model.event import Event
 from common.db import prisma_client
 from prisma import enums
 from config import config
 
+event_type_to_status = {
+    "ExhibitListed": enums.CurationExhibitStatus.listing,
+    "ExhibitFrozen": enums.CurationExhibitStatus.frozen,
+    "ExhibitRedeemed": enums.CurationExhibitStatus.redeemed,
+    "ExhibitSold": enums.CurationExhibitStatus.sold
+}
 
-class ExhibitListEventObserver(Observer[ExhibitListEvent]):
 
-    async def process_all(self, state: State, events: List[Event[ExhibitListEvent]]) -> State:
+class ExhibitEventObserver(Observer[ExhibitEvent]):
+
+    async def process_all(self, state: State, events: List[Event[ExhibitEvent]]) -> State:
         return await super().process_all(state, events)
 
-    async def process(self, state: State, event: Event[ExhibitListEvent]) -> Tuple[State, bool]:
+    async def process(self, state: State, event: Event[ExhibitEvent]) -> Tuple[State, bool]:
         new_state = state
         seqno = event.sequence_number
-        data = ExhibitListEventData(**event.data)
+        data = ExhibitEventData(**event.data)
         gallery_index = int(data.gallery_id)
+        event_type = data.event_type
         token_id = TokenId(**data.token_id)
         token_data_id = TokenDataId(**token_id.token_data_id)
         updated_at = datetime.fromtimestamp(int(data.timestamp))
+        expired_at = datetime.fromtimestamp(int(data.expiration))
 
         async with prisma_client.tx(timeout=60000) as transaction:
             result = await transaction.curationexhibit.upsert(
@@ -49,15 +58,17 @@ class ExhibitListEventObserver(Observer[ExhibitListEvent]):
                         'price': data.price,
                         'currency': '0x1::aptos_coin::AptosCoin',
                         'decimals': 8,
-                        'expiredAt': datetime.fromtimestamp(0),
-                        'location': "",
-                        'url': "",
-                        'detail': "",
-                        'status': enums.CurationExhibitStatus.listing,
+                        'expiredAt': expired_at,
+                        'location': data.location,
+                        'url': data.url,
+                        'detail': data.detail,
+                        'status': event_type_to_status[event_type],
                         'updatedAt': updated_at
                     },
                     'update': {
                         'chain': enums.Chain.APTOS,
+                        'index': int(data.id),
+                        'root': config.curation.address(),
                         'galleryIndex': gallery_index,
                         'curator':  data.origin,
                         'collectionIdentifier': token_data_id.collection,
@@ -68,28 +79,28 @@ class ExhibitListEventObserver(Observer[ExhibitListEvent]):
                         'price': data.price,
                         'currency': '0x1::aptos_coin::AptosCoin',
                         'decimals': 8,
-                        'expiredAt': datetime.fromtimestamp(0),
-                        'location': "",
-                        'url': "",
-                        'detail': "",
-                        'status': enums.CurationExhibitStatus.listing,
+                        'expiredAt': expired_at,
+                        'location': data.location,
+                        'url': data.url,
+                        'detail': data.detail,
+                        'status': event_type_to_status[event_type],
                         'updatedAt': updated_at
                     }
                 }
             )
-            if result == None or result.status != enums.CurationExhibitStatus.listing:
+            if result == None or result.status != event_type_to_status[event_type]:
                 raise Exception(
-                    f'[Curator list exhibit]: Failed to list exhibit({data})')
+                    f'[Curator exhibit]: Failed to update exhibit({data})')
 
             updated_offset = await transaction.eventoffset.update(
                 where={'id': 0},
                 data={
-                    "exhibit_list_excuted_offset": int(seqno)
+                    "exhibit_excuted_offset": int(seqno)
                 }
             )
             if updated_offset == None:
                 raise Exception(
-                    f'[Curator list exhibit]: Failed to update offset')
+                    f'[Curator exhibit]: Failed to update offset')
 
-            new_state.new_offset.exhibit_list_excuted_offset = updated_offset.exhibit_list_excuted_offset
+            new_state.new_offset.exhibit_excuted_offset = updated_offset.exhibit_excuted_offset
             return new_state, True

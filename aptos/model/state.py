@@ -25,6 +25,9 @@ class Offset:
     creation_collection_created_excuted_offset: int
     single_collective_created_excuted_offset: int
     multiple_collective_created_excuted_offset: int
+    exhibit_excuted_offset: int
+    gallery_excuted_offset: int
+    curation_offer_excuted_offset: int
 
 
 @dataclass
@@ -34,7 +37,7 @@ class State:
 
 
 def empty_offset() -> Offset:
-    return Offset(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1)
+    return Offset(-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1)
 
 
 async def initial_state() -> State:
@@ -63,7 +66,10 @@ async def initial_state() -> State:
                 'creation_token_created_excuted_offset': -1,
                 'creation_collection_created_excuted_offset': -1,
                 'single_collective_created_excuted_offset': -1,
-                'multiple_collective_created_excuted_offset': -1
+                'multiple_collective_created_excuted_offset': -1,
+                'exhibit_excuted_offset': -1,
+                'gallery_excuted_offset': -1,
+                'curation_offer_excuted_offset': -1
             }
         )
         return State(new_offset=empty_offset(), old_offset=empty_offset())
@@ -89,6 +95,9 @@ async def initial_state() -> State:
         offset.creation_collection_created_excuted_offset,
         offset.single_collective_created_excuted_offset,
         offset.multiple_collective_created_excuted_offset,
+        offset.exhibit_excuted_offset,
+        offset.gallery_excuted_offset,
+        offset.curation_offer_excuted_offset,
     )
 
     return State(new_offset=new_offset, old_offset=empty_offset())
