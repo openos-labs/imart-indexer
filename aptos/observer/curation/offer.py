@@ -169,29 +169,30 @@ class CurationOfferEventObserver(Observer[OfferEvent]):
                 'detail': notification_detail
             }
 
-            redis_cli.lpush(f"imart:notifications:{notification_receiver.lower()}", json.dumps(
-                notification, indent=4, sort_keys=True, default=str))
-            await transaction.notification.upsert(
-                where={
-                    'receiver_type_timestamp': {
-                        'receiver': notification_receiver,
-                        'type': notification_type,
-                        'timestamp': notification_timestamp
+            if event_type in ["OfferAccepted", "OfferCreated", "OfferRejected"]:
+                redis_cli.lpush(f"imart:notifications:{notification_receiver.lower()}", json.dumps(
+                    notification, indent=4, sort_keys=True, default=str))
+                await transaction.notification.upsert(
+                    where={
+                        'receiver_type_timestamp': {
+                            'receiver': notification_receiver,
+                            'type': notification_type,
+                            'timestamp': notification_timestamp
+                        }
+                    },
+                    data={
+                        'create': notification,
+                        'update': {
+                            'receiver': notification_receiver,
+                            'title': notification_title,
+                            'content': "From Mixverse",
+                            'image': "",
+                            'type': notification_type,
+                            'unread': True,
+                            'timestamp': notification_timestamp,
+                            'detail': notification_detail
+                        }
                     }
-                },
-                data={
-                    'create': notification,
-                    'update': {
-                        'receiver': notification_receiver,
-                        'title': notification_title,
-                        'content': "From Mixverse",
-                        'image': "",
-                        'type': notification_type,
-                        'unread': True,
-                        'timestamp': notification_timestamp,
-                        'detail': notification_detail
-                    }
-                }
-            )
+                )
             new_state.new_offset.curation_offer_excuted_offset = updated_offset.curation_offer_excuted_offset
             return new_state, True
