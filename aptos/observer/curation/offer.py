@@ -97,9 +97,25 @@ class CurationOfferEventObserver(Observer[OfferEvent]):
                     }
                 }
             )
+
             if result == None or result.status != event_type_to_status[event_type]:
                 raise Exception(
-                    f'[Curator update offer]: Failed to update curation offer({data})')
+                    f'[Curator offer]: Failed to update curation offer({data})')
+
+            # token
+            updated_token = await transaction.aptostoken.update_many(
+                where={
+                    'name': token_data_id.name,
+                    'creator': token_data_id.creator,
+                    'collection': token_data_id.collection,
+                },
+                data={
+                    'owner': data.destination
+                }
+            )
+            if updated_token == None:
+                raise Exception(
+                    f"[Curator Offer]: Failed to update token owner to curator")
 
             updated_offset = await transaction.eventoffset.update(
                 where={'id': 0},
@@ -109,7 +125,7 @@ class CurationOfferEventObserver(Observer[OfferEvent]):
             )
             if updated_offset == None:
                 raise Exception(
-                    f'[Curator update Offer]: Failed to update offset')
+                    f'[Curator Offer]: Failed to update offset')
 
             notification_receiver = ''
             notification_title = ''

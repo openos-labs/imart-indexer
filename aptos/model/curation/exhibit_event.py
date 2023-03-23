@@ -10,6 +10,8 @@ class ExhibitEventData:
     gallery_id: str
     token_id: TokenId
     origin: str
+    curator: str
+    buyer: str
     expiration: str
     price: str
     location: str
