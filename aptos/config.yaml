@@ -5,24 +5,24 @@ node_urls:
 
 redis_url: redis://test-env.dpjsjb.clustercfg.memorydb.us-east-1.amazonaws.com:6379
 fixed_market:
-  event_handle: 0x1c90da7e4cccf4d612f27dcbc72d142218f75ab8bc877a7331dcade480673f2c::fixed_price_market::FixedMarketEvents
+  event_handle: 0x73545daede11168cbe4f5503f19929c7eebb888cffef27983ed374515f7e82a1::fixed_price_market::FixedMarketEvents
   event_fields:
     - buy_token_events
     - list_token_events
     - delist_token_events
 offer:
-  event_handle: 0x1c90da7e4cccf4d612f27dcbc72d142218f75ab8bc877a7331dcade480673f2c::offer::OfferEvents
+  event_handle: 0x73545daede11168cbe4f5503f19929c7eebb888cffef27983ed374515f7e82a1::offer::OfferEvents
   event_fields:
     - offer_token_events
     - accept_offer_events
     - cancel_offer_events
 creation:
-  event_handle: 0x1c90da7e4cccf4d612f27dcbc72d142218f75ab8bc877a7331dcade480673f2c::creation::CreationEvents
+  event_handle: 0x73545daede11168cbe4f5503f19929c7eebb888cffef27983ed374515f7e82a1::creation::CreationEvents
   event_fields:
     - collection_created_events
     - token_created_events
 curation:
-  event_handle: 0xe544fe1018243182cafe3fab04a07f82edf83b98a0c9a217db220660fe689f37::curation::CurationEvents
+  event_handle: 0x73545daede11168cbe4f5503f19929c7eebb888cffef27983ed374515f7e82a1::curation::CurationEvents
   event_fields:
     - offer_events
     - gallery_events
