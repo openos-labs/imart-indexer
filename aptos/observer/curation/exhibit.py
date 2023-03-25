@@ -49,7 +49,7 @@ class ExhibitEventObserver(Observer[ExhibitEvent]):
                         'index': int(data.id),
                         'root': config.curation.address(),
                         'galleryIndex': gallery_index,
-                        'curator':  data.origin,
+                        'curator':  data.curator,
                         'collectionIdentifier': token_data_id.collection,
                         'tokenIdentifier': token_data_id.name,
                         'tokenCreator': token_data_id.creator,
@@ -70,7 +70,7 @@ class ExhibitEventObserver(Observer[ExhibitEvent]):
                         'index': int(data.id),
                         'root': config.curation.address(),
                         'galleryIndex': gallery_index,
-                        'curator':  data.origin,
+                        'curator':  data.curator,
                         'collectionIdentifier': token_data_id.collection,
                         'tokenIdentifier': token_data_id.name,
                         'tokenCreator': token_data_id.creator,
@@ -93,24 +93,19 @@ class ExhibitEventObserver(Observer[ExhibitEvent]):
                     f'[Curator exhibit]: Failed to update exhibit({data})')
 
             # token
-            if event_type == 'ExhibitSold' or event_type == 'ExhibitRedeemed':
-                owners = {
-                    'ExhibitSold': data.buyer,
-                    'ExhibitRedeemed': data.origin
+            updated_token = await transaction.aptostoken.update_many(
+                where={
+                    'name': token_data_id.name,
+                    'creator': token_data_id.creator,
+                    'collection': token_data_id.collection,
+                },
+                data={
+                    'owner': data.owner
                 }
-                updated_token = await transaction.aptostoken.update_many(
-                    where={
-                        'name': token_data_id.name,
-                        'creator': token_data_id.creator,
-                        'collection': token_data_id.collection,
-                    },
-                    data={
-                        'owner': owners[event_type]
-                    }
-                )
-                if updated_token == None:
-                    raise Exception(
-                        f"[Curator Offer]: Failed to update token owner with {event_type}")
+            )
+            if updated_token == None:
+                raise Exception(
+                    f"[Curator Offer]: Failed to update token owner with {event_type}")
 
             updated_offset = await transaction.eventoffset.update(
                 where={'id': 0},

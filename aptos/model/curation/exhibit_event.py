@@ -11,7 +11,7 @@ class ExhibitEventData:
     token_id: TokenId
     origin: str
     curator: str
-    buyer: str
+    owner: str
     expiration: str
     price: str
     location: str
