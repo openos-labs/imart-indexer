@@ -1,5 +1,6 @@
 import { CONTRACT_CURATION } from "../../config";
 import { prisma } from "../../io";
+import { redis } from "../../io/redis";
 import { TypedEvent } from "../../typechain/common";
 import { GalleryChangedEvent } from "../../typechain/Curation";
 import { State } from "../../types";
@@ -62,10 +63,17 @@ export class GalleryObserver extends Observer {
       },
     });
     try {
-      const [_, updatedState] = await prisma.$transaction([
+      const [gallery, updatedState] = await prisma.$transaction([
         createGallery,
         updateState,
       ]);
+      const response = await fetch(metadataUri);
+      const metadata = await response.json();
+      redis.set(`mixverse:curation:${metadata.id}`, JSON.stringify(gallery));
+      redis.set(
+        `mixverse:curation:${gallery.root}:${gallery.index}`,
+        JSON.stringify(gallery)
+      );
       if (updatedState.gallery_excuted_offset != blockNo) {
         return { success: false, state };
       }
