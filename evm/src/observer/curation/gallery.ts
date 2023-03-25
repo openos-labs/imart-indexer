@@ -67,11 +67,25 @@ export class GalleryObserver extends Observer {
         createGallery,
         updateState,
       ]);
-      const galleryData = JSON.stringify({gallery, index: Number(gallery.index)})
       const response = await fetch(metadataUri);
       const metadata = await response.json();
+      const galleryData = JSON.stringify({
+        ...metadata,
+        index: Number(gallery.index),
+        root: CONTRACT_CURATION,
+        chain: "ETH",
+        owner,
+        spaceType,
+        name,
+        metadataUri,
+        commissionRates,
+        commissionPool,
+      });
       redis.set(`mixverse:curation:${metadata.id}`, galleryData);
-      redis.set(`mixverse:curation:${gallery.root}:${gallery.index}`, galleryData);
+      redis.set(
+        `mixverse:curation:${gallery.root}:${Number(gallery.index)}`,
+        galleryData
+      );
       if (updatedState.gallery_excuted_offset != blockNo) {
         return { success: false, state };
       }
