@@ -1,12 +1,15 @@
+import json
 from typing import List, Tuple
 from observer.observer import Observer
 from model.curation.gallery_event import GalleryEvent, GalleryEventData
 from model.state import State
 from model.event import Event
 from common.db import prisma_client
+from common.redis import redis_cli
 from config import config
 from common.util import new_uuid
 from prisma import enums, Json
+import requests
 
 
 class GalleryEventObserver(Observer[GalleryEvent]):
@@ -54,6 +57,16 @@ class GalleryEventObserver(Observer[GalleryEvent]):
             if result == None:
                 raise Exception(
                     f'[Curator gallery]: Failed to update gallery({data})')
+            r = requests.get(data.metadata_uri)
+            metadata = r.json()
+            curation_id = metadata['id']
+            metadata = {**metadata, **result}
+            metadata_str = json.dumps(
+                metadata, indent=4, sort_keys=True, default=str)
+            key_curation_id = f'mixverse:curation:{curation_id}'
+            key_curation_root_index = f"mixverse:curation:{config.curation.address()}:{index}"
+            redis_cli.set(key_curation_id, metadata_str)
+            redis_cli.set(key_curation_root_index, metadata_str)
 
             updated_offset = await transaction.eventoffset.update(
                 where={'id': 0},
