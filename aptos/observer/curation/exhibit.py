@@ -107,6 +107,29 @@ class ExhibitEventObserver(Observer[ExhibitEvent]):
                 raise Exception(
                     f"[Curator Offer]: Failed to update token owner with {event_type}")
 
+            if result.status == enums.CurationExhibitStatus.sold:
+                new_tx = await transaction.transaction.create(
+                    data={
+                        'id': new_uuid(),
+                        'chain': enums.Chain.APTOS,
+                        'tokenId': updated_token.id,
+                        'collectionId': updated_token.collectionId,
+                        'galleryRoot': config.curation.address(),
+                        'galleryIndex': gallery_index,
+                        'exhibitRoot': config.curation.address(),
+                        'exhibitIndex': int(data.id),
+                        'source': data.origin,
+                        'destination': data.owner,
+                        'amount': data.price,
+                        'quantity': '1',
+                        'currency': '0x1::aptos_coin::AptosCoin',
+                        'txHash': f'{event.version}',
+                        'txType': enums.TxType.SALE,
+                        'txTimestamp': updated_at
+                    }
+                )
+                if new_tx == None:
+                    raise Exception(f'[Transaction]: Failed to add new tx')
             updated_offset = await transaction.eventoffset.update(
                 where={'id': 0},
                 data={

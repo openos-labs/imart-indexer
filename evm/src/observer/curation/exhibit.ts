@@ -1,5 +1,8 @@
-import { CONTRACT_CURATION } from "../../config";
+import { JsonRpcProvider } from "@ethersproject/providers";
+import { PrismaPromise } from "@prisma/client";
+import { CONTRACT_CURATION, PROVIDER_ENDPOINT_1 } from "../../config";
 import { prisma } from "../../io";
+import { ERC721__factory } from "../../typechain";
 import { TypedEvent } from "../../typechain/common";
 import { ExhibitChangedEvent } from "../../typechain/Curation";
 import { State } from "../../types";
@@ -82,11 +85,52 @@ export class ExhibitObserver extends Observer {
         exhibit_excuted_offset: blockNo,
       },
     });
+    let txs: PrismaPromise<any>[] = [createOffer, updateOffset];
+    if (eventType == "ExhibitSold") {
+      const owner = await ERC721__factory.connect(
+        collection,
+        new JsonRpcProvider(PROVIDER_ENDPOINT_1)
+      ).ownerOf(tokenId);
+      const updateTransaction = prisma.transaction.upsert({
+        where: {
+          chain_tokenId_collectionId_txType_txTimestamp: {
+            chain: "ETH",
+            tokenId: tokenId.toString(),
+            collectionId: collection,
+            txType: "SALE",
+            txTimestamp: updatedAt,
+          },
+        },
+        create: {
+          chain: "ETH",
+          tokenId: tokenId.toString(),
+          collectionId: collection,
+          galleryRoot: CONTRACT_CURATION,
+          galleryIndex: galleryId.toBigInt(),
+          exhibitRoot: CONTRACT_CURATION,
+          exhibitIndex: id.toBigInt(),
+          source: origin,
+          destination: owner,
+          amount: price.toString(),
+          quantity: "1",
+          currency: "0x0000000000000000000000000000000000000000",
+          txHash: event.transactionHash,
+          txType: "SALE",
+          txTimestamp: updatedAt,
+        },
+        update: {
+          txHash: event.transactionHash,
+          txType: "SALE",
+          txTimestamp: updatedAt,
+        },
+      });
+      txs.push(updateTransaction);
+    }
+
     try {
-      const [_, updatedState] = await prisma.$transaction([
-        createOffer,
-        updateOffset,
-      ]);
+      const [_, updatedState, updatedTransaction] = await prisma.$transaction(
+        txs
+      );
       if (updatedState.exhibit_excuted_offset != blockNo) {
         return { success: false, state };
       }

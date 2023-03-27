@@ -257,19 +257,26 @@ model Article {
 model Transaction {
     id           String   @id @default(dbgenerated("(uuid())")) @db.VarChar(66)
     chain        String   @db.VarChar(20)
-    user         String?  @db.VarChar(66)
     tokenId      String   @db.VarChar(66)
     collectionId String   @db.VarChar(66)
+    galleryRoot  String   @db.VarChar(66)
+    galleryIndex BigInt
+    exhibitRoot  String   @db.VarChar(66)
+    exhibitIndex BigInt
     source       String?  @default("") @map("from")
     destination  String?  @default("") @map("to")
-    amount       Float?   @default(0)
-    quantity     BigInt?  @default(0)
+    amount       String?  @default("")
+    quantity     String?  @default("")
+    currency     String?  @default("")
     txHash       String?  @default("")
     txType       TxType   @default(TRANSFER)
     txTimestamp  DateTime
 
+    @@unique([chain, tokenId, collectionId, txType, txTimestamp])
     @@index([collectionId])
     @@index([txType])
+    @@index([source])
+    @@index([destination])
 }
 
 model Followers {
