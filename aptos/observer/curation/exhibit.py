@@ -93,11 +93,14 @@ class ExhibitEventObserver(Observer[ExhibitEvent]):
                     f'[Curator exhibit]: Failed to update exhibit({data})')
 
             # token
-            updated_token = await transaction.aptostoken.update_many(
+            updated_token = await transaction.aptostoken.update(
                 where={
-                    'name': token_data_id.name,
-                    'creator': token_data_id.creator,
-                    'collection': token_data_id.collection,
+                    'creator_name_collection_propertyVersion': {
+                        'name': token_data_id.name,
+                        'creator': token_data_id.creator,
+                        'collection': token_data_id.collection,
+                        'propertyVersion': '0'
+                    }
                 },
                 data={
                     'owner': data.owner
