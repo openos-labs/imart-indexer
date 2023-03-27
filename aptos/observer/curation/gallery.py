@@ -60,7 +60,7 @@ class GalleryEventObserver(Observer[GalleryEvent]):
             r = requests.get(data.metadata_uri)
             metadata = r.json()
             curation_id = metadata['id']
-            metadata = {**metadata, **result}
+            metadata = metadata.update(result)
             metadata_str = json.dumps(
                 metadata, indent=4, sort_keys=True, default=str)
             key_curation_id = f'mixverse:curation:{curation_id}'
