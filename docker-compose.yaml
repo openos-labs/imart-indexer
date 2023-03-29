@@ -7,10 +7,30 @@ services:
     volumes:
       - ./aptos:/app/event-worker-aptos
     command: /bin/sh -c "prisma generate  && python3 ./main.py"
-  event-worker-evm:
-    working_dir: /app/event-worker-evm
+  event-worker-eth:
+    working_dir: /app/event-worker-eth
     restart: always
-    image: event-worker-evm:v1
+    environment:
+      - CONTRACT_CURATION=${ETH_CONTRACT_CURATION}
+      - CONTRACT_SINGLE_COLLECTIVE=${ETH_CONTRACT_SINGLE_COLLECTIVE}
+      - CONTRACT_MULTIPLE_COLLECTIVE=${ETH_CONTRACT_MULTIPLE_COLLECTIVE}
+      - PROVIDERS=${ETH_PROVIDERS}
+      - DURATION_MILLIS=${DURATION_MILLIS}
+      - EVENTOFFSET_ID=1
+    image: event-worker-eth:v1
     volumes:
-      - ./evm:/app/event-worker-evm
+      - ./evm:/app/event-worker-eth
     command: /bin/sh -c "npx prisma generate && yarn start"
+  event-worker-polygon:
+    working_dir: /app/event-worker-polygon
+    restart: always
+    environment:
+      - CONTRACT_CURATION=${POLYGON_CONTRACT_CURATION}
+      - CONTRACT_SINGLE_COLLECTIVE=${POLYGON_CONTRACT_SINGLE_COLLECTIVE}
+      - CONTRACT_MULTIPLE_COLLECTIVE=${POLYGON_CONTRACT_MULTIPLE_COLLECTIVE}
+      - PROVIDERS=${POLYGON_PROVIDERS}
+      - DURATION_MILLIS=${DURATION_MILLIS}
+      - EVENTOFFSET_ID=2
+    image: event-worker-polygon:v1
+    volumes:
+     - ./evm:/app/event-worker-polygon

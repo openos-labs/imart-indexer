@@ -2,13 +2,10 @@ import {
   Curation__factory,
   SingleCollective__factory,
   MultipleCollective__factory,
+  SingleCollective,
+  MultipleCollective,
+  Curation,
 } from "./typechain";
-import { TypedEvent, TypedEventFilter } from "./typechain/common";
-import { JsonRpcProvider } from "@ethersproject/providers";
-import { Contract, State, StateFlow } from "./types";
-import { events, eventStream } from "./subject";
-import { delay } from "./utils/delay";
-import { Subject } from "rxjs";
 import {
   processEvents,
   ExhibitObserver,
@@ -18,6 +15,12 @@ import {
   MultipleCollectiveCreateObserver,
 } from "./observer";
 
+import { TypedEvent, TypedEventFilter } from "./typechain/common";
+import { JsonRpcProvider } from "@ethersproject/providers";
+import { Contract, State, StateFlow } from "./types";
+import { events, eventStream } from "./subject";
+import { delay } from "./utils/delay";
+import { Subject } from "rxjs";
 import { GalleryObserver } from "./observer/curation/gallery";
 import { prisma } from "./io";
 import {
@@ -25,16 +28,15 @@ import {
   CONTRACT_MULTIPLE_COLLECTIVE,
   CONTRACT_SINGLE_COLLECTIVE,
   DURATION_MILLIS,
-  PROVIDER_ENDPOINT_1,
-  PROVIDER_ENDPOINT_2,
-  PROVIDER_ENDPOINT_3,
+  EVENTOFFSET_ID,
+  PROVIDERS,
 } from "./config";
 import { redis } from "./io/redis";
+import { randomInt } from "crypto";
 
 const restPeriod = Number(DURATION_MILLIS);
-const provider_1 = new JsonRpcProvider(PROVIDER_ENDPOINT_1);
-const provider_2 = new JsonRpcProvider(PROVIDER_ENDPOINT_2);
-const provider_3 = new JsonRpcProvider(PROVIDER_ENDPOINT_3);
+const providers = PROVIDERS.split(",").map((url) => new JsonRpcProvider(url));
+const randomProvider = () => providers[randomInt(providers.length)];
 
 async function main() {
   redis.on("error", (err) => console.log("Redis Client Error", err));
@@ -44,14 +46,16 @@ async function main() {
 }
 
 async function worker<T extends TypedEvent, F extends TypedEventFilter<T>>(
-  contract: Contract,
-  eventFilter: F,
+  newContract: () => Contract,
+  newEventFilter: (contract: Contract) => F,
   observer: Observer,
   offsetField: string
 ) {
   const stateFlow: StateFlow = new Subject<State>();
   const stream = eventStream<T>();
   stateFlow.subscribe(async (state) => {
+    const contract = newContract();
+    const eventFilter = newEventFilter(contract);
     await fireEvents<T, F>(
       contract,
       eventFilter,
@@ -93,7 +97,7 @@ main().catch((error) => {
 
 async function initialState(): Promise<State> {
   const execution = await prisma.eventOffset.findUnique({
-    where: { id: 1 },
+    where: { id: parseInt(EVENTOFFSET_ID) },
   });
   if (!execution) {
     throw new Error("Missing initial state");
@@ -141,48 +145,57 @@ async function initialState(): Promise<State> {
 }
 
 async function creationWorkers() {
-  const SingleCollective = SingleCollective__factory.connect(
-    CONTRACT_SINGLE_COLLECTIVE,
-    provider_1
-  );
+  const newSingleCollective = () =>
+    SingleCollective__factory.connect(
+      CONTRACT_SINGLE_COLLECTIVE,
+      randomProvider()
+    );
+  const newSingleCollectiveFilter = (c: SingleCollective) =>
+    c.filters.CollectionCreated();
   await worker(
-    SingleCollective,
-    SingleCollective.filters.CollectionCreated(),
+    newSingleCollective,
+    newSingleCollectiveFilter,
     new SingleCollectiveCreateObserver(),
     "single_collective_created_excuted_offset"
   );
 
-  const MultipleCollective = MultipleCollective__factory.connect(
-    CONTRACT_MULTIPLE_COLLECTIVE,
-    provider_1
-  );
+  const newMultipleCollective = () =>
+    MultipleCollective__factory.connect(
+      CONTRACT_MULTIPLE_COLLECTIVE,
+      randomProvider()
+    );
+  const newMultipleCollectiveFilter = (c: MultipleCollective) =>
+    c.filters.CollectionCreated();
   await worker(
-    MultipleCollective,
-    MultipleCollective.filters.CollectionCreated(),
+    newMultipleCollective,
+    newMultipleCollectiveFilter,
     new MultipleCollectiveCreateObserver(),
     "multiple_collective_created_excuted_offset"
   );
 }
 
 async function curationWorkers() {
-  const CurationA = Curation__factory.connect(CONTRACT_CURATION, provider_2);
-  const CurationB = Curation__factory.connect(CONTRACT_CURATION, provider_3);
+  const newCuration = () =>
+    Curation__factory.connect(CONTRACT_CURATION, randomProvider());
+  const galleryChangedFilter = (c: Curation) => c.filters.GalleryChanged();
+  const offerChangedFilter = (c: Curation) => c.filters.OfferChanged();
+  const exhibitChangedFilter = (c: Curation) => c.filters.ExhibitChanged();
 
   await worker(
-    CurationA,
-    CurationA.filters.GalleryChanged(),
+    newCuration,
+    galleryChangedFilter,
     new GalleryObserver(),
     "gallery_excuted_offset"
   );
   await worker(
-    CurationA,
-    CurationA.filters.OfferChanged(),
+    newCuration,
+    offerChangedFilter,
     new OfferObserver(),
     "curation_offer_excuted_offset"
   );
   await worker(
-    CurationB,
-    CurationB.filters.ExhibitChanged(),
+    newCuration,
+    exhibitChangedFilter,
     new ExhibitObserver(),
     "exhibit_excuted_offset"
   );
