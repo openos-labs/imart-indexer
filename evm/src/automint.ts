@@ -40,9 +40,10 @@ const randomProvider = () => providers[randomInt(providers.length)];
 async function checkAndMint(signer: ethers.Wallet, account: string) {
   const minted = await redis.sIsMember(KEY_ETH_MINTED_ACCOUNTS, account);
   if (minted) return;
+  const provider = randomProvider();
   const factory = SingleCollective__factory.connect(
     CONTRACT_SINGLE_COLLECTIVE,
-    randomProvider()
+    provider
   );
   const uris = {
     Mixverse:
@@ -55,13 +56,17 @@ async function checkAndMint(signer: ethers.Wallet, account: string) {
       "https://imart-nft.s3.us-east-1.amazonaws.com/imart/1680850622.json",
   };
   for (const [name, uri] of Object.entries(uris)) {
-    const gas = await factory
+    const gasLimit = await factory
       .connect(signer)
-      .estimateGas.mintTo(name, 1, uri, account);
-    const tx = await factory
-      .connect(signer)
-      .mintTo(name, 1, uri, account, { gasLimit: 210000, gasPrice: gas });
-    console.log(tx);
+      .estimateGas.mintTo(name, 1, uri, account, { gasPrice: 260000000000 });
+    const nonce = await provider.getTransactionCount(signer.address, "pending");
+    const tx = await factory.connect(signer).mintTo(name, 1, uri, account, {
+      gasLimit,
+      gasPrice: 260000000000,
+      nonce: nonce + 1,
+    });
+    console.log("tx:", tx.blockHash);
+    console.log(await tx.wait());
   }
   await redis.SADD(KEY_ETH_MINTED_ACCOUNTS, account);
 }
