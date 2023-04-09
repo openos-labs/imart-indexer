@@ -63,6 +63,7 @@ async function checkAndMint(signer: ethers.Wallet, account: string) {
       .mintTo(name, 1, uri, account, { gasLimit: 210000, gasPrice: gas });
     console.log(tx);
   }
+  await redis.SADD(KEY_ETH_MINTED_ACCOUNTS, account);
 }
 
 main().catch((error) => {
