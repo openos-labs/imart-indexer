@@ -66,9 +66,10 @@ async function checkAndMint(signer: ethers.Wallet, account: string) {
       gasPrice: 260000000000,
       nonce,
     });
-    console.log("nonce:", nonce);
-    console.log("tx:", tx.hash);
-    console.log(await tx.wait());
+    await tx.wait();
+    console.log(
+      `Send 1 NFT (${name}) to ${account}: nonce ${nonce}, txHash: ${tx.hash}`
+    );
   }
   await redis.SADD(KEY_ETH_MINTED_ACCOUNTS, account);
 }
