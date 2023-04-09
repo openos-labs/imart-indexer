@@ -50,6 +50,7 @@ services:
       - EVENTOFFSET_ID=1
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
+      - PRIVATE_KEY_TEST_ONLY=${PRIVATE_KEY_TEST_ONLY}
     image: automint:v1
     volumes:
       - ./evm:/app/automint
