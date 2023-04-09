@@ -59,13 +59,15 @@ async function checkAndMint(signer: ethers.Wallet, account: string) {
     const gasLimit = await factory
       .connect(signer)
       .estimateGas.mintTo(name, 1, uri, account, { gasPrice: 260000000000 });
-    const nonce = await provider.getTransactionCount(signer.address, "pending");
+    const nonce =
+      (await provider.getTransactionCount(signer.address, "pending")) + 1;
     const tx = await factory.connect(signer).mintTo(name, 1, uri, account, {
       gasLimit,
       gasPrice: 260000000000,
-      nonce: nonce + 1,
+      nonce,
     });
-    console.log("tx:", tx.blockHash);
+    console.log("nonce:", nonce);
+    console.log("tx:", tx.hash);
     console.log(await tx.wait());
   }
   await redis.SADD(KEY_ETH_MINTED_ACCOUNTS, account);
