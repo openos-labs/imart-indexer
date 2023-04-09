@@ -54,14 +54,13 @@ async function checkAndMint(signer: ethers.Wallet, account: string) {
     "Testnet Scene 3":
       "https://imart-nft.s3.us-east-1.amazonaws.com/imart/1680850622.json",
   };
-  const option = {
-    gasLimit: 500000,
-    gasPrice: 210000000000,
-  };
   for (const [name, uri] of Object.entries(uris)) {
+    const gas = await factory
+      .connect(signer)
+      .estimateGas.mintTo(name, 1, uri, account);
     const tx = await factory
       .connect(signer)
-      .mintTo(name, 1, uri, account, option);
+      .mintTo(name, 1, uri, account, { gasLimit: 210000, gasPrice: gas });
     console.log(tx);
   }
 }
