@@ -12,6 +12,7 @@
     "generate-types": "npx typechain --target=ethers-v5 'src/abi/*.json' --out-dir 'src/typechain'",
     "build": "yarn generate-types",
     "start": "ts-node src/main.ts",
+    "automint": "ts-node src/automint.ts",
     "seed": "ts-node prisma/seed.ts",
     "script/create-token": "ts-node src/scripts/create_token.ts",
     "script/create-collection": "ts-node src/scripts/create_collection.ts",

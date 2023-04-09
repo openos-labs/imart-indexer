@@ -38,3 +38,19 @@ services:
     image: event-worker-polygon:v1
     volumes:
      - ./evm:/app/event-worker-polygon
+  automint: 
+    working_dir: /app/automint
+    restart: always
+    environment:
+      - CONTRACT_CURATION=${ETH_CONTRACT_CURATION}
+      - CONTRACT_SINGLE_COLLECTIVE=${ETH_CONTRACT_SINGLE_COLLECTIVE}
+      - CONTRACT_MULTIPLE_COLLECTIVE=${ETH_CONTRACT_MULTIPLE_COLLECTIVE}
+      - PROVIDERS=${ETH_PROVIDERS}
+      - DURATION_MILLIS=${DURATION_MILLIS}
+      - EVENTOFFSET_ID=1
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+    image: automint:v1
+    volumes:
+      - ./evm:/app/automint
+    command: /bin/sh -c "npx prisma generate && yarn automint"

@@ -33,6 +33,7 @@ export interface SingleCollectiveInterface extends utils.Interface {
     "createRoot(address,string,string)": FunctionFragment;
     "initialize(address)": FunctionFragment;
     "mint(string,uint256,string)": FunctionFragment;
+    "mintTo(string,uint256,string,address)": FunctionFragment;
     "setMarketplace(address)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
@@ -43,6 +44,7 @@ export interface SingleCollectiveInterface extends utils.Interface {
       | "createRoot"
       | "initialize"
       | "mint"
+      | "mintTo"
       | "setMarketplace"
       | "transferOwnership"
   ): FunctionFragment;
@@ -81,6 +83,15 @@ export interface SingleCollectiveInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "mintTo",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setMarketplace",
     values: [PromiseOrValue<string>]
   ): string;
@@ -96,6 +107,7 @@ export interface SingleCollectiveInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "createRoot", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "mintTo", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setMarketplace",
     data: BytesLike
@@ -210,6 +222,14 @@ export interface SingleCollective extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    mintTo(
+      _collection: PromiseOrValue<string>,
+      balance: PromiseOrValue<BigNumberish>,
+      uri: PromiseOrValue<string>,
+      to: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     setMarketplace(
       _marketplace: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -252,6 +272,14 @@ export interface SingleCollective extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  mintTo(
+    _collection: PromiseOrValue<string>,
+    balance: PromiseOrValue<BigNumberish>,
+    uri: PromiseOrValue<string>,
+    to: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   setMarketplace(
     _marketplace: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -291,6 +319,14 @@ export interface SingleCollective extends BaseContract {
       _collection: PromiseOrValue<string>,
       balance: PromiseOrValue<BigNumberish>,
       uri: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    mintTo(
+      _collection: PromiseOrValue<string>,
+      balance: PromiseOrValue<BigNumberish>,
+      uri: PromiseOrValue<string>,
+      to: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -367,6 +403,14 @@ export interface SingleCollective extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    mintTo(
+      _collection: PromiseOrValue<string>,
+      balance: PromiseOrValue<BigNumberish>,
+      uri: PromiseOrValue<string>,
+      to: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     setMarketplace(
       _marketplace: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -407,6 +451,14 @@ export interface SingleCollective extends BaseContract {
       _collection: PromiseOrValue<string>,
       balance: PromiseOrValue<BigNumberish>,
       uri: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    mintTo(
+      _collection: PromiseOrValue<string>,
+      balance: PromiseOrValue<BigNumberish>,
+      uri: PromiseOrValue<string>,
+      to: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
