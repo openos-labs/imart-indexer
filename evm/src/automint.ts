@@ -59,8 +59,7 @@ async function checkAndMint(signer: ethers.Wallet, account: string) {
     const gasLimit = await factory
       .connect(signer)
       .estimateGas.mintTo(name, 1, uri, account, { gasPrice: 300000000000 });
-    const nonce =
-      (await provider.getTransactionCount(signer.address, "pending")) + 1;
+    const nonce = await provider.getTransactionCount(signer.address, "pending");
     const tx = await factory.connect(signer).mintTo(name, 1, uri, account, {
       gasLimit,
       gasPrice: 300000000000,
