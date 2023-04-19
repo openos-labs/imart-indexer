@@ -74,8 +74,6 @@ model Collection {
     metadataType MetadataType
     category     String
     tags         String       @default("")
-    contractName String
-    contract     String       @default("")
     name         String
     creator      String
     description  String       @db.VarChar(400)
@@ -88,6 +86,8 @@ model Collection {
     supply       String       @default("0") @db.VarChar(78)
     royalty      Json?        @default("{}")
     standard     String       @default("ERC721")
+    createTime   DateTime?    @default(now())
+    root         String       @default("") @db.VarChar(66)
     communities  Community[]
     Sale         Sale[]
 
@@ -437,6 +437,7 @@ model CurationGallery {
     metadataUri     String
     commissionRates Json?  @default("{}")
     commissionPool  String @default("")
+    addmissions     String @default("")
 
     @@unique([index, root])
     @@index([owner])

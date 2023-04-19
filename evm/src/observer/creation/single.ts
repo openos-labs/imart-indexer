@@ -49,8 +49,6 @@ export class SingleCollectiveCreateObserver extends Observer {
         metadataType: "IMAGE",
         category,
         tags: tags.join(","),
-        contractName: "",
-        contract: root,
         name,
         creator,
         description,
@@ -62,7 +60,8 @@ export class SingleCollectiveCreateObserver extends Observer {
         uri,
         supply: "0",
         royalty,
-        standard: 'ERC721'
+        standard: 'ERC721',
+        root
       },
       update: {},
     });

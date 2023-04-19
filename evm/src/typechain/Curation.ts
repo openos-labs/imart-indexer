@@ -28,185 +28,75 @@ import type {
   PromiseOrValue,
 } from "./common";
 
-export declare namespace Curation {
-  export type GalleryStruct = {
-    id: PromiseOrValue<BigNumberish>;
-    collection: PromiseOrValue<string>;
-    tokenId: PromiseOrValue<BigNumberish>;
-    owner: PromiseOrValue<string>;
-    spaceType: PromiseOrValue<string>;
-    name: PromiseOrValue<string>;
-    metadataUri: PromiseOrValue<string>;
-    commissionPool: PromiseOrValue<string>;
-  };
-
-  export type GalleryStructOutput = [
-    BigNumber,
-    string,
-    BigNumber,
-    string,
-    string,
-    string,
-    string,
-    string
-  ] & {
-    id: BigNumber;
-    collection: string;
-    tokenId: BigNumber;
-    owner: string;
-    spaceType: string;
-    name: string;
-    metadataUri: string;
-    commissionPool: string;
-  };
-
-  export type ExhibitStruct = {
-    id: PromiseOrValue<BigNumberish>;
-    galleryId: PromiseOrValue<BigNumberish>;
-    collection: PromiseOrValue<string>;
-    tokenId: PromiseOrValue<BigNumberish>;
-    origin: PromiseOrValue<string>;
-    expiration: PromiseOrValue<BigNumberish>;
-    price: PromiseOrValue<BigNumberish>;
-    location: PromiseOrValue<string>;
-    url: PromiseOrValue<string>;
-    detail: PromiseOrValue<string>;
-    status: PromiseOrValue<BigNumberish>;
-  };
-
-  export type ExhibitStructOutput = [
-    BigNumber,
-    BigNumber,
-    string,
-    BigNumber,
-    string,
-    BigNumber,
-    BigNumber,
-    string,
-    string,
-    string,
-    number
-  ] & {
-    id: BigNumber;
-    galleryId: BigNumber;
-    collection: string;
-    tokenId: BigNumber;
-    origin: string;
-    expiration: BigNumber;
-    price: BigNumber;
-    location: string;
-    url: string;
-    detail: string;
-    status: number;
-  };
-
-  export type OfferStruct = {
-    id: PromiseOrValue<BigNumberish>;
-    collection: PromiseOrValue<string>;
-    tokenId: PromiseOrValue<BigNumberish>;
-    from: PromiseOrValue<string>;
-    to: PromiseOrValue<string>;
-    price: PromiseOrValue<BigNumberish>;
-    galleryId: PromiseOrValue<BigNumberish>;
-    offerStartAt: PromiseOrValue<BigNumberish>;
-    offerExpiredAt: PromiseOrValue<BigNumberish>;
-    exhibitExpiredAt: PromiseOrValue<BigNumberish>;
-    url: PromiseOrValue<string>;
-    detail: PromiseOrValue<string>;
-    status: PromiseOrValue<BigNumberish>;
-  };
-
-  export type OfferStructOutput = [
-    BigNumber,
-    string,
-    BigNumber,
-    string,
-    string,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    BigNumber,
-    string,
-    string,
-    number
-  ] & {
-    id: BigNumber;
-    collection: string;
-    tokenId: BigNumber;
-    from: string;
-    to: string;
-    price: BigNumber;
-    galleryId: BigNumber;
-    offerStartAt: BigNumber;
-    offerExpiredAt: BigNumber;
-    exhibitExpiredAt: BigNumber;
-    url: string;
-    detail: string;
-    status: number;
-  };
-}
-
 export interface CurationInterface extends utils.Interface {
   functions: {
+    "acceptOwnership()": FunctionFragment;
+    "batchList(uint256[],uint256[])": FunctionFragment;
+    "batchListOwned(uint256[],address[],uint256[],uint256[])": FunctionFragment;
     "buy(uint256,uint256)": FunctionFragment;
     "cancel(uint256,uint256)": FunctionFragment;
     "cancelOffer(uint256)": FunctionFragment;
-    "createGallery(address,uint256,string,string,string,bool,address[],uint256[])": FunctionFragment;
-    "exhibits(uint256)": FunctionFragment;
+    "createGallery(address,uint256,string,string,string,bool,address[],uint256[],address[])": FunctionFragment;
     "freeze(uint256,uint256)": FunctionFragment;
-    "galleries(uint256)": FunctionFragment;
-    "getCuratorGalleries(address)": FunctionFragment;
-    "getGalleryExhibits(uint256)": FunctionFragment;
-    "getReceivedOffers()": FunctionFragment;
-    "getSentOffers()": FunctionFragment;
-    "initialize(address)": FunctionFragment;
+    "initialize()": FunctionFragment;
     "list(uint256,uint256,string)": FunctionFragment;
     "listOwned(uint256,address,uint256,uint256,string)": FunctionFragment;
-    "offers(uint256)": FunctionFragment;
+    "owner()": FunctionFragment;
+    "pendingOwner()": FunctionFragment;
     "redeemForce(uint256,uint256)": FunctionFragment;
-    "redeemRequests(uint256)": FunctionFragment;
     "redeemWithFreeze(uint256,uint256)": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
     "replyOffer(uint256,bool)": FunctionFragment;
     "sendOffer(address,uint256,uint256,uint256,uint64,uint64,string,string)": FunctionFragment;
     "setWhitelist(address,bool)": FunctionFragment;
     "toggleWhitelist(bool)": FunctionFragment;
-    "tokenHashToOfferIds(bytes32,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "updateBaseFeeRate(uint256)": FunctionFragment;
-    "whitelist(address)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "acceptOwnership"
+      | "batchList"
+      | "batchListOwned"
       | "buy"
       | "cancel"
       | "cancelOffer"
       | "createGallery"
-      | "exhibits"
       | "freeze"
-      | "galleries"
-      | "getCuratorGalleries"
-      | "getGalleryExhibits"
-      | "getReceivedOffers"
-      | "getSentOffers"
       | "initialize"
       | "list"
       | "listOwned"
-      | "offers"
+      | "owner"
+      | "pendingOwner"
       | "redeemForce"
-      | "redeemRequests"
       | "redeemWithFreeze"
+      | "renounceOwnership"
       | "replyOffer"
       | "sendOffer"
       | "setWhitelist"
       | "toggleWhitelist"
-      | "tokenHashToOfferIds"
       | "transferOwnership"
       | "updateBaseFeeRate"
-      | "whitelist"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "acceptOwnership",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "batchList",
+    values: [PromiseOrValue<BigNumberish>[], PromiseOrValue<BigNumberish>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "batchListOwned",
+    values: [
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<string>[],
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<BigNumberish>[]
+    ]
+  ): string;
   encodeFunctionData(
     functionFragment: "buy",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
@@ -229,40 +119,17 @@ export interface CurationInterface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<boolean>,
       PromiseOrValue<string>[],
-      PromiseOrValue<BigNumberish>[]
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<string>[]
     ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "exhibits",
-    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "freeze",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "galleries",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getCuratorGalleries",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getGalleryExhibits",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getReceivedOffers",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getSentOffers",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "initialize",
-    values: [PromiseOrValue<string>]
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "list",
@@ -282,21 +149,22 @@ export interface CurationInterface extends utils.Interface {
       PromiseOrValue<string>
     ]
   ): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "offers",
-    values: [PromiseOrValue<BigNumberish>]
+    functionFragment: "pendingOwner",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "redeemForce",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "redeemRequests",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
     functionFragment: "redeemWithFreeze",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "replyOffer",
@@ -324,10 +192,6 @@ export interface CurationInterface extends utils.Interface {
     values: [PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
-    functionFragment: "tokenHashToOfferIds",
-    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [PromiseOrValue<string>]
   ): string;
@@ -335,11 +199,16 @@ export interface CurationInterface extends utils.Interface {
     functionFragment: "updateBaseFeeRate",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
-  encodeFunctionData(
-    functionFragment: "whitelist",
-    values: [PromiseOrValue<string>]
-  ): string;
 
+  decodeFunctionResult(
+    functionFragment: "acceptOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "batchList", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "batchListOwned",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "buy", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "cancel", data: BytesLike): Result;
   decodeFunctionResult(
@@ -350,39 +219,25 @@ export interface CurationInterface extends utils.Interface {
     functionFragment: "createGallery",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "exhibits", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "freeze", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "galleries", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getCuratorGalleries",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getGalleryExhibits",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getReceivedOffers",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getSentOffers",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "list", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "listOwned", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "offers", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "pendingOwner",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "redeemForce",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "redeemRequests",
+    functionFragment: "redeemWithFreeze",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "redeemWithFreeze",
+    functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "replyOffer", data: BytesLike): Result;
@@ -396,10 +251,6 @@ export interface CurationInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "tokenHashToOfferIds",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
@@ -407,19 +258,22 @@ export interface CurationInterface extends utils.Interface {
     functionFragment: "updateBaseFeeRate",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "whitelist", data: BytesLike): Result;
 
   events: {
     "ExhibitChanged(uint256,string,uint256,address,uint256,address,uint64,uint256,string,string,string,uint64)": EventFragment;
-    "GalleryChanged(uint256,string,address,uint256,address,string,string,string,bool,uint64,address[],uint256[],address)": EventFragment;
+    "GalleryChanged(uint256,string,address,uint256,address,string,string,string,bool,uint64,address[],uint256[],address,address[])": EventFragment;
     "Initialized(uint8)": EventFragment;
     "OfferChanged(uint256,string,address,uint256,address,address,uint256,uint256,uint64,uint64,uint64,string,string,uint64)": EventFragment;
+    "OwnershipTransferStarted(address,address)": EventFragment;
+    "OwnershipTransferred(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ExhibitChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "GalleryChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OfferChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferStarted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
 
 export interface ExhibitChangedEventObject {
@@ -470,6 +324,7 @@ export interface GalleryChangedEventObject {
   payees: string[];
   commissionRates: BigNumber[];
   commissionPool: string;
+  admissions: string[];
 }
 export type GalleryChangedEvent = TypedEvent<
   [
@@ -485,7 +340,8 @@ export type GalleryChangedEvent = TypedEvent<
     BigNumber,
     string[],
     BigNumber[],
-    string
+    string,
+    string[]
   ],
   GalleryChangedEventObject
 >;
@@ -537,6 +393,30 @@ export type OfferChangedEvent = TypedEvent<
 
 export type OfferChangedEventFilter = TypedEventFilter<OfferChangedEvent>;
 
+export interface OwnershipTransferStartedEventObject {
+  previousOwner: string;
+  newOwner: string;
+}
+export type OwnershipTransferStartedEvent = TypedEvent<
+  [string, string],
+  OwnershipTransferStartedEventObject
+>;
+
+export type OwnershipTransferStartedEventFilter =
+  TypedEventFilter<OwnershipTransferStartedEvent>;
+
+export interface OwnershipTransferredEventObject {
+  previousOwner: string;
+  newOwner: string;
+}
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string],
+  OwnershipTransferredEventObject
+>;
+
+export type OwnershipTransferredEventFilter =
+  TypedEventFilter<OwnershipTransferredEvent>;
+
 export interface Curation extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
@@ -564,6 +444,24 @@ export interface Curation extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    acceptOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    batchList(
+      galleryIds: PromiseOrValue<BigNumberish>[],
+      exhibitIds: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    batchListOwned(
+      galleryIds: PromiseOrValue<BigNumberish>[],
+      collections: PromiseOrValue<string>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      prices: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     buy(
       galleryId: PromiseOrValue<BigNumberish>,
       exhibitId: PromiseOrValue<BigNumberish>,
@@ -590,39 +488,9 @@ export interface Curation extends BaseContract {
       isToken: PromiseOrValue<boolean>,
       payees: PromiseOrValue<string>[],
       commissionRates: PromiseOrValue<BigNumberish>[],
+      admissions: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    exhibits(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [
-        BigNumber,
-        BigNumber,
-        string,
-        BigNumber,
-        string,
-        BigNumber,
-        BigNumber,
-        string,
-        string,
-        string,
-        number
-      ] & {
-        id: BigNumber;
-        galleryId: BigNumber;
-        collection: string;
-        tokenId: BigNumber;
-        origin: string;
-        expiration: BigNumber;
-        price: BigNumber;
-        location: string;
-        url: string;
-        detail: string;
-        status: number;
-      }
-    >;
 
     freeze(
       galleryId: PromiseOrValue<BigNumberish>,
@@ -630,42 +498,7 @@ export interface Curation extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    galleries(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, string, BigNumber, string, string, string, string, string] & {
-        id: BigNumber;
-        collection: string;
-        tokenId: BigNumber;
-        owner: string;
-        spaceType: string;
-        name: string;
-        metadataUri: string;
-        commissionPool: string;
-      }
-    >;
-
-    getCuratorGalleries(
-      curator: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[Curation.GalleryStructOutput[]]>;
-
-    getGalleryExhibits(
-      galleryId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[Curation.ExhibitStructOutput[]]>;
-
-    getReceivedOffers(
-      overrides?: CallOverrides
-    ): Promise<[Curation.OfferStructOutput[]]>;
-
-    getSentOffers(
-      overrides?: CallOverrides
-    ): Promise<[Curation.OfferStructOutput[]]>;
-
     initialize(
-      owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -685,40 +518,9 @@ export interface Curation extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    offers(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [
-        BigNumber,
-        string,
-        BigNumber,
-        string,
-        string,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        string,
-        string,
-        number
-      ] & {
-        id: BigNumber;
-        collection: string;
-        tokenId: BigNumber;
-        from: string;
-        to: string;
-        price: BigNumber;
-        galleryId: BigNumber;
-        offerStartAt: BigNumber;
-        offerExpiredAt: BigNumber;
-        exhibitExpiredAt: BigNumber;
-        url: string;
-        detail: string;
-        status: number;
-      }
-    >;
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
+    pendingOwner(overrides?: CallOverrides): Promise<[string]>;
 
     redeemForce(
       galleryId: PromiseOrValue<BigNumberish>,
@@ -726,21 +528,13 @@ export interface Curation extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    redeemRequests(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber] & {
-        id: BigNumber;
-        galleryId: BigNumber;
-        createAt: BigNumber;
-        endAt: BigNumber;
-      }
-    >;
-
     redeemWithFreeze(
       galleryId: PromiseOrValue<BigNumberish>,
       exhibitId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -773,12 +567,6 @@ export interface Curation extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    tokenHashToOfferIds(
-      arg0: PromiseOrValue<BytesLike>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -788,12 +576,25 @@ export interface Curation extends BaseContract {
       newFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    whitelist(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
   };
+
+  acceptOwnership(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  batchList(
+    galleryIds: PromiseOrValue<BigNumberish>[],
+    exhibitIds: PromiseOrValue<BigNumberish>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  batchListOwned(
+    galleryIds: PromiseOrValue<BigNumberish>[],
+    collections: PromiseOrValue<string>[],
+    tokenIds: PromiseOrValue<BigNumberish>[],
+    prices: PromiseOrValue<BigNumberish>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   buy(
     galleryId: PromiseOrValue<BigNumberish>,
@@ -821,39 +622,9 @@ export interface Curation extends BaseContract {
     isToken: PromiseOrValue<boolean>,
     payees: PromiseOrValue<string>[],
     commissionRates: PromiseOrValue<BigNumberish>[],
+    admissions: PromiseOrValue<string>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  exhibits(
-    arg0: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
-    [
-      BigNumber,
-      BigNumber,
-      string,
-      BigNumber,
-      string,
-      BigNumber,
-      BigNumber,
-      string,
-      string,
-      string,
-      number
-    ] & {
-      id: BigNumber;
-      galleryId: BigNumber;
-      collection: string;
-      tokenId: BigNumber;
-      origin: string;
-      expiration: BigNumber;
-      price: BigNumber;
-      location: string;
-      url: string;
-      detail: string;
-      status: number;
-    }
-  >;
 
   freeze(
     galleryId: PromiseOrValue<BigNumberish>,
@@ -861,42 +632,7 @@ export interface Curation extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  galleries(
-    arg0: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, string, BigNumber, string, string, string, string, string] & {
-      id: BigNumber;
-      collection: string;
-      tokenId: BigNumber;
-      owner: string;
-      spaceType: string;
-      name: string;
-      metadataUri: string;
-      commissionPool: string;
-    }
-  >;
-
-  getCuratorGalleries(
-    curator: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<Curation.GalleryStructOutput[]>;
-
-  getGalleryExhibits(
-    galleryId: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<Curation.ExhibitStructOutput[]>;
-
-  getReceivedOffers(
-    overrides?: CallOverrides
-  ): Promise<Curation.OfferStructOutput[]>;
-
-  getSentOffers(
-    overrides?: CallOverrides
-  ): Promise<Curation.OfferStructOutput[]>;
-
   initialize(
-    owner: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -916,40 +652,9 @@ export interface Curation extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  offers(
-    arg0: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
-    [
-      BigNumber,
-      string,
-      BigNumber,
-      string,
-      string,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      BigNumber,
-      string,
-      string,
-      number
-    ] & {
-      id: BigNumber;
-      collection: string;
-      tokenId: BigNumber;
-      from: string;
-      to: string;
-      price: BigNumber;
-      galleryId: BigNumber;
-      offerStartAt: BigNumber;
-      offerExpiredAt: BigNumber;
-      exhibitExpiredAt: BigNumber;
-      url: string;
-      detail: string;
-      status: number;
-    }
-  >;
+  owner(overrides?: CallOverrides): Promise<string>;
+
+  pendingOwner(overrides?: CallOverrides): Promise<string>;
 
   redeemForce(
     galleryId: PromiseOrValue<BigNumberish>,
@@ -957,21 +662,13 @@ export interface Curation extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  redeemRequests(
-    arg0: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber, BigNumber, BigNumber] & {
-      id: BigNumber;
-      galleryId: BigNumber;
-      createAt: BigNumber;
-      endAt: BigNumber;
-    }
-  >;
-
   redeemWithFreeze(
     galleryId: PromiseOrValue<BigNumberish>,
     exhibitId: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  renounceOwnership(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1004,12 +701,6 @@ export interface Curation extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  tokenHashToOfferIds(
-    arg0: PromiseOrValue<BytesLike>,
-    arg1: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   transferOwnership(
     newOwner: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1020,12 +711,23 @@ export interface Curation extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  whitelist(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
   callStatic: {
+    acceptOwnership(overrides?: CallOverrides): Promise<void>;
+
+    batchList(
+      galleryIds: PromiseOrValue<BigNumberish>[],
+      exhibitIds: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    batchListOwned(
+      galleryIds: PromiseOrValue<BigNumberish>[],
+      collections: PromiseOrValue<string>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      prices: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     buy(
       galleryId: PromiseOrValue<BigNumberish>,
       exhibitId: PromiseOrValue<BigNumberish>,
@@ -1052,39 +754,9 @@ export interface Curation extends BaseContract {
       isToken: PromiseOrValue<boolean>,
       payees: PromiseOrValue<string>[],
       commissionRates: PromiseOrValue<BigNumberish>[],
+      admissions: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<void>;
-
-    exhibits(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [
-        BigNumber,
-        BigNumber,
-        string,
-        BigNumber,
-        string,
-        BigNumber,
-        BigNumber,
-        string,
-        string,
-        string,
-        number
-      ] & {
-        id: BigNumber;
-        galleryId: BigNumber;
-        collection: string;
-        tokenId: BigNumber;
-        origin: string;
-        expiration: BigNumber;
-        price: BigNumber;
-        location: string;
-        url: string;
-        detail: string;
-        status: number;
-      }
-    >;
 
     freeze(
       galleryId: PromiseOrValue<BigNumberish>,
@@ -1092,44 +764,7 @@ export interface Curation extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    galleries(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, string, BigNumber, string, string, string, string, string] & {
-        id: BigNumber;
-        collection: string;
-        tokenId: BigNumber;
-        owner: string;
-        spaceType: string;
-        name: string;
-        metadataUri: string;
-        commissionPool: string;
-      }
-    >;
-
-    getCuratorGalleries(
-      curator: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<Curation.GalleryStructOutput[]>;
-
-    getGalleryExhibits(
-      galleryId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<Curation.ExhibitStructOutput[]>;
-
-    getReceivedOffers(
-      overrides?: CallOverrides
-    ): Promise<Curation.OfferStructOutput[]>;
-
-    getSentOffers(
-      overrides?: CallOverrides
-    ): Promise<Curation.OfferStructOutput[]>;
-
-    initialize(
-      owner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    initialize(overrides?: CallOverrides): Promise<void>;
 
     list(
       galleryId: PromiseOrValue<BigNumberish>,
@@ -1147,40 +782,9 @@ export interface Curation extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    offers(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [
-        BigNumber,
-        string,
-        BigNumber,
-        string,
-        string,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        BigNumber,
-        string,
-        string,
-        number
-      ] & {
-        id: BigNumber;
-        collection: string;
-        tokenId: BigNumber;
-        from: string;
-        to: string;
-        price: BigNumber;
-        galleryId: BigNumber;
-        offerStartAt: BigNumber;
-        offerExpiredAt: BigNumber;
-        exhibitExpiredAt: BigNumber;
-        url: string;
-        detail: string;
-        status: number;
-      }
-    >;
+    owner(overrides?: CallOverrides): Promise<string>;
+
+    pendingOwner(overrides?: CallOverrides): Promise<string>;
 
     redeemForce(
       galleryId: PromiseOrValue<BigNumberish>,
@@ -1188,23 +792,13 @@ export interface Curation extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    redeemRequests(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber, BigNumber, BigNumber] & {
-        id: BigNumber;
-        galleryId: BigNumber;
-        createAt: BigNumber;
-        endAt: BigNumber;
-      }
-    >;
-
     redeemWithFreeze(
       galleryId: PromiseOrValue<BigNumberish>,
       exhibitId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     replyOffer(
       offerId: PromiseOrValue<BigNumberish>,
@@ -1235,12 +829,6 @@ export interface Curation extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    tokenHashToOfferIds(
-      arg0: PromiseOrValue<BytesLike>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -1250,11 +838,6 @@ export interface Curation extends BaseContract {
       newFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    whitelist(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
   };
 
   filters: {
@@ -1287,7 +870,7 @@ export interface Curation extends BaseContract {
       timestamp?: null
     ): ExhibitChangedEventFilter;
 
-    "GalleryChanged(uint256,string,address,uint256,address,string,string,string,bool,uint64,address[],uint256[],address)"(
+    "GalleryChanged(uint256,string,address,uint256,address,string,string,string,bool,uint64,address[],uint256[],address,address[])"(
       id?: PromiseOrValue<BigNumberish> | null,
       eventType?: null,
       collection?: null,
@@ -1300,7 +883,8 @@ export interface Curation extends BaseContract {
       timestamp?: null,
       payees?: null,
       commissionRates?: null,
-      commissionPool?: null
+      commissionPool?: null,
+      admissions?: null
     ): GalleryChangedEventFilter;
     GalleryChanged(
       id?: PromiseOrValue<BigNumberish> | null,
@@ -1315,7 +899,8 @@ export interface Curation extends BaseContract {
       timestamp?: null,
       payees?: null,
       commissionRates?: null,
-      commissionPool?: null
+      commissionPool?: null,
+      admissions?: null
     ): GalleryChangedEventFilter;
 
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
@@ -1353,9 +938,45 @@ export interface Curation extends BaseContract {
       detail?: null,
       timestamp?: null
     ): OfferChangedEventFilter;
+
+    "OwnershipTransferStarted(address,address)"(
+      previousOwner?: PromiseOrValue<string> | null,
+      newOwner?: PromiseOrValue<string> | null
+    ): OwnershipTransferStartedEventFilter;
+    OwnershipTransferStarted(
+      previousOwner?: PromiseOrValue<string> | null,
+      newOwner?: PromiseOrValue<string> | null
+    ): OwnershipTransferStartedEventFilter;
+
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: PromiseOrValue<string> | null,
+      newOwner?: PromiseOrValue<string> | null
+    ): OwnershipTransferredEventFilter;
+    OwnershipTransferred(
+      previousOwner?: PromiseOrValue<string> | null,
+      newOwner?: PromiseOrValue<string> | null
+    ): OwnershipTransferredEventFilter;
   };
 
   estimateGas: {
+    acceptOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    batchList(
+      galleryIds: PromiseOrValue<BigNumberish>[],
+      exhibitIds: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    batchListOwned(
+      galleryIds: PromiseOrValue<BigNumberish>[],
+      collections: PromiseOrValue<string>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      prices: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     buy(
       galleryId: PromiseOrValue<BigNumberish>,
       exhibitId: PromiseOrValue<BigNumberish>,
@@ -1382,12 +1003,8 @@ export interface Curation extends BaseContract {
       isToken: PromiseOrValue<boolean>,
       payees: PromiseOrValue<string>[],
       commissionRates: PromiseOrValue<BigNumberish>[],
+      admissions: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    exhibits(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     freeze(
@@ -1396,27 +1013,7 @@ export interface Curation extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    galleries(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getCuratorGalleries(
-      curator: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getGalleryExhibits(
-      galleryId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getReceivedOffers(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getSentOffers(overrides?: CallOverrides): Promise<BigNumber>;
-
     initialize(
-      owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1436,10 +1033,9 @@ export interface Curation extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    offers(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    pendingOwner(overrides?: CallOverrides): Promise<BigNumber>;
 
     redeemForce(
       galleryId: PromiseOrValue<BigNumberish>,
@@ -1447,14 +1043,13 @@ export interface Curation extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    redeemRequests(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     redeemWithFreeze(
       galleryId: PromiseOrValue<BigNumberish>,
       exhibitId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1487,12 +1082,6 @@ export interface Curation extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    tokenHashToOfferIds(
-      arg0: PromiseOrValue<BytesLike>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1501,15 +1090,28 @@ export interface Curation extends BaseContract {
     updateBaseFeeRate(
       newFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    whitelist(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    acceptOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    batchList(
+      galleryIds: PromiseOrValue<BigNumberish>[],
+      exhibitIds: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    batchListOwned(
+      galleryIds: PromiseOrValue<BigNumberish>[],
+      collections: PromiseOrValue<string>[],
+      tokenIds: PromiseOrValue<BigNumberish>[],
+      prices: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     buy(
       galleryId: PromiseOrValue<BigNumberish>,
       exhibitId: PromiseOrValue<BigNumberish>,
@@ -1536,12 +1138,8 @@ export interface Curation extends BaseContract {
       isToken: PromiseOrValue<boolean>,
       payees: PromiseOrValue<string>[],
       commissionRates: PromiseOrValue<BigNumberish>[],
+      admissions: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    exhibits(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     freeze(
@@ -1550,27 +1148,7 @@ export interface Curation extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    galleries(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getCuratorGalleries(
-      curator: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getGalleryExhibits(
-      galleryId: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getReceivedOffers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getSentOffers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     initialize(
-      owner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1590,10 +1168,9 @@ export interface Curation extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    offers(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    pendingOwner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     redeemForce(
       galleryId: PromiseOrValue<BigNumberish>,
@@ -1601,14 +1178,13 @@ export interface Curation extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    redeemRequests(
-      arg0: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     redeemWithFreeze(
       galleryId: PromiseOrValue<BigNumberish>,
       exhibitId: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1641,12 +1217,6 @@ export interface Curation extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    tokenHashToOfferIds(
-      arg0: PromiseOrValue<BytesLike>,
-      arg1: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1655,11 +1225,6 @@ export interface Curation extends BaseContract {
     updateBaseFeeRate(
       newFeeRate: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    whitelist(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

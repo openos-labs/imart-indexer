@@ -15,6 +15,7 @@ async function main() {
     false,
     [],
     [],
+    [],
     { gasLimit: 250000, gasPrice: 1500000000 }
   );
   console.log(tx);
