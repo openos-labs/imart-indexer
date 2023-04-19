@@ -1,6 +1,6 @@
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { PrismaPromise } from "@prisma/client";
-import { CONTRACT_CURATION, PROVIDER_ENDPOINT_1 } from "../../config";
+import { Chain, PrismaPromise } from "@prisma/client";
+import { CHAIN, CONTRACT_CURATION, PROVIDER_ENDPOINT_1 } from "../../config";
 import { prisma } from "../../io";
 import { ERC721__factory } from "../../typechain";
 import { TypedEvent } from "../../typechain/common";
@@ -54,7 +54,7 @@ export class ExhibitObserver extends Observer {
       },
       create: {
         index: id.toBigInt(),
-        chain: "ETH",
+        chain: CHAIN as Chain,
         root: CONTRACT_CURATION,
         galleryIndex: galleryId.toBigInt(),
         curator: origin,
@@ -94,7 +94,7 @@ export class ExhibitObserver extends Observer {
       const updateTransaction = prisma.transaction.upsert({
         where: {
           chain_tokenId_collectionId_txType_txTimestamp: {
-            chain: "ETH",
+            chain: CHAIN as Chain,
             tokenId: tokenId.toString(),
             collectionId: collection,
             txType: "SALE",
@@ -102,7 +102,7 @@ export class ExhibitObserver extends Observer {
           },
         },
         create: {
-          chain: "ETH",
+          chain: CHAIN as Chain,
           tokenId: tokenId.toString(),
           collectionId: collection,
           galleryRoot: CONTRACT_CURATION,

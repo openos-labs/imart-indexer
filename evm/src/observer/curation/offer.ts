@@ -1,6 +1,6 @@
-import { NotificationType, Prisma, PrismaPromise } from "@prisma/client";
+import { Chain, NotificationType, Prisma, PrismaPromise } from "@prisma/client";
 import { randomUUID } from "crypto";
-import { CONTRACT_CURATION } from "../../config";
+import { CHAIN, CONTRACT_CURATION } from "../../config";
 import { prisma } from "../../io";
 import { redis } from "../../io/redis";
 import { TypedEvent } from "../../typechain/common";
@@ -57,7 +57,7 @@ export class OfferObserver extends Observer {
       },
       create: {
         index: id.toBigInt(),
-        chain: "ETH",
+        chain: CHAIN as Chain,
         root: CONTRACT_CURATION,
         galleryIndex: galleryId.toBigInt(),
         collectionIdentifier: collectionId,
@@ -102,7 +102,7 @@ export class OfferObserver extends Observer {
         receiver = to;
         notificationType = NotificationType.CurationOfferReceived;
         notificationDetail = {
-          chain: "ETH",
+          chain: CHAIN as Chain,
           collectionId,
           tokenId: tokenId.toString(),
         };
@@ -112,7 +112,7 @@ export class OfferObserver extends Observer {
         receiver = from;
         notificationType = NotificationType.CurationOfferAccepted;
         notificationDetail = {
-          chain: "ETH",
+          chain: CHAIN as Chain,
           collectionId,
           tokenId: tokenId.toString(),
         };
@@ -122,7 +122,7 @@ export class OfferObserver extends Observer {
         receiver = from;
         notificationType = NotificationType.CurationOfferRejected;
         notificationDetail = {
-          chain: "ETH",
+          chain: CHAIN as Chain,
           collectionId,
           tokenId: tokenId.toString(),
         };

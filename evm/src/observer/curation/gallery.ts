@@ -1,4 +1,5 @@
-import { CONTRACT_CURATION } from "../../config";
+import { Chain } from "@prisma/client";
+import { CHAIN, CONTRACT_CURATION } from "../../config";
 import { prisma } from "../../io";
 import { redis } from "../../io/redis";
 import { TypedEvent } from "../../typechain/common";
@@ -45,7 +46,7 @@ export class GalleryObserver extends Observer {
       data: {
         index: id.toBigInt(),
         root: CONTRACT_CURATION,
-        chain: "ETH",
+        chain: CHAIN as Chain,
         owner,
         spaceType,
         name,
@@ -75,7 +76,7 @@ export class GalleryObserver extends Observer {
         ...metadata,
         index: Number(gallery.index),
         root: CONTRACT_CURATION,
-        chain: "ETH",
+        chain: CHAIN as Chain,
         owner,
         spaceType,
         name,

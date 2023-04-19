@@ -1,3 +1,5 @@
+import { Chain } from "@prisma/client";
+import { CHAIN } from "../../config";
 import { prisma } from "../../io";
 import { TypedEvent } from "../../typechain/common";
 import { CollectionCreatedEvent } from "../../typechain/IMartCollective";
@@ -38,14 +40,14 @@ export class SingleCollectiveCreateObserver extends Observer {
     const createCollection = prisma.collection.upsert({
       where: {
         chain_creator_name: {
-          chain: "ETH",
+          chain: CHAIN as Chain,
           name,
           creator,
         },
       },
       create: {
         id: root,
-        chain: "ETH",
+        chain: CHAIN as Chain,
         metadataType: "IMAGE",
         category,
         tags: tags.join(","),
@@ -60,8 +62,8 @@ export class SingleCollectiveCreateObserver extends Observer {
         uri,
         supply: "0",
         royalty,
-        standard: 'ERC721',
-        root
+        standard: "ERC721",
+        root,
       },
       update: {},
     });
