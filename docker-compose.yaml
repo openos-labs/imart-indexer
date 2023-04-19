@@ -38,6 +38,7 @@ services:
     image: event-worker-polygon:v1
     volumes:
      - ./evm:/app/event-worker-polygon
+    command: /bin/sh -c "npx prisma generate && yarn start"
   automint: 
     working_dir: /app/automint
     restart: always
