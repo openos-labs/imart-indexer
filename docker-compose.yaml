@@ -8,7 +8,7 @@ services:
       - ./aptos:/app/event-worker-aptos
     command: /bin/sh -c "prisma generate  && python3 ./main.py"
   event-worker-eth:
-    working_dir: /app/event-worker-eth
+    working_dir: /app/event-worker-ethereum
     restart: always
     environment:
       - CONTRACT_CURATION=${ETH_CONTRACT_CURATION}
