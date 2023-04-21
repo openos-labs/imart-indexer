@@ -172,6 +172,7 @@ model AptosActivity {
     quantity     String?  @default("1") @db.VarChar(78)
     price        String?  @default("0") @db.VarChar(78)
     txTimestamp  DateTime
+    currency     String?  @default("APT")
 
     @@index([collectionId])
     @@index([txType])
@@ -191,6 +192,7 @@ model Community {
 
 model Sale {
     id               String     @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    chain            Chain
     status           SaleStatus
     publicMintTime   DateTime
     expirationTime   DateTime?
@@ -418,9 +420,9 @@ model CurationExhibit {
     detail               String
     status               CurationExhibitStatus
     updatedAt            DateTime
+    listed               Boolean               @default(false)
 
-    @@unique([index, root])
-    @@index([collectionIdentifier, tokenIdentifier])
+    @@unique([index, root, status, listed])
     @@index([status])
     @@index([galleryIndex])
     @@index([galleryIndex, status])
