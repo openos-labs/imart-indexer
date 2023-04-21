@@ -47,9 +47,11 @@ export class ExhibitObserver extends Observer {
     const updatedAt = new Date(timestamp.toNumber() * 1000);
     const createOffer = prisma.curationExhibit.upsert({
       where: {
-        index_root: {
+        index_root_status_listed: {
           index: id.toBigInt(),
           root: CONTRACT_CURATION,
+          status: eventTypeToStatus[eventType],
+          listed: false,
         },
       },
       create: {
