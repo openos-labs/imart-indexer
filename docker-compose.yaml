@@ -19,7 +19,7 @@ services:
       - EVENTOFFSET_ID=1
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
-      - CHAIN="ETH"
+      - CHAIN=ETH
     image: event-worker-eth:v1
     volumes:
       - ./evm:/app/event-worker-eth
@@ -36,7 +36,7 @@ services:
       - EVENTOFFSET_ID=2
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
-      - CHAIN="POLYGON"
+      - CHAIN=POLYGON
     image: event-worker-polygon:v1
     volumes:
      - ./evm:/app/event-worker-polygon
