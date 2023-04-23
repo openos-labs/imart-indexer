@@ -53,7 +53,7 @@ export class GalleryObserver extends Observer {
         metadataUri,
         commissionRates,
         commissionPool,
-        addmissions: addmissions.join(",")
+        admissions: addmissions.join(",")
       },
     });
 
