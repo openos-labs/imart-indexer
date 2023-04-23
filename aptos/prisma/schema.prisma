@@ -438,7 +438,7 @@ model CurationGallery {
     metadataUri     String
     commissionRates Json?  @default("{}")
     commissionPool  String @default("")
-    addmissions     String @default("")
+    admissions     String @default("")
 
     @@unique([index, root])
     @@index([owner])

@@ -36,7 +36,7 @@ export class GalleryObserver extends Observer {
       payees,
       rates,
       commissionPool,
-      addmissions,
+      admissions,
     ] = (event as GalleryChangedEvent).args;
 
     const commissionRates = payees.reduce((acc, key, i) => {
@@ -53,7 +53,7 @@ export class GalleryObserver extends Observer {
         metadataUri,
         commissionRates,
         commissionPool,
-        admissions: addmissions.join(",")
+        admissions: admissions.join(",")
       },
     });
 
@@ -83,7 +83,7 @@ export class GalleryObserver extends Observer {
         metadataUri,
         commissionRates,
         commissionPool,
-        addmissions: addmissions.join(",")
+        admissions: admissions.join(",")
       });
       redis.set(`mixverse:curation:${metadata.id}`, galleryData);
       redis.set(
