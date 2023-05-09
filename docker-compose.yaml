@@ -41,6 +41,23 @@ services:
     volumes:
      - ./evm:/app/event-worker-polygon
     command: /bin/sh -c "npx prisma generate && yarn start"
+  event-worker-bsc:
+    working_dir: /app/event-worker-bsc
+    restart: always
+    environment:
+      - CONTRACT_CURATION=${BSC_CONTRACT_CURATION}
+      - CONTRACT_SINGLE_COLLECTIVE=${BSC_CONTRACT_SINGLE_COLLECTIVE}
+      - CONTRACT_MULTIPLE_COLLECTIVE=${BSC_CONTRACT_MULTIPLE_COLLECTIVE}
+      - PROVIDERS=${BSC_PROVIDERS}
+      - DURATION_MILLIS=${DURATION_MILLIS}
+      - EVENTOFFSET_ID=3
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - CHAIN=BSC
+    image: event-worker-bsc:v1
+    volumes:
+     - ./evm:/app/event-worker-bsc
+    command: /bin/sh -c "npx prisma generate && yarn start"
   automint: 
     working_dir: /app/automint
     restart: always
