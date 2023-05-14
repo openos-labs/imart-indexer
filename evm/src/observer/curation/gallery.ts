@@ -53,7 +53,8 @@ export class GalleryObserver extends Observer {
         metadataUri,
         commissionRates,
         commissionPool,
-        admissions: admissions.join(",")
+        admissions: admissions.join(","),
+        updatedAt: new Date(timestamp.toNumber() * 1000)
       },
     });
 

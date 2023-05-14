@@ -431,17 +431,18 @@ model CurationExhibit {
 }
 
 model CurationGallery {
-    id              String @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
-    chain           Chain  @default(APTOS)
+    id              String   @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    chain           Chain    @default(APTOS)
     index           BigInt
     root            String
     owner           String
     spaceType       String
     name            String
     metadataUri     String
-    commissionRates Json?  @default("{}")
-    commissionPool  String @default("")
-    admissions      String @default("")
+    commissionRates Json?    @default("{}")
+    commissionPool  String   @default("")
+    admissions      String   @default("")
+    updatedAt       DateTime @default(now())
 
     @@unique([index, root])
     @@index([owner])

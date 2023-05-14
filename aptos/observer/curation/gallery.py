@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 from typing import List, Tuple
 from observer.observer import Observer
@@ -21,6 +22,7 @@ class GalleryEventObserver(Observer[GalleryEvent]):
         new_state = state
         seqno = event.sequence_number
         data = GalleryEventData(**event.data)
+        updated_at = datetime.fromtimestamp(int(data.timestamp))
         index = int(data.id)
 
         async with prisma_client.tx(timeout=60000) as transaction:
@@ -42,7 +44,8 @@ class GalleryEventObserver(Observer[GalleryEvent]):
                         'spaceType': data.space_type,
                         'metadataUri': data.metadata_uri,
                         'commissionRates': Json(dict(zip(data.payees, data.commission_rates))),
-                        'commissionPool': ""
+                        'commissionPool': "",
+                        'updatedAt': updated_at
                     },
                     'update': {
                         'chain': enums.Chain.APTOS,
