@@ -142,10 +142,11 @@ export class OfferObserver extends Observer {
     };
 
     let tx: PrismaPromise<any>[] = [createOffer, updateOffset];
+    let data = { ...notification, timestamp: updatedAt.getMilliseconds() };
     if (this.needNotify(eventType)) {
       redis.LPUSH(
         `imart:notifications:${receiver.toLowerCase()}`,
-        JSON.stringify(notification)
+        JSON.stringify(data)
       );
       const notify = prisma.notification.upsert({
         where: {

@@ -10,6 +10,7 @@ from model.state import State
 from model.event import Event
 from common.db import prisma_client
 from prisma import enums, Json
+from copy import deepcopy
 
 
 class BuyEventObserver(Observer[BuyEvent]):
@@ -114,7 +115,12 @@ class BuyEventObserver(Observer[BuyEvent]):
                 'timestamp': timestamp,
                 'detail': Json({"name": token_data_id.name, "collection": token_data_id.collection, "creator": token_data_id.creator, "propertyVersion": token_id.property_version})
             }
-            redis_cli.lpush(f"imart:notifications:{data.seller.lower()}", json.dumps(notification, indent=4, sort_keys=True, default=str))
+            data = deepcopy(notification)
+            data['timestamp'] = int(timestamp.timestamp() * 1000)
+            redis_cli.lpush(
+                f"imart:notifications:{data.seller.lower()}",
+                json.dumps(data, indent=4, sort_keys=True, default=str)
+            )
             await transaction.notification.upsert(
                 where={
                     'receiver_type_timestamp': {

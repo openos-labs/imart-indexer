@@ -11,6 +11,7 @@ from datetime import datetime
 from common.util import new_uuid
 from common.redis import redis_cli
 from config import config
+from copy import deepcopy
 
 event_type_to_status = {
     'OfferCreated': enums.CurationOfferStatus.pending,
@@ -186,8 +187,12 @@ class CurationOfferEventObserver(Observer[OfferEvent]):
             }
 
             if event_type in ["OfferAccepted", "OfferCreated", "OfferRejected"]:
-                redis_cli.lpush(f"imart:notifications:{notification_receiver.lower()}", json.dumps(
-                    notification, indent=4, sort_keys=True, default=str))
+                data = deepcopy(notification)
+                data['timestamp'] = int(notification_timestamp.timestamp() * 1000)
+                redis_cli.lpush(
+                    f"imart:notifications:{notification_receiver.lower()}",
+                    json.dumps(data, indent=4, sort_keys=True, default=str)
+                )
                 await transaction.notification.upsert(
                     where={
                         'receiver_type_timestamp': {
