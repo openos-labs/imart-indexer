@@ -16,7 +16,6 @@ import {
 } from "./observer";
 
 import { TypedEvent, TypedEventFilter } from "./typechain/common";
-import { JsonRpcProvider } from "@ethersproject/providers";
 import { Contract, State, StateFlow } from "./types";
 import { events, eventStream } from "./subject";
 import { delay } from "./utils/delay";
@@ -29,14 +28,11 @@ import {
   CONTRACT_SINGLE_COLLECTIVE,
   DURATION_MILLIS,
   EVENTOFFSET_ID,
-  PROVIDERS,
+  randomProvider,
 } from "./config";
 import { redis } from "./io/redis";
-import { randomInt } from "crypto";
 
 const restPeriod = Number(DURATION_MILLIS);
-const providers = PROVIDERS.split(",").map((url) => new JsonRpcProvider(url));
-const randomProvider = () => providers[randomInt(providers.length)];
 
 async function main() {
   redis.on("error", (err) => console.log("Redis Client Error", err));

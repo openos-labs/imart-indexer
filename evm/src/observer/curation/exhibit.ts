@@ -1,6 +1,5 @@
-import { JsonRpcProvider } from "@ethersproject/providers";
 import { Chain, PrismaPromise } from "@prisma/client";
-import { CHAIN, CONTRACT_CURATION, PROVIDER_ENDPOINT_1 } from "../../config";
+import { CHAIN, CONTRACT_CURATION, randomProvider } from "../../config";
 import { prisma } from "../../io";
 import { ERC721__factory } from "../../typechain";
 import { TypedEvent } from "../../typechain/common";
@@ -91,7 +90,7 @@ export class ExhibitObserver extends Observer {
     if (eventType == "ExhibitSold") {
       const owner = await ERC721__factory.connect(
         collection,
-        new JsonRpcProvider(PROVIDER_ENDPOINT_1)
+        randomProvider()
       ).ownerOf(tokenId);
       const updateTransaction = prisma.transaction.upsert({
         where: {

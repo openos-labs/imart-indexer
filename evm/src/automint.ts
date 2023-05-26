@@ -1,11 +1,9 @@
-import { JsonRpcProvider } from "@ethersproject/providers";
 import {
   CONTRACT_SINGLE_COLLECTIVE,
   PRIVATE_KEY_TEST_ONLY,
-  PROVIDERS,
+  randomProvider,
 } from "./config";
 import { redis } from "./io/redis";
-import { randomInt } from "crypto";
 import { SingleCollective__factory } from "./typechain";
 import { ethers } from "ethers";
 
@@ -35,8 +33,6 @@ async function automint() {
   }
 }
 
-const providers = PROVIDERS.split(",").map((url) => new JsonRpcProvider(url));
-const randomProvider = () => providers[randomInt(providers.length)];
 async function checkAndMint(signer: ethers.Wallet, account: string) {
   const minted = await redis.sIsMember(KEY_ETH_MINTED_ACCOUNTS, account);
   if (minted) return;
