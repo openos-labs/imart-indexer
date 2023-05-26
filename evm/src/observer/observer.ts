@@ -23,7 +23,7 @@ export abstract class Observer {
         if (!success) return current_state;
         current_state = new_state;
       } catch (e) {
-        console.error(e);
+        console.error("failed to process event:",e);
       }
       return current_state;
     }

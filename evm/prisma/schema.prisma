@@ -439,6 +439,7 @@ model CurationGallery {
     spaceType       String
     name            String
     metadataUri     String
+    viewsCount      BigInt   @default(0)
     commissionRates Json?    @default("{}")
     commissionPool  String   @default("")
     admissions      String   @default("")
