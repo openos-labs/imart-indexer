@@ -62,7 +62,7 @@ export class MultipleCollectiveCreateObserver extends Observer {
         uri,
         supply: "0",
         royalty,
-        standard: 'ERC721',
+        standard: 'ERC1155',
         root
       },
       update: {},
