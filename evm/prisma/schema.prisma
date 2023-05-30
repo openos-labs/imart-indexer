@@ -443,7 +443,6 @@ model CurationGallery {
     commissionRates Json?    @default("{}")
     commissionPool  String   @default("")
     admissions      String   @default("")
-    updatedAt       DateTime @default(now())
 
     @@unique([index, root])
     @@index([owner])
