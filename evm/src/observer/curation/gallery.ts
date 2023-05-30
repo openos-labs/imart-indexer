@@ -54,7 +54,6 @@ export class GalleryObserver extends Observer {
         commissionRates,
         commissionPool,
         admissions: admissions.join(","),
-        updatedAt: new Date(timestamp.toNumber() * 1000)
       },
     });
 
