@@ -1,5 +1,5 @@
 import { Chain } from "@prisma/client";
-import { CHAIN, CONTRACT_CURATION } from "../../config";
+import { CHAIN, CONTRACT_CURATION, EVENTOFFSET_ID } from "../../config";
 import { prisma } from "../../io";
 import { redis } from "../../io/redis";
 import { TypedEvent } from "../../typechain/common";
@@ -59,7 +59,7 @@ export class GalleryObserver extends Observer {
 
     const updateState = prisma.eventOffset.update({
       where: {
-        id: 1,
+        id: +EVENTOFFSET_ID,
       },
       data: {
         gallery_excuted_offset: blockNo,

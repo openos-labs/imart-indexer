@@ -1,5 +1,5 @@
 import { Chain, PrismaPromise } from "@prisma/client";
-import { CHAIN, CONTRACT_CURATION, randomProvider } from "../../config";
+import { CHAIN, CONTRACT_CURATION, EVENTOFFSET_ID, randomProvider } from "../../config";
 import { prisma } from "../../io";
 import { ERC721__factory } from "../../typechain";
 import { TypedEvent } from "../../typechain/common";
@@ -80,7 +80,7 @@ export class ExhibitObserver extends Observer {
     });
     const updateOffset = prisma.eventOffset.update({
       where: {
-        id: 1,
+        id: +EVENTOFFSET_ID,
       },
       data: {
         exhibit_excuted_offset: blockNo,

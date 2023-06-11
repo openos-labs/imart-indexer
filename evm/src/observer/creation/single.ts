@@ -1,5 +1,5 @@
 import { Chain } from "@prisma/client";
-import { CHAIN } from "../../config";
+import { CHAIN, EVENTOFFSET_ID } from "../../config";
 import { prisma } from "../../io";
 import { TypedEvent } from "../../typechain/common";
 import { CollectionCreatedEvent } from "../../typechain/IMartCollective";
@@ -70,7 +70,7 @@ export class SingleCollectiveCreateObserver extends Observer {
 
     const updateState = prisma.eventOffset.update({
       where: {
-        id: 1,
+        id: +EVENTOFFSET_ID,
       },
       data: {
         single_collective_created_excuted_offset: blockNo,

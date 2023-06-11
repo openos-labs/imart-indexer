@@ -1,6 +1,6 @@
 import { Chain, NotificationType, Prisma, PrismaPromise } from "@prisma/client";
 import { randomUUID } from "crypto";
-import { CHAIN, CONTRACT_CURATION } from "../../config";
+import { CHAIN, CONTRACT_CURATION, EVENTOFFSET_ID } from "../../config";
 import { prisma } from "../../io";
 import { redis } from "../../io/redis";
 import { TypedEvent } from "../../typechain/common";
@@ -85,7 +85,7 @@ export class OfferObserver extends Observer {
     });
     const updateOffset = prisma.eventOffset.update({
       where: {
-        id: 1,
+        id: +EVENTOFFSET_ID,
       },
       data: {
         curation_offer_excuted_offset: blockNo,
