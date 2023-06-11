@@ -1,4 +1,4 @@
-# IMart Event Worker
+# IMart Indexer
 
 ## Pattern
 
@@ -58,14 +58,17 @@ prisma generate
 ## Deployment
 
 ```
-// evm
-docker build -t event-worker-evm:v1 -f $PWD/evm/Dockerfile $PWD/evm
-docker compose up -d event-worker-evm
+// eth
+docker build -t indexer-bsc:v1 -f $PWD/docker/bsc.dockerfile $PWD/evm
+docker compose up -d indexer-bsc
+
+// bsc
+docker build -t indexer-eth:v1 -f $PWD/docker/eth.dockerfile $PWD/evm
+docker compose up -d indexer-eth
 
 // aptos
-docker build -t event-worker-aptos:v1 -f $PWD/aptos/Dockerfile $PWD/aptos
-docker compose up -d event-worker-aptos
-
+docker build -t indexer-apt:v1 -f $PWD/docker/apt.dockerfile $PWD/apt
+docker compose up -d indexer-apt
 ```
 
 ## Log

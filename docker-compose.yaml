@@ -1,14 +1,14 @@
 version: '3.9'
 services:
-  event-worker-aptos:
-    working_dir: /app/event-worker-aptos
+  indexer-apt:
+    working_dir: /app/indexer-apt
     restart: always
-    image: event-worker-aptos:v1
+    image: indexer-apt:v1
     volumes:
-      - ./aptos:/app/event-worker-aptos
+      - ./apt:/app/indexer-apt
     command: /bin/sh -c "prisma generate  && python3 ./main.py"
-  event-worker-eth:
-    working_dir: /app/event-worker-ethereum
+  indexer-eth:
+    working_dir: /app/indexer-eth
     restart: always
     environment:
       - CONTRACT_CURATION=${ETH_CONTRACT_CURATION}
@@ -20,12 +20,12 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
       - CHAIN=ETH
-    image: event-worker-eth:v1
+    image: indexer-eth:v1
     volumes:
-      - ./evm:/app/event-worker-eth
+      - ./evm:/app/indexer-eth
     command: /bin/sh -c "npx prisma generate && yarn start"
-  event-worker-polygon:
-    working_dir: /app/event-worker-polygon
+  indexer-pol:
+    working_dir: /app/indexer-pol
     restart: always
     environment:
       - CONTRACT_CURATION=${POLYGON_CONTRACT_CURATION}
@@ -37,12 +37,12 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
       - CHAIN=POLYGON
-    image: event-worker-polygon:v1
+    image: indexer-pol:v1
     volumes:
-     - ./evm:/app/event-worker-polygon
+     - ./evm:/app/indexer-pol
     command: /bin/sh -c "npx prisma generate && yarn start"
-  event-worker-bsc:
-    working_dir: /app/event-worker-bsc
+  indexer-bsc:
+    working_dir: /app/indexer-bsc
     restart: always
     environment:
       - CONTRACT_CURATION=${BSC_CONTRACT_CURATION}
@@ -54,9 +54,9 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
       - CHAIN=BSC
-    image: event-worker-bsc:v1
+    image: indexer-bsc:v1
     volumes:
-     - ./evm:/app/event-worker-bsc
+     - ./evm:/app/indexer-bsc
     command: /bin/sh -c "npx prisma generate && yarn start"
   automint: 
     working_dir: /app/automint

@@ -1,6 +1,6 @@
 FROM node:18.13.0
 
-WORKDIR /app/event-worker-polygon
+WORKDIR /app/indexer-pol
 
 COPY package.json yarn.lock ./
 RUN yarn install
