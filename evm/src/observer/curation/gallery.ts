@@ -30,7 +30,7 @@ export class GalleryObserver extends Observer {
       owner,
       spaceType,
       name,
-      metadataUri,
+      metadataURI,
       isToken,
       timestamp,
       payees,
@@ -56,7 +56,7 @@ export class GalleryObserver extends Observer {
         owner,
         spaceType,
         name,
-        metadataUri,
+        metadataURI,
         commissionRates,
         commissionPool,
         admissions: admissions.join(","),
@@ -65,7 +65,7 @@ export class GalleryObserver extends Observer {
         owner,
         spaceType,
         name,
-        metadataUri,
+        metadataURI,
         commissionRates,
         commissionPool,
         admissions: admissions.join(","),
@@ -85,7 +85,7 @@ export class GalleryObserver extends Observer {
         createGallery,
         updateState,
       ]);
-      const response = await fetch(metadataUri);
+      const response = await fetch(metadataURI);
       const metadata = await response.json();
       const galleryData = JSON.stringify({
         ...metadata,
@@ -95,7 +95,7 @@ export class GalleryObserver extends Observer {
         owner,
         spaceType,
         name,
-        metadataUri,
+        metadataURI,
         commissionRates,
         commissionPool,
         admissions: admissions.join(","),
