@@ -42,11 +42,26 @@ export class GalleryObserver extends Observer {
     const commissionRates = payees.reduce((acc, key, i) => {
       return { ...acc, [key]: rates[i].toString() };
     }, {});
-    const createGallery = prisma.curationGallery.create({
-      data: {
+    const createGallery = prisma.curationGallery.upsert({
+      where: {
+        index_root: {
+          index: id.toBigInt(),
+          root: CONTRACT_CURATION,
+        },
+      },
+      create: {
         index: id.toBigInt(),
         root: CONTRACT_CURATION,
         chain: CHAIN as Chain,
+        owner,
+        spaceType,
+        name,
+        metadataUri,
+        commissionRates,
+        commissionPool,
+        admissions: admissions.join(","),
+      },
+      update: {
         owner,
         spaceType,
         name,
@@ -83,7 +98,7 @@ export class GalleryObserver extends Observer {
         metadataUri,
         commissionRates,
         commissionPool,
-        admissions: admissions.join(",")
+        admissions: admissions.join(","),
       });
       redis.set(`mixverse:curation:${metadata.id}`, galleryData);
       redis.set(

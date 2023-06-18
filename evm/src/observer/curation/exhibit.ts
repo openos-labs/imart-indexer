@@ -76,6 +76,9 @@ export class ExhibitObserver extends Observer {
       },
       update: {
         status: eventTypeToStatus[eventType],
+        price: price.toString(),
+        galleryIndex: galleryId.toBigInt(),
+        detail,
       },
     });
     const updateOffset = prisma.eventOffset.update({
