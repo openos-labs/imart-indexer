@@ -223,7 +223,7 @@ model Comment {
 }
 
 //**************************************************************************************************
-// Mixverse
+// Shareverse 
 //**************************************************************************************************
 model Gallery {
     id          String   @id
@@ -256,6 +256,19 @@ model Article {
     date        DateTime @default(now())
 
     @@index([user])
+}
+
+model Post {
+    id        String   @id
+    type      String
+    title     String
+    content   String   @default("") @db.VarChar(200)
+    image     String   @default("")
+    icon      String   @default("")
+    author    String   @default("") @db.VarChar(50)
+    authorBio String   @default("") @db.VarChar(100)
+    link      String   @default("")
+    date      DateTime @default(now())
 }
 
 model Transaction {
@@ -349,8 +362,16 @@ model Template {
     @@index([userId])
 }
 
+model Partnership {
+    id          String @id @default(dbgenerated("(uuid())")) @db.VarChar(66)
+    name        String
+    image       String
+    link        String
+    description String
+}
+
 //**************************************************************************************************
-// Mixverse x IMart: Curation
+// Shareverse x IMart: Curation
 //**************************************************************************************************
 
 enum CurationOfferStatus {
@@ -438,11 +459,12 @@ model CurationGallery {
     owner           String
     spaceType       String
     name            String
-    metadataUri     String
+    metadataURI     String
     viewsCount      BigInt   @default(0)
     commissionRates Json?    @default("{}")
     commissionPool  String   @default("")
     admissions      String   @default("")
+    updatedAt       DateTime @default(now())
 
     @@unique([index, root])
     @@index([owner])
