@@ -20,8 +20,6 @@ enum TxType {
 }
 
 enum Chain {
-    IC
-    FLOW
     APTOS
     ETH
     BSC
