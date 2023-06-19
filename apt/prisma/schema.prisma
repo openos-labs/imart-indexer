@@ -421,7 +421,7 @@ model CurationExhibit {
     status               CurationExhibitStatus
     updatedAt            DateTime
 
-    @@unique([index, root])
+    @@unique([index, root, status])
     @@index([collectionIdentifier, tokenIdentifier])
     @@index([status])
     @@index([galleryIndex])

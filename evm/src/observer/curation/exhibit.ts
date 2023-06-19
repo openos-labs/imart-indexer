@@ -1,5 +1,10 @@
 import { Chain, PrismaPromise } from "@prisma/client";
-import { CHAIN, CONTRACT_CURATION, EVENTOFFSET_ID, randomProvider } from "../../config";
+import {
+  CHAIN,
+  CONTRACT_CURATION,
+  EVENTOFFSET_ID,
+  randomProvider,
+} from "../../config";
 import { prisma } from "../../io";
 import { ERC721__factory } from "../../typechain";
 import { TypedEvent } from "../../typechain/common";
@@ -46,11 +51,10 @@ export class ExhibitObserver extends Observer {
     const updatedAt = new Date(timestamp.toNumber() * 1000);
     const createOffer = prisma.curationExhibit.upsert({
       where: {
-        index_root_status_listed: {
+        index_root_status: {
           index: id.toBigInt(),
           root: CONTRACT_CURATION,
-          status: eventTypeToStatus[eventType],
-          listed: false,
+          status: "listing",
         },
       },
       create: {

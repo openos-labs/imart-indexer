@@ -34,12 +34,14 @@ class ExhibitEventObserver(Observer[ExhibitEvent]):
         updated_at = datetime.fromtimestamp(int(data.timestamp))
         expired_at = datetime.fromtimestamp(int(data.expiration))
 
+        new_status = event_type_to_status[event_type]
         async with prisma_client.tx(timeout=60000) as transaction:
             result = await transaction.curationexhibit.upsert(
                 where={
-                    'index_root': {
+                    'index_root_status': {
                         'index': int(data.id),
-                        'root': config.curation.address()
+                        'root': config.curation.address(),
+                        'status': enums.CurationExhibitStatus.listing
                     }
                 },
                 data={
@@ -62,7 +64,7 @@ class ExhibitEventObserver(Observer[ExhibitEvent]):
                         'location': data.location,
                         'url': data.url,
                         'detail': data.detail,
-                        'status': event_type_to_status[event_type],
+                        'status': new_status,
                         'updatedAt': updated_at
                     },
                     'update': {
@@ -83,12 +85,12 @@ class ExhibitEventObserver(Observer[ExhibitEvent]):
                         'location': data.location,
                         'url': data.url,
                         'detail': data.detail,
-                        'status': event_type_to_status[event_type],
+                        'status': new_status,
                         'updatedAt': updated_at
                     }
                 }
             )
-            if result == None or result.status != event_type_to_status[event_type]:
+            if result == None or result.status != new_status:
                 raise Exception(
                     f'[Curator exhibit]: Failed to update exhibit({data})')
 
