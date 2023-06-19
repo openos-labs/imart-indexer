@@ -49,13 +49,21 @@ export class ExhibitObserver extends Observer {
       timestamp,
     ] = (event as ExhibitChangedEvent).args;
     const updatedAt = new Date(timestamp.toNumber() * 1000);
-    const createOffer = prisma.curationExhibit.upsert({
+    const exhibit = await prisma.curationExhibit.findFirst({
       where: {
-        index_root_status: {
-          index: id.toBigInt(),
-          root: CONTRACT_CURATION,
-          status: "listing",
+        index: id.toBigInt(),
+        root: CONTRACT_CURATION,
+        status: {
+          in: ["listing", "reserved"],
         },
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
+    const updateExhibit = prisma.curationExhibit.upsert({
+      where: {
+        id: exhibit?.id || "",
       },
       create: {
         index: id.toBigInt(),
@@ -93,7 +101,7 @@ export class ExhibitObserver extends Observer {
         exhibit_excuted_offset: blockNo,
       },
     });
-    let txs: PrismaPromise<any>[] = [createOffer, updateOffset];
+    let txs: PrismaPromise<any>[] = [updateExhibit, updateOffset];
     if (eventType == "ExhibitSold") {
       const owner = await ERC721__factory.connect(
         collection,
@@ -136,9 +144,7 @@ export class ExhibitObserver extends Observer {
     }
 
     try {
-      const [_, updatedState, updatedTransaction] = await prisma.$transaction(
-        txs
-      );
+      const [_, updatedState] = await prisma.$transaction(txs);
       if (updatedState.exhibit_excuted_offset != blockNo) {
         return { success: false, state };
       }
