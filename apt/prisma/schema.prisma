@@ -20,8 +20,6 @@ enum TxType {
 }
 
 enum Chain {
-    IC
-    FLOW
     APTOS
     ETH
     BSC
@@ -174,6 +172,7 @@ model AptosActivity {
     quantity     String?  @default("1") @db.VarChar(78)
     price        String?  @default("0") @db.VarChar(78)
     txTimestamp  DateTime
+    currency     String?  @default("APT")
 
     @@index([collectionId])
     @@index([txType])
@@ -193,6 +192,7 @@ model Community {
 
 model Sale {
     id               String     @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    chain            Chain
     status           SaleStatus
     publicMintTime   DateTime
     expirationTime   DateTime?
@@ -221,7 +221,7 @@ model Comment {
 }
 
 //**************************************************************************************************
-// Mixverse
+// Shareverse 
 //**************************************************************************************************
 model Gallery {
     id          String   @id
@@ -254,6 +254,19 @@ model Article {
     date        DateTime @default(now())
 
     @@index([user])
+}
+
+model Post {
+    id        String   @id
+    type      String
+    title     String
+    content   String   @default("") @db.VarChar(200)
+    image     String   @default("")
+    icon      String   @default("")
+    author    String   @default("") @db.VarChar(50)
+    authorBio String   @default("") @db.VarChar(100)
+    link      String   @default("")
+    date      DateTime @default(now())
 }
 
 model Transaction {
@@ -347,8 +360,16 @@ model Template {
     @@index([userId])
 }
 
+model Partnership {
+    id          String @id @default(dbgenerated("(uuid())")) @db.VarChar(66)
+    name        String
+    image       String
+    link        String
+    description String
+}
+
 //**************************************************************************************************
-// Mixverse x IMart: Curation
+// Shareverse x IMart: Curation
 //**************************************************************************************************
 
 enum CurationOfferStatus {
@@ -422,7 +443,6 @@ model CurationExhibit {
     updatedAt            DateTime
 
     @@unique([index, root, status])
-    @@index([collectionIdentifier, tokenIdentifier])
     @@index([status])
     @@index([galleryIndex])
     @@index([galleryIndex, status])
@@ -436,7 +456,8 @@ model CurationGallery {
     owner           String
     spaceType       String
     name            String
-    metadataUri     String
+    metadataURI     String
+    viewsCount      BigInt   @default(0)
     commissionRates Json?    @default("{}")
     commissionPool  String   @default("")
     admissions      String   @default("")
@@ -509,17 +530,6 @@ model EventOffset {
     create_offer_excuted_offset                BigInt @default(-1)
     accept_offer_excuted_offset                BigInt @default(-1)
     cancel_offer_excuted_offset                BigInt @default(-1)
-    create_token_excuted_offset                BigInt @default(-1)
-    gallery_create_excuted_offset              BigInt @default(-1)
-    exhibit_list_excuted_offset                BigInt @default(-1)
-    exhibit_cancel_excuted_offset              BigInt @default(-1)
-    exhibit_freeze_excuted_offset              BigInt @default(-1)
-    exhibit_redeem_excuted_offset              BigInt @default(-1)
-    exhibit_buy_excuted_offset                 BigInt @default(-1)
-    curation_offer_create_excuted_offset       BigInt @default(-1)
-    curation_offer_accept_excuted_offset       BigInt @default(-1)
-    curation_offer_reject_excuted_offset       BigInt @default(-1)
-    curation_offer_cancel_excuted_offset       BigInt @default(-1)
     creation_token_created_excuted_offset      BigInt @default(-1)
     creation_collection_created_excuted_offset BigInt @default(-1)
     single_collective_created_excuted_offset   BigInt @default(-1)
