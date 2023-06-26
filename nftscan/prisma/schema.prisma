@@ -1,0 +1,56 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    // provider = "mysql"
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+//**************************************************************************************************
+//  original transactions
+//**************************************************************************************************
+model transaction {
+    id            Int       @id @default(autoincrement())
+    hash          String    @db.VarChar(512)
+    block_number  Int
+    block_hash    String    @db.VarChar(512)
+    from          String    @db.VarChar(512)
+    to            String    @db.VarChar(512)
+    value         String    @db.VarChar(512)
+    nonce         Int
+    data          String    @db.VarChar(400000)
+    timestamp     Int
+    type          Int
+    chain_id      Int
+    confirmations Int
+    raw           String?   @db.VarChar(20000)
+    created_at    DateTime? @default(now())
+    updated_at    DateTime? @default(now()) @updatedAt
+
+    @@index(id)
+    @@index([hash])
+    @@index([block_number])
+}
+
+//**************************************************************************************************
+//  nft
+//**************************************************************************************************
+model nftContract {
+    id            Int       @id @default(autoincrement())
+    name          String    @db.VarChar(512)
+    symbol        String    @db.VarChar(512)
+    type          String    @default("erc721") @db.VarChar(8)
+    total_supply  Int
+    contract_addr String    @db.VarChar(512)
+    creator       String    @db.VarChar(512)
+    chain_id      Int       @default(1)
+    created_time  DateTime?
+    category      Int?      @default(0)
+    description   String?   @db.VarChar(512)
+    created_at    DateTime? @default(now())
+    updated_at    DateTime? @default(now()) @updatedAt
+
+    @@unique([contract_addr])
+}

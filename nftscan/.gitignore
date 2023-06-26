@@ -1,0 +1,12 @@
+.DS_Store
+node_modules/
+lib/
+
+# dfx temporary files
+.dfx/
+
+
+loadtest.log
+loadtest.log.bkp
+
+test/*.ts
