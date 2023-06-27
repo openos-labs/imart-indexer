@@ -11,6 +11,7 @@ import { TypedEvent } from "../../typechain/common";
 import { ExhibitChangedEvent } from "../../typechain/Curation";
 import { State } from "../../types";
 import { handleError, Observer } from "../observer";
+import { redis } from "../../io/redis";
 
 const eventTypeToStatus = {
   ExhibitListed: "listing",
@@ -101,9 +102,10 @@ export class ExhibitObserver extends Observer {
         exhibit_excuted_offset: blockNo,
       },
     });
+    let owner: string;
     let txs: PrismaPromise<any>[] = [updateExhibit, updateOffset];
     if (eventType == "ExhibitSold") {
-      const owner = await ERC721__factory.connect(
+      owner = await ERC721__factory.connect(
         collection,
         randomProvider()
       ).ownerOf(tokenId);
@@ -152,6 +154,12 @@ export class ExhibitObserver extends Observer {
         ...state,
         exhibit_excuted_offset: blockNo,
       };
+      const key = `imart:collection-tokens:${CHAIN.toLowerCase()}:${collection.toLowerCase()}`;
+      const token = await redis.HGET(key, tokenId.toString());
+      const parsed = JSON.parse(token);
+      parsed["owner"] = owner;
+      parsed["ownership"] = [owner];
+      await redis.HSET(key, tokenId.toString(), JSON.stringify(parsed));
       return { success: true, state: newState };
     } catch (e) {
       handleError(e);
