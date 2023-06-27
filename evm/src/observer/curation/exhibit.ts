@@ -154,12 +154,14 @@ export class ExhibitObserver extends Observer {
         ...state,
         exhibit_excuted_offset: blockNo,
       };
-      const key = `imart:collection-tokens:${CHAIN.toLowerCase()}:${collection.toLowerCase()}`;
-      const token = await redis.HGET(key, tokenId.toString());
-      const parsed = JSON.parse(token);
-      parsed["owner"] = owner;
-      parsed["ownership"] = [owner];
-      await redis.HSET(key, tokenId.toString(), JSON.stringify(parsed));
+      if (eventType == "ExhibitSold" && owner) {
+        const key = `imart:collection-tokens:${CHAIN.toLowerCase()}:${collection.toLowerCase()}`;
+        const token = await redis.HGET(key, tokenId.toString());
+        const parsed = JSON.parse(token);
+        parsed["owner"] = owner;
+        parsed["ownership"] = [owner];
+        await redis.HSET(key, tokenId.toString(), JSON.stringify(parsed));
+      }
       return { success: true, state: newState };
     } catch (e) {
       handleError(e);
