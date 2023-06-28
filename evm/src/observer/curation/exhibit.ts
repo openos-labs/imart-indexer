@@ -91,6 +91,8 @@ export class ExhibitObserver extends Observer {
         status: eventTypeToStatus[eventType],
         price: price.toString(),
         galleryIndex: galleryId.toBigInt(),
+        origin,
+        curator: origin,
         detail,
       },
     });
