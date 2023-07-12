@@ -58,6 +58,23 @@ services:
     volumes:
      - ./evm:/app/indexer-bsc
     command: /bin/sh -c "npx prisma generate && yarn start"
+  indexer-opbnb:
+    working_dir: /app/indexer-opbnb
+    restart: always
+    environment:
+      - CONTRACT_CURATION=${OPBNB_CONTRACT_CURATION}
+      - CONTRACT_SINGLE_COLLECTIVE=${OPBNB_CONTRACT_SINGLE_COLLECTIVE}
+      - CONTRACT_MULTIPLE_COLLECTIVE=${OPBNB_CONTRACT_MULTIPLE_COLLECTIVE}
+      - PROVIDERS=${OPBNB_PROVIDERS}
+      - DURATION_MILLIS=${DURATION_MILLIS}
+      - EVENTOFFSET_ID=4
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - CHAIN=ETH
+    image: indexer-opbnb:v1
+    volumes:
+      - ./evm:/app/indexer-opbnb
+    command: /bin/sh -c "npx prisma generate && yarn start"
   automint: 
     working_dir: /app/automint
     restart: always

@@ -24,6 +24,7 @@ enum Chain {
     ETH
     BSC
     POLYGON
+    OPBNB
 }
 
 enum MetadataType {
