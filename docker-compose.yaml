@@ -70,7 +70,7 @@ services:
       - EVENTOFFSET_ID=4
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
-      - CHAIN=ETH
+      - CHAIN=OPBNB
     image: indexer-opbnb:v1
     volumes:
       - ./evm:/app/indexer-opbnb
