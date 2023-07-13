@@ -45,7 +45,7 @@
 
 实现上一个 `worker` 对应一个线程或者基于协程的双向 channel, 一个 `worker` 的事件处理机制就是 `Consumer` 订阅并正确消费 `Producer` 产生的事件，`Producer` 通过待消费的 `seqno` 获取新 events，`Consumer` 需要正确消费新的 events 同步数据库状态，同时已消费的 `seqno` 必须持久化用于程序状态恢复；`Consumer` 通知 `Producer` 消费到哪个 `seqno`, 已消费的 `seqno` 加 1 (aptos 中加 1，evm 中不需要) 就是新的待消费 `seqno`, `Producer` 又继续进行新一轮事件循环；其中比较重要的细节就是同步 events 相关的状态变化到数据库和已消费的 `seqno` 的持久化两个动作需要通过数据库事务保证其原子性；
 
-在 python 实现中使用了 `async generator` 模拟实现双向 channel，在 nodejs 种则使用 `Rxjs` 里的 `Subject` 模拟实现。
+在 python 实现中使用了 `async generator` 模拟实现双向 channel，在 nodejs 中则使用 `Rxjs` 里的 `Subject` 模拟实现。
 
 注：`Evm` 中 `seqno` 对应 `block number`，`Aptos` 中 `seqno` 对应 `sequence number`；
 
