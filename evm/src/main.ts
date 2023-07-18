@@ -5,6 +5,8 @@ import {
   SingleCollective,
   MultipleCollective,
   Curation,
+  Lottery__factory,
+  Lottery,
 } from "./typechain";
 import {
   processEvents,
@@ -24,6 +26,7 @@ import { GalleryObserver } from "./observer/curation/gallery";
 import { prisma } from "./io";
 import {
   CONTRACT_CURATION,
+  CONTRACT_LOTTERY,
   CONTRACT_MULTIPLE_COLLECTIVE,
   CONTRACT_SINGLE_COLLECTIVE,
   DURATION_MILLIS,
@@ -31,6 +34,7 @@ import {
   randomProvider,
 } from "./config";
 import { redis } from "./io/redis";
+import { LotteryObserver } from "./observer/lottery";
 
 const restPeriod = Number(DURATION_MILLIS);
 
@@ -39,6 +43,7 @@ async function main() {
   await redis.connect();
   await creationWorkers();
   await curationWorkers();
+  await lotteryWorkers();
 }
 
 async function worker<T extends TypedEvent, F extends TypedEventFilter<T>>(
@@ -104,6 +109,7 @@ async function initialState(): Promise<State> {
     gallery_excuted_offset,
     exhibit_excuted_offset,
     curation_offer_excuted_offset,
+    lottery_excuted_offset,
   } = execution;
   return {
     single_collective_created_excuted_offset,
@@ -111,7 +117,20 @@ async function initialState(): Promise<State> {
     gallery_excuted_offset,
     exhibit_excuted_offset,
     curation_offer_excuted_offset,
+    lottery_excuted_offset,
   };
+}
+
+async function lotteryWorkers() {
+  const newLottery = () =>
+    Lottery__factory.connect(CONTRACT_LOTTERY, randomProvider());
+  const newSingleCollectiveFilter = (c: Lottery) => c.filters.CreateActivity();
+  await worker(
+    newLottery,
+    newSingleCollectiveFilter,
+    new LotteryObserver(),
+    "lottery_excuted_offset"
+  );
 }
 
 async function creationWorkers() {

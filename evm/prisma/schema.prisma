@@ -538,4 +538,54 @@ model EventOffset {
     gallery_excuted_offset                     BigInt @default(-1)
     exhibit_excuted_offset                     BigInt @default(-1)
     curation_offer_excuted_offset              BigInt @default(-1)
+    lottery_excuted_offset                     BigInt @default(-1)
+}
+
+//**************************************************************************************************
+// NFT lottery
+//**************************************************************************************************
+model ActivityInfo {
+    id                 String              @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    ChainType          Chain?              @default(ETH)
+    organizer          String
+    activityId         String
+    activityDesc       String?             @default("")
+    accessTokenAddr    String?             @default("") @db.VarChar(512)
+    startTime          DateTime
+    endTime            DateTime
+    expiredTime        DateTime            @default(now())
+    merkleRoot         String              @default("0x0")
+    contractAddr       String
+    tokenIds           String              @default("")
+    winners            Int                 @default(1)
+    status             Int                 @default(0) //0: init, 1: confirmed, 2: canceled 
+    galleryId          String
+    ActivityUser       ActivityUser[]
+    ActivityTokenInfos ActivityTokenInfo[]
+
+    @@unique([activityId, organizer])
+}
+
+model ActivityTokenInfo {
+    id             String       @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    ChainType      Chain?       @default(ETH)
+    activityId     String
+    activityInfo   ActivityInfo @relation(fields: [activityId], references: [id])
+    avatar         String       @default("")
+    displayName    String       @default("")
+    uuid           String       @default("")
+    tokenAddress   String       @default("")
+    tokenId        String
+    tokenName      String       @default("")
+    tokenImageUrl  String       @default("")
+    collectionName String       @default("")
+}
+
+model ActivityUser {
+    id                  String       @id @default(dbgenerated("(uuid())")) @db.VarChar(64)
+    ActivityInfoId      String
+    ActivityInfo        ActivityInfo @relation(fields: [ActivityInfoId], references: [id])
+    userAddress         String
+    ActivityTokenInfoId String?
+    status              Int          @default(0) //0lose 1win
 }
