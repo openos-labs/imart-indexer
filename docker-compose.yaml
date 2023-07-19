@@ -76,6 +76,23 @@ services:
     volumes:
       - ./evm:/app/indexer-opbnb
     command: /bin/sh -c "npx prisma generate && yarn start"
+  indexer-zksync:
+    working_dir: /app/indexer-zksync
+    restart: always
+    environment:
+      - CONTRACT_CURATION=${ZKSYNC_CONTRACT_CURATION}
+      - CONTRACT_SINGLE_COLLECTIVE=${ZKSYNC_CONTRACT_SINGLE_COLLECTIVE}
+      - CONTRACT_MULTIPLE_COLLECTIVE=${ZKSYNC_CONTRACT_MULTIPLE_COLLECTIVE}
+      - PROVIDERS=${ZKSYNC_PROVIDERS}
+      - DURATION_MILLIS=${DURATION_MILLIS}
+      - EVENTOFFSET_ID=5
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - CHAIN=ZKSYNC
+    image: indexer-zksync:v1
+    volumes:
+      - ./evm:/app/indexer-zksync
+    command: /bin/sh -c "npx prisma generate && yarn start"
   automint: 
     working_dir: /app/automint
     restart: always
