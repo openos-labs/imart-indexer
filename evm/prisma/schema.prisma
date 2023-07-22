@@ -25,6 +25,7 @@ enum Chain {
     BSC
     POLYGON
     OPBNB
+    ZKSYNC
 }
 
 enum MetadataType {
