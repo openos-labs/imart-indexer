@@ -13,6 +13,7 @@ export type State = {
   exhibit_excuted_offset: bigint;
   curation_offer_excuted_offset: bigint;
   lottery_excuted_offset: bigint;
+  offsetField?: string;
 };
 
 export type StateFlow = Subject<State>;

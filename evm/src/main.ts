@@ -64,13 +64,15 @@ async function worker<T extends TypedEvent, F extends TypedEventFilter<T>>(
       {
         ...state,
       },
-      offsetField
+      state.offsetField
     );
   });
-  stream.subscribe(async ({ state, events }) => {
-    stateFlow.next(await processEvents(state, events, observer));
+  stream.subscribe(async ({ state, events, startBlockNo, endBlockNo }) => {
+    stateFlow.next(
+      await processEvents(state, events, startBlockNo, endBlockNo, observer)
+    );
   });
-  stateFlow.next(await initialState());
+  stateFlow.next(await initialState(offsetField));
 }
 
 async function fireEvents<T extends TypedEvent, F extends TypedEventFilter<T>>(
@@ -79,16 +81,22 @@ async function fireEvents<T extends TypedEvent, F extends TypedEventFilter<T>>(
   eventStream: Subject<{
     state: State;
     events: T[];
+    startBlockNo: number;
+    endBlockNo: number;
   }>,
   state: State,
   offsetField: string
 ) {
   await delay(restPeriod);
-  const blockNo = state[offsetField] as bigint;
-  eventStream.next({
-    state,
-    events: await events<T, F>(contract, eventFilter, Number(blockNo)),
-  });
+  const blockNo = Number(state[offsetField] as bigint);
+  const latestBlockNo = (await randomProvider().getBlock("latest")).number;
+  const data = await events<T, F>(
+    contract,
+    eventFilter,
+    blockNo,
+    latestBlockNo
+  );
+  eventStream.next({ state, ...data });
 }
 
 main().catch((error) => {
@@ -96,7 +104,7 @@ main().catch((error) => {
   process.exitCode = 1;
 });
 
-async function initialState(): Promise<State> {
+async function initialState(offsetField: string): Promise<State> {
   const execution = await prisma.eventOffset.findUnique({
     where: { id: parseInt(EVENTOFFSET_ID) },
   });
@@ -118,6 +126,7 @@ async function initialState(): Promise<State> {
     exhibit_excuted_offset,
     curation_offer_excuted_offset,
     lottery_excuted_offset,
+    offsetField,
   };
 }
 

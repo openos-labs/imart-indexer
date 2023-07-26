@@ -5,9 +5,14 @@ import { State } from "../types";
 export abstract class Observer {
   async processAll<T extends TypedEvent>(
     state: State,
-    events: T[]
+    events: T[],
+    _: number,
+    endBlockNo: number
   ): Promise<State> {
-    if (events.length == 0) return state;
+    if (events.length == 0) {
+      state[state.offsetField] = BigInt(endBlockNo);
+      return { ...state };
+    }
     let current_state = state;
     console.info(
       `[Observer]: received events from block no ${events[0].blockNumber} to ${
@@ -38,9 +43,11 @@ export abstract class Observer {
 export function processEvents<T extends TypedEvent>(
   state: State,
   events: T[],
+  startBlock: number,
+  endBlock: number,
   observer: Observer
 ): Promise<State> {
-  return observer.processAll(state, events);
+  return observer.processAll(state, events, startBlock, endBlock);
 }
 
 export function handleError(e: any) {

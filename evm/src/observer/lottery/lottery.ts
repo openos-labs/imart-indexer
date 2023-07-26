@@ -8,12 +8,14 @@ import { CreateActivityEvent } from "../../typechain/Lottery";
 export class LotteryObserver extends Observer {
   async processAll<T extends TypedEvent>(
     state: State,
-    events: T[]
+    events: T[],
+    startBlockNo: number,
+    endBlockNo: number
   ): Promise<State> {
     const newEvents = events.filter(
       (e) => e.blockNumber > Number(state.lottery_excuted_offset)
     );
-    return super.processAll(state, newEvents);
+    return super.processAll(state, newEvents, startBlockNo, endBlockNo);
   }
   async process<T extends TypedEvent>(
     state: State,

@@ -9,13 +9,15 @@ import { handleError, Observer } from "../observer";
 export class MultipleCollectiveCreateObserver extends Observer {
   async processAll<T extends TypedEvent>(
     state: State,
-    events: T[]
+    events: T[],
+    startBlockNo: number,
+    endBlockNo: number
   ): Promise<State> {
     const newEvents = events.filter(
       (e) =>
         e.blockNumber > Number(state.multiple_collective_created_excuted_offset)
     );
-    return super.processAll(state, newEvents);
+    return super.processAll(state, newEvents, startBlockNo, endBlockNo);
   }
   async process<T extends TypedEvent>(
     state: State,
@@ -62,8 +64,8 @@ export class MultipleCollectiveCreateObserver extends Observer {
         uri,
         supply: "0",
         royalty,
-        standard: 'ERC1155',
-        root
+        standard: "ERC1155",
+        root,
       },
       update: {},
     });
