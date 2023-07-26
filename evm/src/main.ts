@@ -89,7 +89,12 @@ async function fireEvents<T extends TypedEvent, F extends TypedEventFilter<T>>(
 ) {
   await delay(restPeriod);
   const blockNo = Number(state[offsetField] as bigint);
-  const latestBlockNo = (await randomProvider().getBlock("latest")).number;
+  let latestBlockNo = blockNo;
+  try {
+    latestBlockNo = (await randomProvider().getBlock("latest")).number;
+  } catch (e) {
+    console.warn("failed to get latest block number: ", e);
+  }
   const data = await events<T, F>(
     contract,
     eventFilter,
