@@ -59,11 +59,13 @@ export interface LotteryInterface extends utils.Interface {
     "acceptOwnership()": FunctionFragment;
     "acitivityExist(bytes32)": FunctionFragment;
     "acitivityPrizeTokenIds(bytes32,uint256)": FunctionFragment;
+    "checkWhitelist(address,uint256,bytes32[])": FunctionFragment;
     "claim(address,uint256,address,uint256,bytes32[])": FunctionFragment;
     "createActivity(address,uint256,uint256,uint256[])": FunctionFragment;
     "emergencyWithdraw(address,uint256,address)": FunctionFragment;
     "getActivityInfo(address,uint256)": FunctionFragment;
     "getRemainingTokenIds(address,uint256)": FunctionFragment;
+    "getUserHasClaimed(address,address,uint256)": FunctionFragment;
     "hasClaimed(bytes32)": FunctionFragment;
     "initialize()": FunctionFragment;
     "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
@@ -81,11 +83,13 @@ export interface LotteryInterface extends utils.Interface {
       | "acceptOwnership"
       | "acitivityExist"
       | "acitivityPrizeTokenIds"
+      | "checkWhitelist"
       | "claim"
       | "createActivity"
       | "emergencyWithdraw"
       | "getActivityInfo"
       | "getRemainingTokenIds"
+      | "getUserHasClaimed"
       | "hasClaimed"
       | "initialize"
       | "onERC721Received"
@@ -109,6 +113,14 @@ export interface LotteryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "acitivityPrizeTokenIds",
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "checkWhitelist",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>[]
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "claim",
@@ -144,6 +156,14 @@ export interface LotteryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getRemainingTokenIds",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getUserHasClaimed",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "hasClaimed",
@@ -200,6 +220,10 @@ export interface LotteryInterface extends utils.Interface {
     functionFragment: "acitivityPrizeTokenIds",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "checkWhitelist",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "createActivity",
@@ -215,6 +239,10 @@ export interface LotteryInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getRemainingTokenIds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getUserHasClaimed",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "hasClaimed", data: BytesLike): Result;
@@ -250,7 +278,7 @@ export interface LotteryInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "Claimed(address,uint256,uint256)": EventFragment;
+    "Claimed(address,address,uint256,uint256)": EventFragment;
     "CreateActivity(address,uint256,address,uint256[],uint256)": EventFragment;
     "Initialized(uint8)": EventFragment;
     "MerkleRoot(uint256,bytes32)": EventFragment;
@@ -270,11 +298,12 @@ export interface LotteryInterface extends utils.Interface {
 
 export interface ClaimedEventObject {
   claimer: string;
+  organizer: string;
   activityId: BigNumber;
   tokenId: BigNumber;
 }
 export type ClaimedEvent = TypedEvent<
-  [string, BigNumber, BigNumber],
+  [string, string, BigNumber, BigNumber],
   ClaimedEventObject
 >;
 
@@ -389,6 +418,13 @@ export interface Lottery extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    checkWhitelist(
+      _organizer: PromiseOrValue<string>,
+      _activityId: PromiseOrValue<BigNumberish>,
+      merkleProof: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     claim(
       _organizer: PromiseOrValue<string>,
       _activityId: PromiseOrValue<BigNumberish>,
@@ -424,6 +460,13 @@ export interface Lottery extends BaseContract {
       _activityId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[BigNumber[]]>;
+
+    getUserHasClaimed(
+      _user: PromiseOrValue<string>,
+      _organizer: PromiseOrValue<string>,
+      _activityId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     hasClaimed(
       arg0: PromiseOrValue<BytesLike>,
@@ -495,6 +538,13 @@ export interface Lottery extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  checkWhitelist(
+    _organizer: PromiseOrValue<string>,
+    _activityId: PromiseOrValue<BigNumberish>,
+    merkleProof: PromiseOrValue<BytesLike>[],
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   claim(
     _organizer: PromiseOrValue<string>,
     _activityId: PromiseOrValue<BigNumberish>,
@@ -530,6 +580,13 @@ export interface Lottery extends BaseContract {
     _activityId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<BigNumber[]>;
+
+  getUserHasClaimed(
+    _user: PromiseOrValue<string>,
+    _organizer: PromiseOrValue<string>,
+    _activityId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
   hasClaimed(
     arg0: PromiseOrValue<BytesLike>,
@@ -599,6 +656,13 @@ export interface Lottery extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    checkWhitelist(
+      _organizer: PromiseOrValue<string>,
+      _activityId: PromiseOrValue<BigNumberish>,
+      merkleProof: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
     claim(
       _organizer: PromiseOrValue<string>,
       _activityId: PromiseOrValue<BigNumberish>,
@@ -634,6 +698,13 @@ export interface Lottery extends BaseContract {
       _activityId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber[]>;
+
+    getUserHasClaimed(
+      _user: PromiseOrValue<string>,
+      _organizer: PromiseOrValue<string>,
+      _activityId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     hasClaimed(
       arg0: PromiseOrValue<BytesLike>,
@@ -687,15 +758,17 @@ export interface Lottery extends BaseContract {
   };
 
   filters: {
-    "Claimed(address,uint256,uint256)"(
+    "Claimed(address,address,uint256,uint256)"(
       claimer?: PromiseOrValue<string> | null,
+      organizer?: PromiseOrValue<string> | null,
       activityId?: PromiseOrValue<BigNumberish> | null,
-      tokenId?: PromiseOrValue<BigNumberish> | null
+      tokenId?: null
     ): ClaimedEventFilter;
     Claimed(
       claimer?: PromiseOrValue<string> | null,
+      organizer?: PromiseOrValue<string> | null,
       activityId?: PromiseOrValue<BigNumberish> | null,
-      tokenId?: PromiseOrValue<BigNumberish> | null
+      tokenId?: null
     ): ClaimedEventFilter;
 
     "CreateActivity(address,uint256,address,uint256[],uint256)"(
@@ -769,6 +842,13 @@ export interface Lottery extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    checkWhitelist(
+      _organizer: PromiseOrValue<string>,
+      _activityId: PromiseOrValue<BigNumberish>,
+      merkleProof: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     claim(
       _organizer: PromiseOrValue<string>,
       _activityId: PromiseOrValue<BigNumberish>,
@@ -800,6 +880,13 @@ export interface Lottery extends BaseContract {
     ): Promise<BigNumber>;
 
     getRemainingTokenIds(
+      _organizer: PromiseOrValue<string>,
+      _activityId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getUserHasClaimed(
+      _user: PromiseOrValue<string>,
       _organizer: PromiseOrValue<string>,
       _activityId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -868,6 +955,13 @@ export interface Lottery extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    checkWhitelist(
+      _organizer: PromiseOrValue<string>,
+      _activityId: PromiseOrValue<BigNumberish>,
+      merkleProof: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     claim(
       _organizer: PromiseOrValue<string>,
       _activityId: PromiseOrValue<BigNumberish>,
@@ -899,6 +993,13 @@ export interface Lottery extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getRemainingTokenIds(
+      _organizer: PromiseOrValue<string>,
+      _activityId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getUserHasClaimed(
+      _user: PromiseOrValue<string>,
       _organizer: PromiseOrValue<string>,
       _activityId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
