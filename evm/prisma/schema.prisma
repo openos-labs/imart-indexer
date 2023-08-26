@@ -56,18 +56,77 @@ enum SaleStatus {
 }
 
 model User {
-    id             String       @id
-    publicKey      String?      @default("")
-    name           String?      @default("")
-    logo           String?      @default("")
-    cover          String?      @default("")
-    description    String?      @default("")
-    character      String?      @default("")
-    authentication Int          @default(0)
-    Message        Message[]
-    UserContact    UserContact?
+    id             String  @id
+    publicKey      String? @default("")
+    name           String? @default("")
+    logo           String? @default("")
+    cover          String? @default("")
+    description    String? @default("")
+    character      String? @default("")
+    authentication Int     @default(0)
+    mesh           Json    @default("{}")
+    person         String? @default("")
+
+    Message     Message[]
+    UserContact UserContact?
 
     @@index([publicKey])
+}
+
+model AdminUser {
+    account String  @id
+    pwd     String
+    role    Int
+    otp     String? @default("")
+    salt    String
+
+    @@map("admin_users")
+}
+
+model Invitation {
+    inviter    String @id
+    invited_by String @default("")
+    code       String
+
+    @@map("invitations")
+}
+
+model Banner {
+    id    Int    @id @default(autoincrement())
+    title String @default("")
+    uri   String
+
+    @@map("banners")
+}
+
+model UserPoints {
+    account               String   @id
+    daily_claimed_state   Int      @default(0)
+    task_claimed_state    Int      @default(0)
+    total_daily_points    BigInt   @default(0)
+    total_task_points     BigInt   @default(0)
+    last_daily_claim_date DateTime @db.Timestamp()
+    invitations_total     BigInt   @default(0)
+    invitations_claimed   BigInt   @default(0)
+    spaces_total          BigInt   @default(0)
+    spaces_claimed        BigInt   @default(0)
+    created_at            DateTime @default(dbgenerated("CURRENT_TIMESTAMP")) @db.Timestamp()
+    updated_at            DateTime @default(dbgenerated("CURRENT_TIMESTAMP")) @db.Timestamp()
+
+    @@map("user_points")
+}
+
+model UserPointsHistory {
+    account           String
+    transaction_hash  String
+    earned_points     BigInt   @default(0)
+    costed_points     BigInt   @default(0)
+    event_points_type String
+    created_time      DateTime @default(dbgenerated("CURRENT_TIMESTAMP")) @db.Timestamp()
+    updated_time      DateTime @default(dbgenerated("CURRENT_TIMESTAMP")) @db.Timestamp()
+
+    // unique index
+    @@unique([account, transaction_hash])
 }
 
 model Collection {
@@ -350,16 +409,15 @@ model Message {
 }
 
 model Template {
-    id            String @id @default(dbgenerated("(uuid())")) @db.VarChar(66)
-    userId        String
-    templateUrl   String @default("")
-    backgroundUrl String @default("")
-    lightUrl      String @default("")
-    position      Json?  @default("{}")
-    rotation      Json?  @default("{}")
-    scale         Float  @default(0)
+    id      String  @id @default(dbgenerated("(uuid())")) @db.VarChar(66)
+    is_free Boolean
+    cost    String
+    name    String
+    uri     String
+    owner   String
 
-    @@index([userId])
+    @@index([owner])
+    @@map("templates")
 }
 
 model Partnership {
@@ -552,14 +610,14 @@ model ActivityInfo {
     activityId         String
     activityDesc       String?             @default("")
     accessTokenAddr    String?             @default("") @db.VarChar(512)
-    startTime          DateTime
-    endTime            DateTime
-    expiredTime        DateTime            @default(now())
+    startTime          DateTime            @db.Timestamp()
+    endTime            DateTime            @db.Timestamp()
+    expiredTime        DateTime            @db.Timestamp()
     merkleRoot         String              @default("0x0")
     contractAddr       String
     tokenIds           String              @default("")
     winners            Int                 @default(1)
-    status             Int                 @default(0) //0: init, 1: confirmed, 2: canceled 
+    status             Int                 @default(0) //0: init, 1: confirmed, 2: canceled
     galleryId          String
     ActivityUser       ActivityUser[]
     ActivityTokenInfos ActivityTokenInfo[]
