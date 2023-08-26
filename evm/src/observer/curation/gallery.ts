@@ -1,5 +1,11 @@
 import { Chain } from "@prisma/client";
-import { CHAIN, CONTRACT_CURATION, EVENTOFFSET_ID } from "../../config";
+import {
+  CHAIN,
+  CONTRACT_CURATION,
+  EVENTOFFSET_ID,
+  KEY_CURATION_BY_ID,
+  KEY_CURATION_BY_ROOT_INDEX,
+} from "../../config";
 import { prisma } from "../../io";
 import { redis } from "../../io/redis";
 import { TypedEvent } from "../../typechain/common";
@@ -102,9 +108,9 @@ export class GalleryObserver extends Observer {
         commissionPool,
         admissions: admissions.join(","),
       });
-      redis.set(`mixverse:curation:${metadata.id}`, galleryData);
+      redis.set(KEY_CURATION_BY_ID(metadata.id), galleryData);
       redis.set(
-        `mixverse:curation:${gallery.root}:${Number(gallery.index)}`,
+        KEY_CURATION_BY_ROOT_INDEX(gallery.root, gallery.index),
         galleryData
       );
       if (updatedState.gallery_excuted_offset != blockNo) {

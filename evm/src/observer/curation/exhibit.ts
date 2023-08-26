@@ -3,6 +3,7 @@ import {
   CHAIN,
   CONTRACT_CURATION,
   EVENTOFFSET_ID,
+  KEY_COLLECTION_TOKENS,
   randomProvider,
 } from "../../config";
 import { prisma } from "../../io";
@@ -159,7 +160,7 @@ export class ExhibitObserver extends Observer {
         exhibit_excuted_offset: blockNo,
       };
       if (eventType == "ExhibitSold" && owner) {
-        const key = `imart:collection-tokens:${CHAIN.toLowerCase()}:${collection.toLowerCase()}`;
+        const key = KEY_COLLECTION_TOKENS(CHAIN, collection);
         const token = await redis.HGET(key, tokenId.toString());
         const parsed = JSON.parse(token);
         parsed["owner"] = owner;

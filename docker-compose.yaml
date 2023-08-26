@@ -21,6 +21,7 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
       - CHAIN=ETH
+      - NETWORK=${NETWORK}
     image: indexer-eth:v1
     volumes:
       - ./evm:/app/indexer-eth
@@ -38,6 +39,7 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
       - CHAIN=POLYGON
+      - NETWORK=${NETWORK}
     image: indexer-pol:v1
     volumes:
      - ./evm:/app/indexer-pol
@@ -55,6 +57,7 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
       - CHAIN=BSC
+      - NETWORK=${NETWORK}
     image: indexer-bsc:v1
     volumes:
      - ./evm:/app/indexer-bsc
@@ -72,6 +75,7 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
       - CHAIN=OPBNB
+      - NETWORK=${NETWORK}
     image: indexer-opbnb:v1
     volumes:
       - ./evm:/app/indexer-opbnb
@@ -89,6 +93,7 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
       - CHAIN=ZKSYNC
+      - NETWORK=${NETWORK}
     image: indexer-zksync:v1
     volumes:
       - ./evm:/app/indexer-zksync

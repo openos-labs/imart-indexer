@@ -1,6 +1,6 @@
 import { Chain, NotificationType, Prisma, PrismaPromise } from "@prisma/client";
 import { randomUUID } from "crypto";
-import { CHAIN, CONTRACT_CURATION, EVENTOFFSET_ID } from "../../config";
+import { CHAIN, CONTRACT_CURATION, EVENTOFFSET_ID, KEY_NOTIFICATIONS } from "../../config";
 import { prisma } from "../../io";
 import { redis } from "../../io/redis";
 import { TypedEvent } from "../../typechain/common";
@@ -147,7 +147,7 @@ export class OfferObserver extends Observer {
     let data = { ...notification, timestamp: updatedAt.getMilliseconds() };
     if (this.needNotify(eventType)) {
       redis.LPUSH(
-        `imart:notifications:${receiver.toLowerCase()}`,
+        KEY_NOTIFICATIONS(receiver),
         JSON.stringify(data)
       );
       const notify = prisma.notification.upsert({
