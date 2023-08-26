@@ -35,6 +35,7 @@ import {
 } from "./config";
 import { redis } from "./io/redis";
 import { LotteryObserver } from "./observer/lottery";
+import { error } from "console";
 
 const restPeriod = Number(DURATION_MILLIS);
 
@@ -136,6 +137,10 @@ async function initialState(offsetField: string): Promise<State> {
 }
 
 async function lotteryWorkers() {
+  if (!CONTRACT_LOTTERY) {
+    console.error("CONTRACT_LOTTERY must be set");
+    return;
+  }
   const newLottery = () =>
     Lottery__factory.connect(CONTRACT_LOTTERY, randomProvider());
   const newSingleCollectiveFilter = (c: Lottery) => c.filters.CreateActivity();
