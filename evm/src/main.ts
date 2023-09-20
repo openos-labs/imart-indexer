@@ -93,6 +93,7 @@ async function fireEvents<T extends TypedEvent, F extends TypedEventFilter<T>>(
   let latestBlockNo = blockNo;
   try {
     latestBlockNo = (await randomProvider().getBlock("latest")).number;
+    latestBlockNo = Math.min(latestBlockNo, blockNo + 49999)
   } catch (e) {
     console.warn("failed to get latest block number: ", e);
   }
